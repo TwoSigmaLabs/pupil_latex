@@ -37,7 +37,7 @@ Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without tu
 
 Every consumer pins a git tag. There is no private registry.
 
-> **Status (2026-09-26):** this repository has not been pushed yet. The URLs below assume it is published as `github.com/TwoSigmaLabs/pupil_latex` with a `v1.1.0` tag. Until then, install from a local checkout (`pip install ./python`, a Dart `path:` dependency, or `npm install ./js`).
+The repository `github.com/TwoSigmaLabs/pupil_latex` is private. pip and `flutter pub get` fetch it through git, so they work wherever git already has access to TwoSigmaLabs (your machine, or CI with a token). npm cannot, so JavaScript consumers download the release tarball with `gh` first.
 
 ```bash
 # Python (Backend, pupiltree-agents, Fillers, worksheet.ai backend)
@@ -66,18 +66,23 @@ dependencies:
       path: dart/pupiltree_latex
 ```
 
-npm cannot install a sub-folder of a git repository, so the JavaScript package ships as a tarball attached to each GitHub release:
+npm cannot install a sub-folder of a git repository, and it cannot download a release file from a private repository. So the JavaScript package ships as a tarball on each GitHub release, and consumers commit it to their own repo:
 
 ```bash
 # Maintainer, once per tag
-cd js && npm ci && npm pack            # → pupiltree-latex-1.1.0.tgz, attach it to the v1.1.0 release
+cd js && npm ci && npm pack            # → pupiltree-latex-1.1.0.tgz
+gh release create v1.1.0 js/pupiltree-latex-1.1.0.tgz -R TwoSigmaLabs/pupil_latex --notes-file CHANGELOG.md
 
-# JavaScript consumers (worksheet.ai, pupil-assessment-ui)
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.1.0/pupiltree-latex-1.1.0.tgz
+# JavaScript consumers (worksheet.ai, pupil-assessment-ui), from the consumer repo root
+gh release download v1.1.0 -R TwoSigmaLabs/pupil_latex -p "*.tgz" -D vendor
+npm install ./vendor/pupiltree-latex-1.1.0.tgz    # package.json: "file:vendor/pupiltree-latex-1.1.0.tgz"
+git add vendor/pupiltree-latex-1.1.0.tgz package.json package-lock.json
 
 # Fillers (no bundler): copy js/dist/pupiltree-latex.iife.js next to the vendored KaTeX
-# (needs Safari/iOS 16.4+, Chrome 62+, Firefox 78+; see js/README.md)
+# (needs Safari/iOS 14+, Chrome/Edge 80+, Firefox 78+; see js/README.md)
 ```
+
+Committing the tarball means `npm ci` in the consumer's CI and Docker builds needs no GitHub access. To upgrade, download the new tag's tarball and run `npm install` on it again.
 
 ## Use
 

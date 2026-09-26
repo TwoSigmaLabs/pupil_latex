@@ -25,6 +25,8 @@ Things it never guesses: a formula with a missing piece, such as `$\frac{1}{$`. 
 
 Pin a release tag. All three packages share one version number.
 
+The repository `TwoSigmaLabs/pupil_latex` is private. pip and Flutter download it through git, so they work anywhere git can already reach TwoSigmaLabs: your machine, or a CI job with a GitHub token.
+
 **Python** (Backend, pupiltree-agents, Fillers, worksheet.ai backend):
 
 ```bash
@@ -35,10 +37,16 @@ The `[ftfy]` extra gives the best repair of garbled characters. Without it the l
 
 **JavaScript and React** (worksheet.ai, pupil-assessment-ui):
 
+The repository is private, so npm cannot download from it directly. Download the release file with the GitHub CLI (`gh`), install it from that file, and commit it:
+
 ```bash
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.1.0/pupiltree-latex-1.1.0.tgz
+gh release download v1.1.0 -R TwoSigmaLabs/pupil_latex -p "*.tgz" -D vendor
+npm install ./vendor/pupiltree-latex-1.1.0.tgz
 npm install katex        # needed for rendering; react too if you use <MathText>
+git add vendor/pupiltree-latex-1.1.0.tgz package.json package-lock.json
 ```
+
+Because the file is committed, `npm ci` on CI servers and in Docker builds works without GitHub access.
 
 **Flutter** (script_editor, tutor frontend), in `pubspec.yaml`:
 

@@ -17,3 +17,6 @@ js/dist/*
 # database dumps. Keep the scripts and reports in git, never the data.
 verification/real_data/*.json
 verification/real_data/prev/
+
+# npm pack output; it belongs on the GitHub release, not in git.
+*.tgz
