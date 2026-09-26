@@ -1,0 +1,18 @@
+{
+ "function": "repair",
+ "cases": [
+  {
+   "id": "backend-read-path-byte-identical-a8-0022",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[other_c0_dropped]",
+   "via": "repair_hard_control_bytes",
+   "input": "a\u001bb\u000bcd",
+   "expected": "abcd",
+   "variant": "hard",
+   "tags": [
+    "B1",
+    "backend#1585"
+   ],
+   "python_got": "abcd"
+  }
+ ]
+}

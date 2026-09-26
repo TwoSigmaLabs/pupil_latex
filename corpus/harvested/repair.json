@@ -1,0 +1,1027 @@
+{
+  "function": "repair",
+  "harvested_on": "2026-09-25",
+  "cases": [
+    {
+      "id": "backend-read-path-byte-identical-a8-0001",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[sqrt]",
+      "via": "sanitize_db_response",
+      "input": "The side is √2 cm",
+      "expected": "The side is √2 cm",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0002",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_in_prose]",
+      "via": "sanitize_db_response",
+      "input": "Visit https://www.youtube.com/watch?v=l_CySKUI5W4 and use √2.",
+      "expected": "Visit https://www.youtube.com/watch?v=l_CySKUI5W4 and use √2.",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'questionText'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0003",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_whole_content_key]",
+      "via": "sanitize_db_response",
+      "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "expected": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0004",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_whole_url_key]",
+      "via": "sanitize_db_response",
+      "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "expected": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'video_url'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0005",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[frac]",
+      "via": "sanitize_db_response",
+      "input": "$\\frac{1}{2}$",
+      "expected": "$\\frac{1}{2}$",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0006",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[subscripts]",
+      "via": "sanitize_db_response",
+      "input": "H_2O and x_1",
+      "expected": "H_2O and x_1",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0007",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[paren_bracket_delims]",
+      "via": "sanitize_db_response",
+      "input": "see \\(x\\) and \\[y\\]",
+      "expected": "see \\(x\\) and \\[y\\]",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'explanation'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0008",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[currency]",
+      "via": "sanitize_db_response",
+      "input": "Cost $50 only.",
+      "expected": "Cost $50 only.",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0009",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[micro]",
+      "via": "sanitize_db_response",
+      "input": "µ = 3 and Ângelo",
+      "expected": "µ = 3 and Ângelo",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0010",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[matrix_row_break]",
+      "via": "sanitize_db_response",
+      "input": "$\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}$",
+      "expected": "$\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}$",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0011",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[enum_under_unlisted_key]",
+      "via": "sanitize_db_response",
+      "input": "ai_recreate",
+      "expected": "ai_recreate",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'renderState'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0012",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[times_power]",
+      "via": "sanitize_db_response",
+      "input": "3×10^8",
+      "expected": "3×10^8",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0013",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[unicode_chem]",
+      "via": "sanitize_db_response",
+      "input": "Water H₂O boils",
+      "expected": "Water H₂O boils",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0014",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[mojibake_left_alone]",
+      "via": "sanitize_db_response",
+      "input": "Frequency Î½",
+      "expected": "Frequency Î½",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0015",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[tab_an_not_guessed]",
+      "via": "sanitize_db_response",
+      "input": "Rate\tan 5",
+      "expected": "Rate\tan 5",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0016",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[tab_lf_cr]",
+      "via": "sanitize_db_response",
+      "input": "Line one\nLine two\r\nitem\tcol",
+      "expected": "Line one\nLine two\r\nitem\tcol",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0017",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[escaped_currency]",
+      "via": "sanitize_db_response",
+      "input": "Pay \\$5; solve $5x+1=0$.",
+      "expected": "Pay \\$5; solve $5x+1=0$.",
+      "variant": "hard",
+      "tags": [
+        "B7",
+        "backend#1585",
+        "backend#1595"
+      ],
+      "note": "under key 'question'; the DB read path must serve stored bytes unchanged"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0018",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[form_feed_frac]",
+      "via": "repair_hard_control_bytes",
+      "input": "$\frac{1}{2}$",
+      "expected": "$\\frac{1}{2}$",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0019",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[backspace_beta]",
+      "via": "repair_hard_control_bytes",
+      "input": "\beta",
+      "expected": "\\beta",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0020",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[backspace_binom]",
+      "via": "repair_hard_control_bytes",
+      "input": "$\binom{n}{k}$",
+      "expected": "$\\binom{n}{k}$",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0021",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[nul_dropped]",
+      "via": "repair_hard_control_bytes",
+      "input": "a\u0000b",
+      "expected": "ab",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0022",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[other_c0_dropped]",
+      "via": "repair_hard_control_bytes",
+      "input": "a\u001bb\u000bcd",
+      "expected": "abcd",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0023",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[tab_untouched]",
+      "via": "repair_hard_control_bytes",
+      "input": "Rate\tan 5",
+      "expected": "Rate\tan 5",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0024",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[lf_cr_untouched]",
+      "via": "repair_hard_control_bytes",
+      "input": "x\ny\rz",
+      "expected": "x\ny\rz",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0025",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[empty]",
+      "via": "repair_hard_control_bytes",
+      "input": "",
+      "expected": "",
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "backend#1585"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0026",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes_is_idempotent",
+      "via": "repair_hard_control_bytes",
+      "input": "$\frac{1}{2}$ \beta\u0000",
+      "property": "idempotent",
+      "expected": null,
+      "variant": "hard",
+      "tags": [
+        "B1",
+        "B5"
+      ]
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0027",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+      "via": "sanitize_db_response",
+      "input": "\frac",
+      "expected": "\\frac",
+      "variant": "hard",
+      "tags": [
+        "B1"
+      ],
+      "note": "list element"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0028",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+      "via": "sanitize_db_response",
+      "input": "x^2",
+      "expected": "x^2",
+      "variant": "hard",
+      "tags": [
+        "B7"
+      ],
+      "note": "list element"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0029",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+      "via": "sanitize_db_response",
+      "input": "H_2O",
+      "expected": "H_2O",
+      "variant": "hard",
+      "tags": [
+        "B7"
+      ],
+      "note": "bare string input"
+    },
+    {
+      "id": "backend-read-path-byte-identical-a8-0030",
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_other_mode_values_keep_byte_identity",
+      "via": "sanitize_db_response",
+      "input": "H_2O",
+      "expected": "H_2O",
+      "variant": "hard",
+      "tags": [
+        "B7"
+      ],
+      "note": "LATEX_READ_PATH_MODE in ('', 'a8', 'bytes', 'legacyx')"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0049",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{1}{2}\beta$",
+      "expected": "$\\frac{1}{2}\\beta$",
+      "tags": [
+        "B1",
+        "backend#1651"
+      ],
+      "note": "key 'questionText'"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0050",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "5\text{ N}",
+      "expected": "5\\text{ N}",
+      "tags": [
+        "B1",
+        "backend#1651"
+      ],
+      "note": "input is '5' + TAB + 'ext{ N}' (a non-raw Python literal); options[0].text"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0051",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "2.5 m/s²",
+      "expected": "2.5 m/s²",
+      "tags": [
+        "B7"
+      ],
+      "note": "options[1].text"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0052",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "line one\nline two",
+      "expected": "line one\nline two",
+      "tags": [
+        "B7"
+      ],
+      "note": "key 'note'"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0053",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_bank_bulk_insert_never_stores_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{x}{3}$",
+      "expected": "$\\frac{x}{3}$",
+      "tags": [
+        "B1",
+        "backend#1651"
+      ],
+      "note": "asserted on the document handed to a mocked insert_many; the sink is repair_control_chars_deep"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0054",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_bank_bulk_insert_never_stores_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "\beta",
+      "expected": "\\beta",
+      "tags": [
+        "B1",
+        "backend#1651"
+      ],
+      "note": "mocked Mongo; options[0].text"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0055",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_bank_single_insert_and_update_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\beta$",
+      "expected": "$\\beta$",
+      "tags": [
+        "B1",
+        "backend#1651"
+      ],
+      "note": "mocked Mongo; answer.explanation"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0056",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_sync_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{1}{2}\beta$ and 5\text{ N}",
+      "expected": "$\\frac{1}{2}\\beta$ and 5\\text{ N}",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; questionText. Input has TAB before 'ext{ N}'"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0057",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_sync_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{3}{4}$",
+      "expected": "$\\frac{3}{4}$",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; options[0].text"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0058",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_sync_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "expected": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "tags": [
+        "B7",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; answer.explanation: the sink must not rewrite prose the full sanitizer would"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0059",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_put_and_after_hour_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{1}{2}\beta$ and 5\text{ N}",
+      "expected": "$\\frac{1}{2}\\beta$ and 5\\text{ N}",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; questionText. Input has TAB before 'ext{ N}'"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0060",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_put_and_after_hour_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{3}{4}$",
+      "expected": "$\\frac{3}{4}$",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; options[0].text"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0061",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_put_and_after_hour_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "expected": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "tags": [
+        "B7",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; answer.explanation: the sink must not rewrite prose the full sanitizer would"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0062",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{1}{2}\beta$ and 5\text{ N}",
+      "expected": "$\\frac{1}{2}\\beta$ and 5\\text{ N}",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; questionText. Input has TAB before 'ext{ N}'"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0063",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{3}{4}$",
+      "expected": "$\\frac{3}{4}$",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; options[0].text"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0064",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "expected": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "tags": [
+        "B7",
+        "backend#1654"
+      ],
+      "note": "mocked Mongo writer; answer.explanation: the sink must not rewrite prose the full sanitizer would"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0065",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_sync_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "\frac",
+      "expected": "\\frac",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "inClassQuestions.title"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0066",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_session_creators_repair_content_and_leave_the_upsert_keys_alone",
+      "via": "repair_control_chars_deep",
+      "input": "\\teacher: $\frac{1}{2}$\nCost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "expected": "\\teacher: $\\frac{1}{2}$\nCost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "period_lesson_plan.detailed_plan"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0067",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_session_creators_repair_content_and_leave_the_upsert_keys_alone",
+      "via": "repair_control_chars_deep",
+      "input": "$\beta$",
+      "expected": "$\\beta$",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "lessonScript.script"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0068",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{1}{2}$\nCost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "expected": "$\\frac{1}{2}$\nCost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "period_plans[0].detailed_plan"
+    },
+    {
+      "id": "backend-llm-json-latex-contract-1651-0069",
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\beta$",
+      "expected": "$\\beta$",
+      "tags": [
+        "B1",
+        "backend#1654"
+      ],
+      "note": "teacher_note"
+    },
+    {
+      "id": "agents-content-integrity-531-0001",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "$\frac{1}{2}\beta$",
+      "expected": "$\\frac{1}{2}\\beta$",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "input is a non-raw Python literal: \\t=TAB, \\r=CR, \\n=LF, \\f=FF, \\b=BS. Test also asserts repair(repaired) == repaired"
+    },
+    {
+      "id": "agents-content-integrity-531-0002",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "$\\frac{1}{2}\\beta$",
+      "expected": "$\\frac{1}{2}\\beta$",
+      "tags": [
+        "B7",
+        "B5",
+        "agents#531"
+      ],
+      "note": "second assertion: the repaired form is a fixed point"
+    },
+    {
+      "id": "agents-content-integrity-531-0003",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "5\text{ N} \times 2",
+      "expected": "5\\text{ N} \\times 2",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "input is a non-raw Python literal: \\t=TAB, \\r=CR, \\n=LF, \\f=FF, \\b=BS. Test also asserts repair(repaired) == repaired"
+    },
+    {
+      "id": "agents-content-integrity-531-0004",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "5\\text{ N} \\times 2",
+      "expected": "5\\text{ N} \\times 2",
+      "tags": [
+        "B7",
+        "B5",
+        "agents#531"
+      ],
+      "note": "second assertion: the repaired form is a fixed point"
+    },
+    {
+      "id": "agents-content-integrity-531-0005",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "$\theta \rightarrow \rho$",
+      "expected": "$\\theta \\rightarrow \\rho$",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "input is a non-raw Python literal: \\t=TAB, \\r=CR, \\n=LF, \\f=FF, \\b=BS. Test also asserts repair(repaired) == repaired"
+    },
+    {
+      "id": "agents-content-integrity-531-0006",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "$\\theta \\rightarrow \\rho$",
+      "expected": "$\\theta \\rightarrow \\rho$",
+      "tags": [
+        "B7",
+        "B5",
+        "agents#531"
+      ],
+      "note": "second assertion: the repaired form is a fixed point"
+    },
+    {
+      "id": "agents-content-integrity-531-0007",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "$x \neq y$",
+      "expected": "$x \\neq y$",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "input is a non-raw Python literal: \\t=TAB, \\r=CR, \\n=LF, \\f=FF, \\b=BS. Test also asserts repair(repaired) == repaired"
+    },
+    {
+      "id": "agents-content-integrity-531-0008",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "$x \\neq y$",
+      "expected": "$x \\neq y$",
+      "tags": [
+        "B7",
+        "B5",
+        "agents#531"
+      ],
+      "note": "second assertion: the repaired form is a fixed point"
+    },
+    {
+      "id": "agents-content-integrity-531-0009",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "a\u0000b\u001fc",
+      "expected": "abc",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "input is a non-raw Python literal: \\t=TAB, \\r=CR, \\n=LF, \\f=FF, \\b=BS. Test also asserts repair(repaired) == repaired"
+    },
+    {
+      "id": "agents-content-integrity-531-0010",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption",
+      "input": "abc",
+      "expected": "abc",
+      "tags": [
+        "B7",
+        "B5",
+        "agents#531"
+      ],
+      "note": "second assertion: the repaired form is a fixed point"
+    },
+    {
+      "id": "agents-content-integrity-531-0011",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "line one\nline two",
+      "expected": "line one\nline two",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0012",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "Statement I: x\nStatement II: y",
+      "expected": "Statement I: x\nStatement II: y",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0013",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "i) first\nii) second\ne) none",
+      "expected": "i) first\nii) second\ne) none",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0014",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "Mirror formula:\nu = -25 cm",
+      "expected": "Mirror formula:\nu = -25 cm",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0015",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "not this\nnot that",
+      "expected": "not this\nnot that",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0016",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "col a\tcol b",
+      "expected": "col a\tcol b",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0017",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "windows\r\nline",
+      "expected": "windows\r\nline",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0018",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption",
+      "input": "2.5 m/s²",
+      "expected": "2.5 m/s²",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0019",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{1}{2}\beta$",
+      "expected": "$\\frac{1}{2}\\beta$",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "key 'questionText'"
+    },
+    {
+      "id": "agents-content-integrity-531-0020",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "5\text{ N}",
+      "expected": "5\\text{ N}",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "input is '5' + TAB + 'ext{ N}'; options[0].text"
+    },
+    {
+      "id": "agents-content-integrity-531-0021",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "2.5 m/s²",
+      "expected": "2.5 m/s²",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0022",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep",
+      "input": "line one\nline two",
+      "expected": "line one\nline two",
+      "tags": [
+        "B7",
+        "agents#531"
+      ]
+    },
+    {
+      "id": "agents-content-integrity-531-0023",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_question_bank_insert_never_stores_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "$\frac{x}{3}$",
+      "expected": "$\\frac{x}{3}$",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "mocked Mongo insert; questionText"
+    },
+    {
+      "id": "agents-content-integrity-531-0024",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_question_bank_insert_never_stores_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "\beta",
+      "expected": "\\beta",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "mocked Mongo insert; options[0].text"
+    },
+    {
+      "id": "agents-content-integrity-531-0025",
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_question_bank_insert_never_stores_a_control_character",
+      "via": "repair_control_chars_deep",
+      "input": "5\text{ N}",
+      "expected": "5\\text{ N}",
+      "tags": [
+        "B1",
+        "agents#531"
+      ],
+      "note": "mocked Mongo insert; answer.explanation; input has TAB before 'ext{ N}'"
+    },
+    {
+      "id": "script-editor-latex-preprocess-0028",
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/FF+rac is \\frac, BS+eta is \\beta, VT+ec is \\vec",
+      "via": "restoreControlCharCommands",
+      "input": "$\frac{1}{2}$",
+      "expected": "$\\frac{1}{2}$",
+      "tags": [
+        "B1",
+        "backend#1564"
+      ],
+      "note": "asserted through preprocessLatexText; the step is restoreControlCharCommands (Backend #1564 corruption)"
+    },
+    {
+      "id": "script-editor-latex-preprocess-0030",
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/FF+rac is \\frac, BS+eta is \\beta, VT+ec is \\vec",
+      "via": "restoreControlCharCommands",
+      "input": "$\beta$",
+      "expected": "$\\beta$",
+      "tags": [
+        "B1",
+        "backend#1564"
+      ],
+      "note": "asserted through preprocessLatexText; the step is restoreControlCharCommands (Backend #1564 corruption)"
+    },
+    {
+      "id": "script-editor-latex-preprocess-0032",
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/FF+rac is \\frac, BS+eta is \\beta, VT+ec is \\vec",
+      "via": "restoreControlCharCommands",
+      "input": "$\u000bec{v}$",
+      "expected": "$\\vec{v}$",
+      "tags": [
+        "B1",
+        "backend#1564"
+      ],
+      "note": "asserted through preprocessLatexText; the step is restoreControlCharCommands (Backend #1564 corruption)"
+    },
+    {
+      "id": "script-editor-latex-preprocess-0034",
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/other control characters are dropped, not rendered",
+      "via": "restoreControlCharCommands",
+      "input": "a\u0000b\u0007c\u001fde",
+      "expected": "abcde",
+      "tags": [
+        "B1"
+      ],
+      "note": "asserted through preprocessLatexText; the step is restoreControlCharCommands (Backend #1564 corruption); note DEL (0x7F) is dropped here, unlike Backend repair_hard_control_bytes"
+    },
+    {
+      "id": "script-editor-latex-preprocess-0036",
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/a control char with no letter after it is dropped",
+      "via": "restoreControlCharCommands",
+      "input": "x \f y",
+      "expected": "x  y",
+      "tags": [
+        "B1"
+      ],
+      "note": "asserted through preprocessLatexText; the step is restoreControlCharCommands (Backend #1564 corruption)"
+    },
+    {
+      "id": "fillers-period-content-math-0004",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::stripControlChars removes C0 controls and DEL but keeps tab / newline / CR",
+      "via": "stripControlChars",
+      "input": "x^\f2 \\frac{\b1}{2}\u0000\u001f",
+      "expected": "x^2 \\frac{1}{2}",
+      "tags": [
+        "B1",
+        "legacy-lossy"
+      ],
+      "note": "Fillers is lossy: it drops FF/BS instead of restoring the backslash; expected here is the Fillers expectation, tagged legacy-lossy for review"
+    },
+    {
+      "id": "fillers-period-content-math-0005",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::stripControlChars removes C0 controls and DEL but keeps tab / newline / CR",
+      "via": "stripControlChars",
+      "input": "a\tb\nc\r\nd",
+      "expected": "a\tb\nc\r\nd",
+      "tags": [
+        "B7",
+        "legacy-lossy"
+      ]
+    }
+  ]
+}

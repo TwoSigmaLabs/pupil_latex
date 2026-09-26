@@ -1,0 +1,1684 @@
+{
+  "function": "to_plain",
+  "harvested_on": "2026-09-25",
+  "cases": [
+    {
+      "id": "backend-latex-to-plain-0001",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$4.77$ Å",
+      "expected": "4.77 Å",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0002",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$-1$",
+      "expected": "-1",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0003",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$-1.51$ eV",
+      "expected": "-1.51 eV",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0004",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$1:4:9$",
+      "expected": "1:4:9",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0005",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$911.6$ Å",
+      "expected": "911.6 Å",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0006",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$10.2$ eV",
+      "expected": "10.2 eV",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0007",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$1/137$",
+      "expected": "1/137",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0008",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$h/\\pi$",
+      "expected": "h/π",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0009",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$\\lambda = 36/5R$",
+      "expected": "λ = 36/5R",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0010",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$10^{-15}$ m",
+      "expected": "10⁻¹⁵ m",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0011",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$0^\\circ$",
+      "expected": "0°",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0012",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$(1/n_1^2 - 1/n_2^2)$",
+      "expected": "(1/n₁² - 1/n₂²)",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0013",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$-13.6/n^2$ eV",
+      "expected": "-13.6/n² eV",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0014",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "$\\sin^4(\\theta/2)$",
+      "expected": "sin⁴(θ/2)",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0015",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "plain ascii answer",
+      "expected": "plain ascii answer",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0016",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "input": "(b) Balmer series",
+      "expected": "(b) Balmer series",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0017",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\textit{Salmonella typhi}",
+      "expected": "Salmonella typhi",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0018",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\textbf{Anopheles}",
+      "expected": "Anopheles",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0019",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\emph{Plasmodium}",
+      "expected": "Plasmodium",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0020",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\textrm{Wb}",
+      "expected": "Wb",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0021",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\texttt{code}",
+      "expected": "code",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0022",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\textsc{Name}",
+      "expected": "Name",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0023",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\textsf{Label}",
+      "expected": "Label",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0024",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "Female \\textit{Anopheles} mosquito",
+      "expected": "Female Anopheles mosquito",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0025",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\text{0.008 Wb}",
+      "expected": "0.008 Wb",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0026",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_text_mode_wrappers_render_their_content",
+      "via": "latex_to_plain",
+      "input": "\\mathrm{kg}",
+      "expected": "kg",
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0027",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_strip_latex_from_baa_walks_nested_payload",
+      "via": "strip_latex_from_baa (latex_to_plain on each string leaf)",
+      "input": "$4.77$ Å",
+      "expected": "4.77 Å",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "questions_analyzed[0].correct_answer"
+    },
+    {
+      "id": "backend-latex-to-plain-0028",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_strip_latex_from_baa_walks_nested_payload",
+      "via": "strip_latex_from_baa (latex_to_plain on each string leaf)",
+      "input": "You wrote $E = -13.6$ eV instead of $-13.6/n^2$ eV.",
+      "property": "no '$' in output; output contains 'n²' or 'n^2'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0029",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_strip_latex_from_baa_walks_nested_payload",
+      "via": "strip_latex_from_baa (latex_to_plain on each string leaf)",
+      "input": "Use the general formula $E = -13.6/n^2$.",
+      "property": "output contains 'λ' or does not contain 'lambda' (case-insensitive)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-0030",
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_strip_latex_from_baa_walks_nested_payload",
+      "via": "strip_latex_from_baa (latex_to_plain on each string leaf)",
+      "input": "$1/\\lambda = R(1/n_1^2 - 1/n_2^2)$",
+      "property": "no '$' in output; output contains 'λ', 'n₁' and 'n₂'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0001",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\sqrt{3}}{2}$",
+      "expected": "(√3)/(2)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0002",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$x^2+\\theta$",
+      "expected": "x²+θ",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0003",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "\\(a_{n}\\)",
+      "expected": "aₙ",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0004",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "costs \\$5 and $x$",
+      "expected": "costs $5 and x",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0005",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "\\$50",
+      "expected": "$50",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0006",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\frac{a}{\\frac{b}{\\frac{c}{\\frac{d}{e}}}}$",
+      "expected": "(a)/((b)/((c)/((d)/(e))))",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0007",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\mathrm{kg\\,m^{-2}}$",
+      "expected": "kg m⁻²",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0008",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\ce{H2SO4}$",
+      "expected": "H2SO4",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0009",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$10^{-15}\\,\\text{m}$",
+      "expected": "10⁻¹⁵ m",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0010",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$",
+      "expected": "[1 2; 3 4]",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0011",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}$",
+      "expected": "[a b; c d]",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0012",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\begin{vmatrix}a&b\\\\c&d\\end{vmatrix}$",
+      "expected": "|a b; c d|",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0013",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\begin{array}{cc}1&0\\\\0&1\\end{array}$",
+      "expected": "[1 0; 0 1]",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0014",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\lim_{x\\to 0}\\frac{\\sin x}{x}$",
+      "expected": "lim_(x→0)(sin x)/(x)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0015",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\mathbf{v}_{\\text{avg}}$",
+      "expected": "v_(avg)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0016",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$x_{\\text{max}}$",
+      "expected": "xₘₐₓ",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0017",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\int_0^1 x\\,dx$",
+      "expected": "∫₀¹ x dx",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0018",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\sum_{i=1}^{n} i$",
+      "expected": "Σ_(i=1)ⁿ i",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0019",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$e^{i\\pi}$",
+      "expected": "e^(iπ)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0020",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$2\\times10^{8}$",
+      "expected": "2×10⁸",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0021",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\sqrt{2m(\\frac{hc}{\\lambda}-\\phi)}}{eB}$",
+      "expected": "(√(2m((hc)/(λ)-φ)))/(eB)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0022",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\sqrt{x}$",
+      "expected": "√x",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0023",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\sqrt{10}$",
+      "expected": "√10",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0024",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\sqrt{2m}$",
+      "expected": "√(2m)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0025",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\sqrt[3]{8}$",
+      "expected": "³√8",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0026",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\dfrac{1}{2}$",
+      "expected": "(1)/(2)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0027",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\frac12$",
+      "expected": "(1)/(2)",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0028",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$$E=mc^2$$",
+      "expected": "E=mc²",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0029",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$50\\%$",
+      "expected": "50%",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0030",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$a \\cdot b \\ne c$",
+      "expected": "a · b ≠ c",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0031",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\vec{F}=m\\vec{a}$",
+      "expected": "F=ma",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0032",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\overrightarrow{AB}$",
+      "expected": "AB",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0033",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+      "via": "latex_to_plain",
+      "input": "$\\hat{i}+\\overline{AB}$",
+      "expected": "i+AB",
+      "style": "text",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0034",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\vec{F}=m\\vec{a}$",
+      "expected": "F⃗=ma⃗",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0035",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\overrightarrow{AB}$",
+      "expected": "vec(AB)",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0036",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\hat{i}$",
+      "expected": "î",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0037",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\bar{x}$",
+      "expected": "x̄",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0038",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\dot{x}$",
+      "expected": "ẋ",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0039",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\overline{AB}$",
+      "expected": "bar(AB)",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0040",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\sqrt{3}}{2}$",
+      "expected": "(√3)/(2)",
+      "style": "pdf",
+      "tags": [
+        "B8",
+        "backend#1599"
+      ],
+      "note": "mark_accents=True"
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0041",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{a}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0042",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{a}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0043",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{\\frac{a}{b}}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0044",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{\\frac{\\frac{a}{b}}{b}}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0045",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{\\frac{\\frac{\\frac{a}{b}}{b}}{b}}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0046",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{a}{b}}{b}}{b}}{b}}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0047",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{a}{b}}{b}}{b}}{b}}{b}}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0048",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_nesting_depth_is_unbounded",
+      "via": "latex_to_plain",
+      "input": "$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{a}{b}}{b}}{b}}{b}}{b}}{b}}{b}}{b}$",
+      "property": "output contains none of 'frac', '{', '\\\\'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0049",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "costs \\$5 and $x$",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0050",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "$\\{a\\}$ costs \\$3",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0051",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "$\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0052",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "\\0.008Wb",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0053",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "trailing backslash \\",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0054",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "$\\left.\\frac{dy}{dx}\\right|_{x=0}$",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0055",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_no_markup_or_sentinel_leaks",
+      "via": "latex_to_plain",
+      "input": "$\\begin{cases}x & x\\ge 0\\\\-x & x<0\\end{cases}$",
+      "property": "output contains no '\\\\', no NUL, no 'begin', no 'end{'",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0056",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_new_outputs_are_idempotent",
+      "via": "latex_to_plain",
+      "input": "$\\frac{a}{\\frac{b}{\\frac{c}{\\frac{d}{e}}}}$",
+      "property": "idempotent",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8",
+        "B5"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0057",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_new_outputs_are_idempotent",
+      "via": "latex_to_plain",
+      "input": "$\\lim_{x\\to 0}\\frac{\\sin x}{x}$",
+      "property": "idempotent",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8",
+        "B5"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0058",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_new_outputs_are_idempotent",
+      "via": "latex_to_plain",
+      "input": "$\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$",
+      "property": "idempotent",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8",
+        "B5"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0059",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_new_outputs_are_idempotent",
+      "via": "latex_to_plain",
+      "input": "$\\sqrt[3]{8}$",
+      "property": "idempotent",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8",
+        "B5"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-r2-0060",
+      "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_new_outputs_are_idempotent",
+      "via": "latex_to_plain",
+      "input": "costs \\$5 and $x$",
+      "property": "idempotent",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8",
+        "B5"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0001",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$18 \\div 1$",
+      "expected": "18 ÷ 1",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0002",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$3 \\times 4 = 12$",
+      "expected": "3 × 4 = 12",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0003",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\frac{1}{2}$",
+      "expected": "(1)/(2)",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0004",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\dfrac{3}{4}$",
+      "expected": "(3)/(4)",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0005",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\sqrt{16}$",
+      "expected": "√16",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0006",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\sqrt[3]{27}$",
+      "expected": "³√27",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0007",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$x^2 + y_1$",
+      "expected": "x² + y₁",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0008",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$90^\\circ$",
+      "expected": "90°",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0009",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$x \\le 5$",
+      "expected": "x ≤ 5",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0010",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\neq$",
+      "expected": "≠",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0011",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\pi r^2$",
+      "expected": "π r²",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0012",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$5\\text{ cm}$",
+      "expected": "5 cm",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0013",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\mathbf{F}$",
+      "expected": "F",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0014",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\boxed{5}$",
+      "expected": "5",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0015",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\fbox{7}$",
+      "expected": "7",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0016",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\cancel{x}$",
+      "expected": "x",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0017",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\color{red}{5}$",
+      "expected": "5",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0018",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\textcolor{blue}{x+1}$",
+      "expected": "x+1",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0019",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\hspace{1cm}x$",
+      "expected": "x",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0020",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\phantom{0}7$",
+      "expected": "7",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0021",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\label{eq1}y = 2$",
+      "expected": "y = 2",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0022",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\lbrace x \\rbrace$",
+      "expected": "{ x }",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0023",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\langle v \\rangle$",
+      "expected": "⟨ v ⟩",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0024",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\lfloor 2.5 \\rfloor$",
+      "expected": "⌊ 2.5 ⌋",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0025",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\ce{H2O}$",
+      "expected": "H2O",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0026",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "\\(x^2\\)",
+      "expected": "x²",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0027",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "\\[y = mx + c\\]",
+      "expected": "y = mx + c",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0028",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$$E = mc^2$$",
+      "expected": "E = mc²",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0029",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "50\\%",
+      "expected": "50%",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0030",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "costs \\$5",
+      "expected": "costs $5",
+      "style": "text",
+      "tags": [
+        "B8"
+      ],
+      "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)"
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0031",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\displaystyle \\frac{1}{2}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0032",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\left( \\frac{a}{b} \\right)$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0033",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\sum_{i=1}^{n} i$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0034",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\int_0^1 x\\,dx$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0035",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\underbrace{a+b}_{n}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0036",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0037",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$f(x) = \\begin{cases} 1, & x>0 \\\\ 0, & x\\le 0 \\end{cases}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0038",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\vec{F} = m\\vec{a}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0039",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\overline{AB} \\parallel \\overline{CD}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0040",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\angle ABC = 90^{\\circ}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0041",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\log_{10} 100 = 2$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0042",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\sin^2\\theta + \\cos^2\\theta = 1$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0043",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\lim_{x \\to 0} \\frac{\\sin x}{x}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0044",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\binom{5}{2}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0045",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$0.\\overline{3}$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0046",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$a \\pm b \\approx c$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0047",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\therefore x = 2$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0048",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\alpha + \\beta = \\gamma$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0049",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$1{,}000$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0050",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\color{red} 5$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    },
+    {
+      "id": "backend-latex-to-plain-no-residue-0051",
+      "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_no_latex_residue",
+      "via": "plain_text (report_pdf) == clean_text(...).strip()",
+      "input": "$\\textbf{Note:} \\; x > 0$",
+      "property": "no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+      "expected": null,
+      "style": "text",
+      "tags": [
+        "B8"
+      ]
+    }
+  ]
+}

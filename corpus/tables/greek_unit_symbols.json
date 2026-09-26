@@ -1,0 +1,28 @@
+{
+ "version": "1.1.0",
+ "name": "greek_unit_symbols",
+ "value": [
+  "s",
+  "m",
+  "g",
+  "l",
+  "L",
+  "A",
+  "V",
+  "W",
+  "F",
+  "H",
+  "J",
+  "C",
+  "K",
+  "T",
+  "N",
+  "S",
+  "M",
+  "Pa",
+  "Hz",
+  "Wb",
+  "eV",
+  "mol"
+ ]
+}

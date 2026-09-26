@@ -1,0 +1,995 @@
+{
+  "function": "segment",
+  "harvested_on": "2026-09-25",
+  "cases": [
+    {
+      "id": "script-editor-latex-e2e-reality-0001",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::clean physics: centripetal accel",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "Centripetal acceleration is $a_c = \\frac{v^{2}}{r}$.",
+      "property": ">=1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": ">=1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0002",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::chemistry reaction",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "$\\text{2H}_{2} + \\text{O}_{2} \\rightarrow \\text{2H}_{2}\\text{O}$",
+      "property": "1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0003",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::quadratic formula",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$",
+      "property": "1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0004",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::covered greek (theta, phi, pi)",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "Angle $\\theta$ and $\\phi$ sum to $\\pi$.",
+      "property": "3 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "3",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0005",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::wavefunction psi — when model emits \\psi correctly",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "The wavefunction $\\psi(x)$ describes a particle.",
+      "property": "1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0006",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::backend fixed bare x^10 → $x^{10}$",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "Value is $x^{10}$ here.",
+      "property": "1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0007",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::backend fixed pi mojibake → $\\pi$",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "The value of $\\pi$ is 3.14.",
+      "property": "1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0008",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::FIX 6: mathbb renders as math (no grey-italic fallback)",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "Set $\\mathbb{R}$.",
+      "property": ">=1 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": ">=1",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0009",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::MIXED/physics paragraph mixing covered + gap greek",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "At angle $\\theta$ with frequency $\\nu$ and density $\\rho$, the wavefunction is $\\psi = A\\sin(2\\pi\\nu t)$.",
+      "property": "4 math span(s) are produced and none falls back to grey-italic source",
+      "expected": null,
+      "must_render": true,
+      "math_spans": "4",
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "script-editor-latex-e2e-reality-0010",
+      "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::MIXED/physics paragraph with ψ MOJIBAKE → sentence reads as broken",
+      "via": "ScriptEditorTex (flutter_math_fork)",
+      "input": "At angle $\\theta$ the wavefunction Ï(x) collapses when $|\\psi|^2$ is measured.",
+      "property": "exactly 2 math spans; the literal 'Ï(x)' is still visible in the rendered text (documented leak, not desired)",
+      "expected": null,
+      "math_spans": "2",
+      "tags": [
+        "B4",
+        "B6"
+      ]
+    },
+    {
+      "id": "fillers-period-content-math-0006",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars",
+      "input": "Cost \\$60 and \\$15 then $x^2$ end",
+      "expected": "Cost 60 and 15 then $x^2$ end",
+      "sentinel": "U+E000",
+      "tags": [
+        "B3",
+        "B4",
+        "fillers#267",
+        "fillers#273"
+      ]
+    },
+    {
+      "id": "fillers-period-content-math-0007",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars",
+      "input": "$\\$5 + x$ costs \\$5",
+      "expected": "$\\$5 + x$ costs 5",
+      "sentinel": "U+E000",
+      "tags": [
+        "B3",
+        "B4",
+        "fillers#267",
+        "fillers#273"
+      ],
+      "note": "a \\$ inside maths is a KaTeX command, not a currency sign"
+    },
+    {
+      "id": "fillers-period-content-math-0008",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars",
+      "input": "$$\\$a$$ \\$b",
+      "expected": "$$\\$a$$ b",
+      "sentinel": "U+E000",
+      "tags": [
+        "B3",
+        "B4",
+        "fillers#267",
+        "fillers#273"
+      ],
+      "note": "display maths"
+    },
+    {
+      "id": "fillers-period-content-math-0009",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars",
+      "input": "\\\\$x$ \\$y",
+      "expected": "\\\\$x$ y",
+      "sentinel": "U+E000",
+      "tags": [
+        "B3",
+        "B4",
+        "fillers#267",
+        "fillers#273"
+      ],
+      "note": "an escaped backslash does not escape the dollar"
+    },
+    {
+      "id": "fillers-period-content-math-0010",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars",
+      "input": "open $x and \\$5",
+      "expected": "open $x and \\$5",
+      "sentinel": "U+E000",
+      "tags": [
+        "B3",
+        "B4",
+        "fillers#267",
+        "fillers#273"
+      ],
+      "note": "after an unterminated opener auto-render leaves the rest as text"
+    },
+    {
+      "id": "fillers-period-content-math-0011",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars",
+      "input": "no dollars here",
+      "expected": "no dollars here",
+      "sentinel": "U+E000",
+      "tags": [
+        "B3",
+        "B4",
+        "fillers#267",
+        "fillers#273"
+      ]
+    },
+    {
+      "id": "fillers-period-content-math-0012",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::a literal \\$ (currency) never opens a maths span, and the real formula still renders — idempotently",
+      "via": "PeriodContentRenderer.typesetMath (KaTeX auto-render in jsdom)",
+      "input": "Cost \\$60 and \\$15 then $x^2$ end",
+      "property": "exactly one KaTeX span whose annotation is 'x^2'; no katex-error; rendered text contains '$60' and '$15', no '\\$' and no U+E000; stable across two re-typesets",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "fillers-period-content-math-0013",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::a literal \\$ (currency) never opens a maths span, and the real formula still renders — idempotently",
+      "via": "PeriodContentRenderer.typesetMath (KaTeX auto-render in jsdom)",
+      "input": "Profit $\\$5 + x$ on \\$20",
+      "property": "exactly one KaTeX span, no katex-error; rendered text contains '$5' and '$20'",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "fillers-period-content-math-0014",
+      "source": "Fillers/tests/js/test_period_content_math.mjs::control characters inside an expression degrade to plain maths, never to a red katex-error",
+      "via": "PeriodContentRenderer.typesetMath (KaTeX auto-render in jsdom)",
+      "input": "$x^\f2$ and $\\frac{\b1}{2}$ plus \u0001text",
+      "property": "at least 2 KaTeX spans, no katex-error, no raw maths text left, and no control char [\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F] in the rendered text",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B1"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0001",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "18 \\div 1",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0002",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "3 \\times 4 = 12",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0003",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\frac{1}{2}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0004",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\dfrac{3}{4}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0005",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\tfrac{1}{2}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0006",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\sqrt{16}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0007",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\sqrt[3]{27}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0008",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "x^2 + y_1",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0009",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "90^\\circ",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0010",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "x \\le 5",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0011",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "x \\geq 2",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0012",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "a \\neq b",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0013",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\approx 3.14",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0014",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\pm 2",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0015",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\pi r^2",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0016",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\alpha + \\beta = \\gamma",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0017",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "5\\text{ cm}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0018",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\mathbf{F} = m\\vec{a}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0019",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\boxed{5}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0020",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\cancel{x}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0021",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\color{red}{5}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0022",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\textcolor{blue}{x+1}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0023",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\hspace{1cm}x",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0024",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\lbrace x \\rbrace",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0025",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\{1, 2\\}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0026",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\langle v \\rangle",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0027",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\lfloor 2.5 \\rfloor",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0028",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\left( \\frac{a}{b} \\right)",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0029",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\sum_{i=1}^{n} i",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0030",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\int_0^1 x\\,dx",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0031",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\lim_{x \\to 0} \\frac{\\sin x}{x}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0032",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\log_{10} 100",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0033",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\sin^2\\theta + \\cos^2\\theta = 1",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0034",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\binom{5}{2}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0035",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "0.\\overline{3}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0036",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\overline{AB} \\parallel \\overline{CD}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0037",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\angle ABC = 90^{\\circ}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0038",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\triangle ABC",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0039",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\therefore x = 2",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0040",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\underbrace{a+b}_{n}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0041",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0042",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "f(x) = \\begin{cases} 1, & x>0 \\\\ 0, & x\\le 0 \\end{cases}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0043",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\displaystyle \\frac{1}{2}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0044",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "1{,}000",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0045",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "50\\%",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0046",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\ce{H2O}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0047",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
+      "via": "renderMath(tex, display=false)",
+      "input": "\\ce{2H2 + O2 -> 2H2O}",
+      "property": "KaTeX output contains class=\"katex\" and no katex-error",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B2"
+      ],
+      "note": "the construct is passed to renderMath directly, without $ delimiters"
+    },
+    {
+      "id": "worksheet-MathText-test-0048",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::splits inline, display and bracket delimiters",
+      "via": "splitMath",
+      "input": "Find $x$ and $$y$$, \\(a\\) or \\[b\\].",
+      "expected": [
+        {
+          "text": "Find "
+        },
+        {
+          "math": "x",
+          "display": false
+        },
+        {
+          "text": " and "
+        },
+        {
+          "math": "y",
+          "display": true
+        },
+        {
+          "text": ", "
+        },
+        {
+          "math": "a",
+          "display": false
+        },
+        {
+          "text": " or "
+        },
+        {
+          "math": "b",
+          "display": true
+        },
+        {
+          "text": "."
+        }
+      ],
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0049",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::leaves prices and escaped dollars as text",
+      "via": "splitMath",
+      "input": "It costs $5 and $10.",
+      "expected": [
+        {
+          "text": "It costs $5 and $10."
+        }
+      ],
+      "tags": [
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0050",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::leaves prices and escaped dollars as text",
+      "via": "splitMath",
+      "input": "Pay \\$5 for $x$",
+      "expected": [
+        {
+          "text": "Pay \\$5 for "
+        },
+        {
+          "math": "x",
+          "display": false
+        }
+      ],
+      "tags": [
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0051",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::renders maths, not LaTeX source, in the DOM",
+      "via": "MathText (DOM)",
+      "input": "What is $18 \\div 1$? Half is $\\frac{1}{2}$.",
+      "property": "exactly 2 .katex elements; rendered text contains no '$' and no '\\frac' and contains 'What is '",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0052",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::an escaped dollar reads as a dollar",
+      "via": "MathText (DOM)",
+      "input": "costs \\$5",
+      "property": "rendered text == 'costs $5'",
+      "expected": null,
+      "tags": [
+        "B3"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0053",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::a span KaTeX cannot parse shows its source, not an error",
+      "via": "MathText (DOM)",
+      "input": "Broken $\\frac{1}{$ here",
+      "property": "an .ics-math-source element with text '\\frac{1}{' is shown; no .katex-error; rendered text contains 'Broken '",
+      "expected": null,
+      "tags": [
+        "B4"
+      ]
+    },
+    {
+      "id": "worksheet-MathText-test-0054",
+      "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::an option answer with LaTeX renders after its letter",
+      "via": "MathText (DOM)",
+      "input": "A - $\\frac{1}{2}$",
+      "property": "rendered text starts with 'A - ' and a .katex element exists",
+      "expected": null,
+      "must_render": true,
+      "tags": [
+        "B4"
+      ]
+    }
+  ]
+}

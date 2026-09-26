@@ -1,0 +1,3232 @@
+{
+ "function": "canonicalize",
+ "cases": [
+  {
+   "id": "backend-latex-rules-0030",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_spec_do_not_send_examples_are_normalized",
+   "via": "sanitize_latex_text",
+   "input": "The value of Ï€ is 3.14",
+   "expected": null,
+   "tags": [
+    "B4",
+    "B6"
+   ],
+   "property_source": "output contains '$\\\\pi$'",
+   "contains": [
+    "$\\\\pi$"
+   ],
+   "python_got": "The value of $\\pi$ is 3.14"
+  },
+  {
+   "id": "backend-latex-rules-0033",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Efficiency Î· of Carnot engine.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'η' or '$\\eta$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "η",
+    "$\\eta$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Efficiency $\\eta$ of Carnot engine."
+  },
+  {
+   "id": "backend-latex-rules-0034",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Frequency Î½ = 500 Hz.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'ν' or '$\\nu$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "ν",
+    "$\\nu$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Frequency $\\nu$ = 500 Hz."
+  },
+  {
+   "id": "backend-latex-rules-0035",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Magnetic flux Î¦ = BA.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'Φ' or '$\\Phi$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "Φ",
+    "$\\Phi$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Magnetic flux $\\Phi$ = BA."
+  },
+  {
+   "id": "backend-latex-rules-0036",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "The wavefunction Ïˆ(x,t).",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'ψ' or '$\\psi$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "ψ",
+    "$\\psi$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "The wavefunction $\\psi$(x,t)."
+  },
+  {
+   "id": "backend-latex-rules-0037",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Susceptibility Ï‡ = 0.1.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'χ' or '$\\chi$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "χ",
+    "$\\chi$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Susceptibility $\\chi$ = 0.1."
+  },
+  {
+   "id": "backend-latex-rules-0038",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Density Ï = 1 g/cm^3.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'ρ' or '$\\rho$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "ρ",
+    "$\\rho$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Density $\\rho$ = 1 g/$cm^3$."
+  },
+  {
+   "id": "backend-latex-rules-0041",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Speed of light 3 Ã— 10^8 m/s.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '×' or '$\\times$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "×",
+    "$\\times$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Speed of light 3 $\\times$ $10^8$ m/s."
+  },
+  {
+   "id": "backend-latex-rules-0042",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "x â‰¤ 10 condition.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '≤' or '$\\leq$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "≤",
+    "$\\leq$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "x $\\leq$ 10 condition."
+  },
+  {
+   "id": "backend-latex-rules-0043",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_uses_ftfy_on_new_mojibake_patterns",
+   "via": "sanitize_latex_text",
+   "input": "Limit is âˆž.",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '∞' or '$\\infty$'; no char from 'ÃÂâÎÏ' survives",
+   "contains": [
+    "∞",
+    "$\\infty$"
+   ],
+   "not_contains": [
+    "ÃÂâÎÏ"
+   ],
+   "python_got": "Limit is $\\infty$."
+  },
+  {
+   "id": "backend-latex-rules-0044",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_unicode_math_in_prose_auto_wraps",
+   "via": "sanitize_latex_text",
+   "input": "The value of π is 3.14",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '$\\\\pi$'",
+   "contains": [
+    "$\\\\pi$"
+   ],
+   "python_got": "The value of $\\pi$ is 3.14"
+  },
+  {
+   "id": "backend-latex-rules-0045",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_unicode_math_in_prose_auto_wraps",
+   "via": "sanitize_latex_text",
+   "input": "Angle α and β",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '$\\\\alpha$'",
+   "contains": [
+    "$\\\\alpha$"
+   ],
+   "python_got": "Angle $\\alpha$ and $\\beta$"
+  },
+  {
+   "id": "backend-latex-rules-0046",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_unicode_math_in_prose_auto_wraps",
+   "via": "sanitize_latex_text",
+   "input": "Set ℝ is unbounded",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '$\\\\mathbb{R}$'",
+   "contains": [
+    "$\\\\mathbb{R}$"
+   ],
+   "python_got": "Set $\\mathbb{R}$ is unbounded"
+  },
+  {
+   "id": "backend-latex-rules-0047",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_unicode_math_in_prose_auto_wraps",
+   "via": "sanitize_latex_text",
+   "input": "Reaction H2 → H2O",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '$\\\\rightarrow$'",
+   "contains": [
+    "$\\\\rightarrow$"
+   ],
+   "python_got": "Reaction H2 $\\rightarrow$ H2O"
+  },
+  {
+   "id": "backend-latex-rules-0082",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_full_pipeline_end_to_end",
+   "via": "sanitize_latex_text",
+   "input": "µs + ∆x − 5 = ħω",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "no 'µ', '∆', 'ħ', '−' in output; output contains '-', '\\mu', '\\Delta', '\\hbar', '\\omega'",
+   "contains": [
+    "µ",
+    "∆",
+    "ħ",
+    "−",
+    "-",
+    "\\mu",
+    "\\Delta",
+    "\\hbar",
+    "\\omega"
+   ],
+   "python_got": "$\\mu$s + $\\Delta x$ - 5 = $\\hbar\\omega$"
+  },
+  {
+   "id": "backend-latex-rules-0087",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_malformed_hand_wrapped_math_is_left_alone",
+   "via": "sanitize_latex_text",
+   "input": "$\\text{VS} = $\\frac{\\text{CS}$}{R}$",
+   "expected": null,
+   "tags": [
+    "B4",
+    "B7"
+   ],
+   "property_source": "output contains no '$$' and still contains '\\frac{\\text{CS}$}{R}'",
+   "not_contains": [
+    "$$",
+    "\\frac{\\text{CS}$}{R}"
+   ],
+   "python_got": "$\\text{VS} = $\\frac{\\text{CS}$}{R}$"
+  },
+  {
+   "id": "backend-latex-rules-0099",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_inside_math_span",
+   "via": "sanitize_latex_text",
+   "input": "The formula is $x^2 + y^2 = r^2$ in circle geometry.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output contains no '$$' and contains '$x^2 + y^2 = r^2$'",
+   "not_contains": [
+    "$$",
+    "$x^2 + y^2 = r^2$"
+   ],
+   "python_got": "The formula is $x^2 + y^2 = r^2$ in circle geometry."
+  },
+  {
+   "id": "backend-latex-rules-0104",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_snake_case_identifiers",
+   "via": "sanitize_latex_text",
+   "input": "Category: MCQ_SINGLE here.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$MCQ_SINGLE$' and still contains 'MCQ_SINGLE'",
+   "not_contains": [
+    "$MCQ_SINGLE$",
+    "MCQ_SINGLE"
+   ],
+   "python_got": "Category: MCQ_SINGLE here."
+  },
+  {
+   "id": "backend-latex-rules-0105",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_snake_case_identifiers",
+   "via": "sanitize_latex_text",
+   "input": "Category: HTTP_OK here.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$HTTP_OK$' and still contains 'HTTP_OK'",
+   "not_contains": [
+    "$HTTP_OK$",
+    "HTTP_OK"
+   ],
+   "python_got": "Category: HTTP_OK here."
+  },
+  {
+   "id": "backend-latex-rules-0106",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_snake_case_identifiers",
+   "via": "sanitize_latex_text",
+   "input": "Category: user_id here.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$user_id$' and still contains 'user_id'",
+   "not_contains": [
+    "$user_id$",
+    "user_id"
+   ],
+   "python_got": "Category: user_id here."
+  },
+  {
+   "id": "backend-latex-rules-0107",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_snake_case_identifiers",
+   "via": "sanitize_latex_text",
+   "input": "Category: TRUE_FALSE here.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$TRUE_FALSE$' and still contains 'TRUE_FALSE'",
+   "not_contains": [
+    "$TRUE_FALSE$",
+    "TRUE_FALSE"
+   ],
+   "python_got": "Category: TRUE_FALSE here."
+  },
+  {
+   "id": "backend-latex-rules-0108",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_snake_case_identifiers",
+   "via": "sanitize_latex_text",
+   "input": "Category: NUMERICAL_INTEGER here.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$NUMERICAL_INTEGER$' and still contains 'NUMERICAL_INTEGER'",
+   "not_contains": [
+    "$NUMERICAL_INTEGER$",
+    "NUMERICAL_INTEGER"
+   ],
+   "python_got": "Category: NUMERICAL_INTEGER here."
+  },
+  {
+   "id": "backend-latex-rules-0111",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_hex_mongo_id_slug",
+   "via": "sanitize_latex_text",
+   "input": "audio file ahs_69e74f5e84fd_vocabulary.wav",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$ahs_69e74f5e84fd$' and contains 'ahs_69e74f5e84fd'",
+   "not_contains": [
+    "$ahs_69e74f5e84fd$",
+    "ahs_69e74f5e84fd"
+   ],
+   "python_got": "audio file ahs_69e74f5e84fd_vocabulary.wav"
+  },
+  {
+   "id": "backend-latex-rules-0116",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_skips_dated_filename",
+   "via": "sanitize_latex_text",
+   "input": "File report_20260425_043531_summary.json saved.",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "output does not contain '$report_' and contains 'report_20260425_043531_summary.json'",
+   "not_contains": [
+    "$report_",
+    "report_20260425_043531_summary.json"
+   ],
+   "python_got": "File report_20260425_043531_summary.json saved."
+  },
+  {
+   "id": "backend-unicode-to-latex-0481",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ¬ prose",
+   "expected": "prose ¬ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\neg$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0483",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ± prose",
+   "expected": "prose ± prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\pm$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0486",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose · prose",
+   "expected": "prose · prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\cdot$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0491",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose × prose",
+   "expected": "prose × prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\times$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0492",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ÷ prose",
+   "expected": "prose ÷ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\div$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0501",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Γ prose",
+   "expected": "prose Γ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Gamma$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0502",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Δ prose",
+   "expected": "prose Δ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Delta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0503",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Θ prose",
+   "expected": "prose Θ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Theta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0504",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Λ prose",
+   "expected": "prose Λ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Lambda$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0505",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Ξ prose",
+   "expected": "prose Ξ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Xi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0506",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Π prose",
+   "expected": "prose Π prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Pi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0507",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Σ prose",
+   "expected": "prose Σ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Sigma$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0508",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Υ prose",
+   "expected": "prose Υ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Upsilon$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0509",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Φ prose",
+   "expected": "prose Φ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Phi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0510",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Ψ prose",
+   "expected": "prose Ψ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Psi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0511",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose Ω prose",
+   "expected": "prose Ω prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Omega$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0512",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose α prose",
+   "expected": "prose α prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\alpha$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0513",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose β prose",
+   "expected": "prose β prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\beta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0514",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose γ prose",
+   "expected": "prose γ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\gamma$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0515",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose δ prose",
+   "expected": "prose δ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\delta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0516",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ε prose",
+   "expected": "prose ε prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\epsilon$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0517",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ζ prose",
+   "expected": "prose ζ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\zeta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0518",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose η prose",
+   "expected": "prose η prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\eta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0519",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose θ prose",
+   "expected": "prose θ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\theta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0520",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ι prose",
+   "expected": "prose ι prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\iota$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0521",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose κ prose",
+   "expected": "prose κ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\kappa$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0522",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose λ prose",
+   "expected": "prose λ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\lambda$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0523",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose μ prose",
+   "expected": "prose μ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mu$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0524",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ν prose",
+   "expected": "prose ν prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\nu$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0525",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ξ prose",
+   "expected": "prose ξ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\xi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0526",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose π prose",
+   "expected": "prose π prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\pi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0527",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ρ prose",
+   "expected": "prose ρ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\rho$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0528",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ς prose",
+   "expected": "prose ς prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\varsigma$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0529",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose σ prose",
+   "expected": "prose σ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\sigma$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0530",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose τ prose",
+   "expected": "prose τ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\tau$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0531",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose υ prose",
+   "expected": "prose υ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\upsilon$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0532",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose φ prose",
+   "expected": "prose φ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\phi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0533",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose χ prose",
+   "expected": "prose χ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\chi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0534",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ψ prose",
+   "expected": "prose ψ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\psi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0535",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ω prose",
+   "expected": "prose ω prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\omega$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0536",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ϑ prose",
+   "expected": "prose ϑ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\vartheta$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0537",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ϕ prose",
+   "expected": "prose ϕ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\varphi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0538",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ϖ prose",
+   "expected": "prose ϖ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\varpi$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0539",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ϱ prose",
+   "expected": "prose ϱ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\varrho$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0540",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ϵ prose",
+   "expected": "prose ϵ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\epsilon$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0625",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℂ prose",
+   "expected": "prose ℂ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mathbb{C}$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0626",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℏ prose",
+   "expected": "prose ℏ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\hbar$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0627",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℓ prose",
+   "expected": "prose ℓ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\ell$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0628",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℕ prose",
+   "expected": "prose ℕ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mathbb{N}$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0629",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℙ prose",
+   "expected": "prose ℙ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mathbb{P}$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0630",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℚ prose",
+   "expected": "prose ℚ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mathbb{Q}$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0631",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℝ prose",
+   "expected": "prose ℝ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mathbb{R}$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0632",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ℤ prose",
+   "expected": "prose ℤ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mathbb{Z}$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0648",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ← prose",
+   "expected": "prose ← prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\leftarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0649",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ↑ prose",
+   "expected": "prose ↑ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\uparrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0650",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose → prose",
+   "expected": "prose → prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\rightarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0651",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ↓ prose",
+   "expected": "prose ↓ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\downarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0652",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ↔ prose",
+   "expected": "prose ↔ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\leftrightarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0653",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ↦ prose",
+   "expected": "prose ↦ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mapsto$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0654",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⇌ prose",
+   "expected": "prose ⇌ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\rightleftharpoons$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0655",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⇐ prose",
+   "expected": "prose ⇐ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Leftarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0656",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⇒ prose",
+   "expected": "prose ⇒ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Rightarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0657",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⇔ prose",
+   "expected": "prose ⇔ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\Leftrightarrow$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0658",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∀ prose",
+   "expected": "prose ∀ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\forall$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0659",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∂ prose",
+   "expected": "prose ∂ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\partial$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0660",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∃ prose",
+   "expected": "prose ∃ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\exists$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0661",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∄ prose",
+   "expected": "prose ∄ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\nexists$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0662",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∅ prose",
+   "expected": "prose ∅ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\emptyset$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0663",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∇ prose",
+   "expected": "prose ∇ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\nabla$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0664",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∈ prose",
+   "expected": "prose ∈ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\in$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0665",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∉ prose",
+   "expected": "prose ∉ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\notin$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0666",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∋ prose",
+   "expected": "prose ∋ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\ni$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0667",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∏ prose",
+   "expected": "prose ∏ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\prod$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0668",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∑ prose",
+   "expected": "prose ∑ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\sum$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0669",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∓ prose",
+   "expected": "prose ∓ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mp$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0670",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∗ prose",
+   "expected": "prose ∗ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\ast$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0671",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∘ prose",
+   "expected": "prose ∘ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\circ$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0675",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∝ prose",
+   "expected": "prose ∝ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\propto$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0676",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∞ prose",
+   "expected": "prose ∞ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\infty$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0677",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∠ prose",
+   "expected": "prose ∠ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\angle$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0678",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∡ prose",
+   "expected": "prose ∡ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\measuredangle$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0679",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∣ prose",
+   "expected": "prose ∣ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\mid$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0680",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∥ prose",
+   "expected": "prose ∥ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\parallel$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0681",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∧ prose",
+   "expected": "prose ∧ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\land$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0682",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∨ prose",
+   "expected": "prose ∨ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\lor$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0683",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∩ prose",
+   "expected": "prose ∩ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\cap$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0684",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∪ prose",
+   "expected": "prose ∪ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\cup$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0685",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∫ prose",
+   "expected": "prose ∫ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\int$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0686",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∬ prose",
+   "expected": "prose ∬ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\iint$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0687",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∭ prose",
+   "expected": "prose ∭ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\iiint$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0688",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∮ prose",
+   "expected": "prose ∮ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\oint$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0689",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∴ prose",
+   "expected": "prose ∴ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\therefore$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0690",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∵ prose",
+   "expected": "prose ∵ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\because$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0691",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ∼ prose",
+   "expected": "prose ∼ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\sim$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0692",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≃ prose",
+   "expected": "prose ≃ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\simeq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0693",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≅ prose",
+   "expected": "prose ≅ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\cong$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0694",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≈ prose",
+   "expected": "prose ≈ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\approx$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0695",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≠ prose",
+   "expected": "prose ≠ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\neq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0696",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≡ prose",
+   "expected": "prose ≡ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\equiv$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0697",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≤ prose",
+   "expected": "prose ≤ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\leq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0698",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≥ prose",
+   "expected": "prose ≥ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\geq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0699",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≪ prose",
+   "expected": "prose ≪ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\ll$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0700",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ≫ prose",
+   "expected": "prose ≫ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\gg$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0701",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊂ prose",
+   "expected": "prose ⊂ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\subset$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0702",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊃ prose",
+   "expected": "prose ⊃ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\supset$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0703",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊄ prose",
+   "expected": "prose ⊄ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\not\\subset$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0704",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊅ prose",
+   "expected": "prose ⊅ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\not\\supset$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0705",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊆ prose",
+   "expected": "prose ⊆ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\subseteq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0706",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊇ prose",
+   "expected": "prose ⊇ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\supseteq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0707",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊈ prose",
+   "expected": "prose ⊈ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\nsubseteq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0708",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊉ prose",
+   "expected": "prose ⊉ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\nsupseteq$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0709",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊕ prose",
+   "expected": "prose ⊕ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\oplus$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0710",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊖ prose",
+   "expected": "prose ⊖ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\ominus$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0711",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊗ prose",
+   "expected": "prose ⊗ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\otimes$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0712",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊙ prose",
+   "expected": "prose ⊙ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\odot$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0713",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⊥ prose",
+   "expected": "prose ⊥ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\perp$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0714",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⋅ prose",
+   "expected": "prose ⋅ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\cdot$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0715",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⋮ prose",
+   "expected": "prose ⋮ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\vdots$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0716",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⋯ prose",
+   "expected": "prose ⋯ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\cdots$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0717",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⋱ prose",
+   "expected": "prose ⋱ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\ddots$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0718",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose □ prose",
+   "expected": "prose □ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\square$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0719",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose △ prose",
+   "expected": "prose △ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\triangle$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0720",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⟨ prose",
+   "expected": "prose ⟨ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\langle$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0721",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "input": "prose ⟩ prose",
+   "expected": "prose ⟩ prose",
+   "options": {
+    "inside_math_only": true
+   },
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "prose $\\rangle$ prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0826",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "input": "prose … prose",
+   "expected": "prose $\\ldots$ prose",
+   "sweep": "_UNICODE_MATH",
+   "tags": [
+    "B6"
+   ],
+   "python_got": "prose … prose"
+  },
+  {
+   "id": "backend-unicode-to-latex-0968",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "$√$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0969",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "$√$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0970",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "$x = √$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0971",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "$x = √$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0972",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "the √ sign",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0973",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "the √ sign",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0974",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "√(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0975",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "√(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0980",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "$∛$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0981",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "$∛$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0982",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "$x = ∛$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0983",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "$x = ∛$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0984",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "the ∛ sign",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0985",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "the ∛ sign",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0986",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "∛(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0987",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "∛(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0992",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "$∜$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0993",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "$∜$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0994",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "$x = ∜$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0995",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "$x = ∜$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0996",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "the ∜ sign",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0997",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "the ∜ sign",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0998",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "input": "∜(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-0999",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "input": "∜(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-unicode-to-latex-1002",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_unicode_math_to_latex_inside_math_only_false_replaces_everywhere",
+   "via": "unicode_math_to_latex",
+   "input": "π and also $ν$",
+   "expected": "\\pi and also $\\nu$",
+   "options": {
+    "inside_math_only": false
+   },
+   "tags": [
+    "B6"
+   ],
+   "python_got": "$\\pi$ and also $\\nu$"
+  },
+  {
+   "id": "backend-unicode-to-latex-1003",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_unicode_math_to_latex_mixed_inside_and_outside",
+   "via": "unicode_math_to_latex",
+   "input": "value π then $ν + 1$ end",
+   "expected": "value π then $\\nu + 1$ end",
+   "options": {
+    "inside_math_only": true
+   },
+   "tags": [
+    "B6"
+   ],
+   "python_got": "value $\\pi$ then $\\nu + 1$ end"
+  },
+  {
+   "id": "backend-unicode-to-latex-1008",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_bare_char_inside_existing_span_untouched",
+   "via": "wrap_bare_unicode_math",
+   "input": "$π$",
+   "expected": "$π$",
+   "tags": [
+    "B7"
+   ],
+   "python_got": "$\\pi$"
+  },
+  {
+   "id": "backend-unicode-to-latex-1012",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_mixed_inside_and_outside_spans",
+   "via": "wrap_bare_unicode_math",
+   "input": "value π and $ν = 3$ end",
+   "expected": "value $\\pi$ and $ν = 3$ end",
+   "tags": [
+    "B6"
+   ],
+   "python_got": "value $\\pi$ and $\\nu = 3$ end"
+  },
+  {
+   "id": "backend-unicode-to-latex-1015",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_normalizes_every_pair",
+   "via": "normalize_homoglyphs",
+   "input": "value µ here",
+   "expected": "value μ here",
+   "sweep": "_HOMOGLYPHS",
+   "tags": [
+    "B6"
+   ],
+   "python_got": "value $\\mu$ here"
+  },
+  {
+   "id": "backend-unicode-to-latex-1016",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_normalizes_every_pair",
+   "via": "normalize_homoglyphs",
+   "input": "value ħ here",
+   "expected": "value ℏ here",
+   "sweep": "_HOMOGLYPHS",
+   "tags": [
+    "B6"
+   ],
+   "python_got": "value $\\hbar$ here"
+  },
+  {
+   "id": "backend-unicode-to-latex-1019",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_normalizes_every_pair",
+   "via": "normalize_homoglyphs",
+   "input": "value Ω here",
+   "expected": "value Ω here",
+   "sweep": "_HOMOGLYPHS",
+   "tags": [
+    "B6"
+   ],
+   "python_got": "value $\\Omega$ here"
+  },
+  {
+   "id": "backend-unicode-to-latex-1022",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_normalizes_every_pair",
+   "via": "normalize_homoglyphs",
+   "input": "value ∆ here",
+   "expected": "value Δ here",
+   "sweep": "_HOMOGLYPHS",
+   "tags": [
+    "B6"
+   ],
+   "python_got": "value $\\Delta$ here"
+  },
+  {
+   "id": "backend-unicode-to-latex-1024",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_micro_sign_to_greek_mu",
+   "via": "normalize_homoglyphs",
+   "input": "Coefficient µ",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'μ' (U+03BC) and not 'µ' (U+00B5)",
+   "contains": [
+    "μ"
+   ],
+   "not_contains": [
+    "µ"
+   ],
+   "python_got": "Coefficient $\\mu$"
+  },
+  {
+   "id": "backend-unicode-to-latex-1025",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_increment_to_greek_delta",
+   "via": "normalize_homoglyphs",
+   "input": "∆x",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'Δ' (U+0394) and not '∆' (U+2206)",
+   "contains": [
+    "Δ"
+   ],
+   "not_contains": [
+    "∆"
+   ],
+   "python_got": "$\\Delta x$"
+  },
+  {
+   "id": "backend-unicode-to-latex-1034",
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_combining_vec_wrap_bare_false_inside_math",
+   "via": "convert_combining_vec",
+   "input": "a⃗ plus $b⃗$",
+   "expected": "\\vec{a} plus $\\vec{b}$",
+   "options": {
+    "wrap_bare": false
+   },
+   "tags": [
+    "B6"
+   ],
+   "python_got": "$\\vec{a}$ plus $\\vec{b}$"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0026",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_symbols_that_need_no_argument_keep_their_output",
+   "via": "sanitize_latex_text",
+   "input": "±2.5",
+   "expected": "$\\pm$2.5",
+   "tags": [
+    "B6",
+    "backend#1654"
+   ],
+   "python_got": "$\\pm2.5$"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0029",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_symbols_that_need_no_argument_keep_their_output",
+   "via": "sanitize_latex_text",
+   "input": "3×10⁵",
+   "expected": "3$\\times$10⁵",
+   "tags": [
+    "B6",
+    "backend#1654"
+   ],
+   "python_got": "$3\\times10^{5}$"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0042",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "√",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0043",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "√2",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0044",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "2√3",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0045",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "x = √(a+b)",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0046",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "√2gh",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0047",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "√(a+b",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0048",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "$x = √$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0049",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "$∛$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0050",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "$\\frac{√}{2}$",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-sqrt-keeps-its-argument-1654-0051",
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_no_output_carries_a_sqrt_with_nothing_after_it",
+   "via": "sanitize_latex_text",
+   "input": "the √ of √(x) is √",
+   "property": "regex \\\\sqrt(?:\\[[^\\]]*\\])?\\s*(?:\\$|$|[}&^_]) does not match output",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-read-path-byte-identical-a8-0032",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_legacy_mode_restores_old_read_transform",
+   "via": "sanitize_json_strings",
+   "input": "ai_recreate",
+   "expected": "$ai_recreate$",
+   "tags": [
+    "B7"
+   ],
+   "note": "key 'renderState' (not on the non-content denylist); pinned over-reach, not desired behaviour",
+   "python_got": "ai_recreate"
+  },
+  {
+   "id": "backend-read-path-byte-identical-a8-0034",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[url_in_prose]",
+   "via": "sanitize_json_strings",
+   "input": "Visit https://www.youtube.com/watch?v=l_CySKUI5W4 and use √2.",
+   "expected": "Visit https://www.youtube.com/watch?v=$l_CySKUI5W4$ and use $\\sqrt{2}$.",
+   "tags": [
+    "B6",
+    "B7"
+   ],
+   "note": "write-path snapshot pinned on A8 base commit 838dad0b; sanitize_json_strings(audit=False); the URL id being wrapped is a pinned over-reach (key 'questionText'), review before adopting",
+   "python_got": "Visit https://www.youtube.com/watch?v=l_CySKUI5W4 and use $\\sqrt{2}$."
+  },
+  {
+   "id": "backend-read-path-byte-identical-a8-0037",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[times_power]",
+   "via": "sanitize_json_strings",
+   "input": "3×10^8",
+   "expected": "3$\\times$$10^8$",
+   "tags": [
+    "B6",
+    "B4"
+   ],
+   "note": "write-path snapshot pinned on A8 base commit 838dad0b; sanitize_json_strings(audit=False)",
+   "python_got": "$3\\times10^8$"
+  },
+  {
+   "id": "backend-read-path-byte-identical-a8-0040",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[unlisted_enum]",
+   "via": "sanitize_json_strings",
+   "input": "ai_recreate",
+   "expected": "$ai_recreate$",
+   "tags": [
+    "B7"
+   ],
+   "note": "write-path snapshot pinned on A8 base commit 838dad0b; sanitize_json_strings(audit=False); key 'renderState' (unlisted) is wrapped, key 'imageSource' (listed) is not — pinned over-reach",
+   "python_got": "ai_recreate"
+  },
+  {
+   "id": "backend-read-path-byte-identical-a8-0043",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[form_feed]",
+   "via": "sanitize_json_strings",
+   "input": "$\frac{1}{2}$ and \beta",
+   "expected": "$\\frac{1}{2} and \\beta$",
+   "tags": [
+    "B1",
+    "B4"
+   ],
+   "note": "write-path snapshot pinned on A8 base commit 838dad0b; sanitize_json_strings(audit=False); note the repaired \\beta is merged into the span",
+   "python_got": "$\\frac{1}{2}$ and \\beta"
+  },
+  {
+   "id": "backend-read-path-byte-identical-a8-0044",
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[tab_an]",
+   "via": "sanitize_json_strings",
+   "input": "Rate\tan 5",
+   "expected": "Rate\\tan 5",
+   "tags": [
+    "B1"
+   ],
+   "note": "write-path snapshot pinned on A8 base commit 838dad0b; sanitize_json_strings(audit=False); the write path guesses TAB+'an' as \\tan; the read path (A8) does not",
+   "python_got": "Rate$\\tan$ 5"
+  },
+  {
+   "id": "backend-latex-escape-fix-0001",
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "input": "\\$1.56 \\text{ meters}$",
+   "expected": "$1.56 \\text{ meters}$",
+   "tags": [
+    "B3",
+    "B4",
+    "backend#1416"
+   ],
+   "note": "helper not in the mapping table (services.ai.question_generation); recorded under canonicalize for review",
+   "python_got": "\\$1.56 \\text{ meters}$"
+  },
+  {
+   "id": "backend-latex-escape-fix-0002",
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "input": "  \\$x^2$ ",
+   "expected": "$x^2$",
+   "tags": [
+    "B3",
+    "B4",
+    "backend#1416"
+   ],
+   "note": "helper not in the mapping table (services.ai.question_generation); recorded under canonicalize for review",
+   "python_got": "  \\$x^2$ "
+  },
+  {
+   "id": "backend-latex-escape-fix-0010",
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_sanitize_latex_option_ignores_escaped_dollars",
+   "via": "sanitize_latex_option",
+   "input": "orphan $x",
+   "expected": "orphan x",
+   "tags": [
+    "B3",
+    "B4",
+    "backend#1416"
+   ],
+   "note": "helper not in the mapping table (services.ai.question_generation); recorded under canonicalize for review",
+   "python_got": "orphan $x"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0001",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_prod_story_line_loses_the_latex_ellipsis",
+   "via": "strip_typographic_latex",
+   "input": "Rohan: Ugh, plasma, erythrocytes, leukocytes$\\ldots$ it’s all a blur! How am I supposed to remember all of this?",
+   "expected": "Rohan: Ugh, plasma, erythrocytes, leukocytes… it’s all a blur! How am I supposed to remember all of this?",
+   "tags": [
+    "B7",
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "Rohan: Ugh, plasma, erythrocytes, leukocytes$\\ldots$ it’s all a blur! How am I supposed to remember all of this?"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0008",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "wait$\\ldots$now",
+   "expected": "wait…now",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "wait$\\ldots$now"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0009",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "wait$\\dots$now",
+   "expected": "wait…now",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "wait$\\dots$now"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0010",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "wait$\\cdots$now",
+   "expected": "wait…now",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "wait$\\cdots$now"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0011",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "wait$\\textellipsis$now",
+   "expected": "wait…now",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "wait$\\textellipsis$now"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0012",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "wait$ \\ldots $now",
+   "expected": "wait…now",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "wait$ \\ldots $now"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0013",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "wait$$\\ldots$$now",
+   "expected": "wait…now",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "wait$$\\ldots$$now"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0014",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "a$\\ldots$b$\\ldots$c",
+   "expected": "a…b…c",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "a$\\ldots$b$\\ldots$c"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0015",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_typographic_only_spans_convert",
+   "via": "strip_typographic_latex",
+   "input": "about $\\textmu$ metres",
+   "expected": "about µ metres",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "about $\\textmu$ metres"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0022",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "input": "\\ldots",
+   "expected": "\\ldots",
+   "tags": [
+    "B7",
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "$\\ldots$"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0026",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_does_not_touch_escaped_currency",
+   "via": "strip_typographic_latex",
+   "input": "it costs \\$5$\\ldots$ really",
+   "expected": null,
+   "tags": [
+    "B3",
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "property_source": "output contains '\\$5' and not '\\ldots'",
+   "contains": [
+    "\\$5"
+   ],
+   "not_contains": [
+    "\\ldots"
+   ],
+   "python_got": "it costs \\$5$\\ldots$ really"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0028",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_every_command_in_the_table_is_reachable_by_the_regex",
+   "via": "strip_typographic_latex",
+   "input": "$\\ldots$",
+   "expected": "…",
+   "sweep": "_TYPOGRAPHIC_LATEX",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "$\\ldots$"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0029",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_every_command_in_the_table_is_reachable_by_the_regex",
+   "via": "strip_typographic_latex",
+   "input": "$\\dots$",
+   "expected": "…",
+   "sweep": "_TYPOGRAPHIC_LATEX",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "$\\dots$"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0030",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_every_command_in_the_table_is_reachable_by_the_regex",
+   "via": "strip_typographic_latex",
+   "input": "$\\cdots$",
+   "expected": "…",
+   "sweep": "_TYPOGRAPHIC_LATEX",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "$\\cdots$"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0031",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_every_command_in_the_table_is_reachable_by_the_regex",
+   "via": "strip_typographic_latex",
+   "input": "$\\textellipsis$",
+   "expected": "…",
+   "sweep": "_TYPOGRAPHIC_LATEX",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "$\\textellipsis$"
+  },
+  {
+   "id": "agents-narrative-prose-latex-0032",
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_every_command_in_the_table_is_reachable_by_the_regex",
+   "via": "strip_typographic_latex",
+   "input": "$\\textmu$",
+   "expected": "µ",
+   "sweep": "_TYPOGRAPHIC_LATEX",
+   "tags": [
+    "agents#357"
+   ],
+   "note": "agents latex_rules helper, not in the mapping table; placed under canonicalize for review",
+   "python_got": "$\\textmu$"
+  }
+ ]
+}

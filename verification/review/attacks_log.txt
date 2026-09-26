@@ -1,0 +1,542 @@
+
+### currency_pandoc_rule
+    input          '$5$'
+    fix            '$5$'
+    segments       [('math', '5')]
+    input          '$5 $'
+    fix            '\\$5 $'
+    segments       [('text', '$5 $')]
+    input          'It costs $5$ per item'
+    fix            'It costs $5$ per item'
+    segments       [('text', 'It costs '), ('math', '5'), ('text', ' per item')]
+    input          '$5 and $10'
+    fix            '\\$5 and \\$10'
+    segments       [('text', '$5 and $10')]
+    input          '$5-$10'
+    fix            '\\$5-\\$10'
+    segments       [('text', '$5-$10')]
+    input          'US$ 5'
+    fix            'US$ 5'
+    segments       [('text', 'US$ 5')]
+    input          '$5,000.50 total'
+    fix            '\\$5,000.50 total'
+    segments       [('text', '$5,000.50 total')]
+    input          '\\$5 already'
+    fix            '\\$5 already'
+    segments       [('text', '$5 already')]
+    input          'Cost $5. Then $x^2$.'
+    fix            'Cost \\$5. Then $x^2$.'
+    segments       [('text', 'Cost $5. Then '), ('math', 'x^2'), ('text', '.')]
+  => PASS: pandoc closer rule as specified; note `$5$` stays math (a price written `$5$` renders as the number 5)
+
+### display_dollars_inside_inline
+    input          '$a $$ b$'
+    fix            '$a $$ b$'
+  => PASS: ok
+    input          '$x$$y$'
+    fix            '$x$$y$'
+  => PASS: ok
+    segments       [('math', 'x'), ('math', 'y')]
+
+### escaped_dollar_inside_text
+    input          '$\\text{cost \\$5}$'
+    fix            '$\\text{cost \\$5}$'
+  => PASS: ok
+    input          '$\\text{cost $5}$'
+    fix            '$\\text{cost $5}$'
+    katex          ('\\text{cost $5}', "KaTeX parse error: Expected '$', got 'EOF' at position 14: \\text{cost $5}̲")
+  => FAIL: KaTeX: KaTeX parse error: Expected '$', got 'EOF' at position 14: \ (a bare $ inside \text{} is a KaTeX error; fix should escape it)
+
+### double_backslash_before_dollar
+    input          'a\\\\$x$'
+    fix            'a\\\\$x$'
+    segments       [('text', 'a\\\\'), ('math', 'x')]
+    audit          ['unbalanced_dollar']
+    input          'row \\\\ $x$'
+    fix            'row \\\\ $x$'
+    segments       [('text', 'row \\\\ '), ('math', 'x')]
+    audit          []
+    input          '$a \\\\ b$ and \\\\$y$'
+    fix            '$a \\\\ b$ and \\\\$y$'
+    segments       [('math', 'a \\\\ b'), ('text', ' and \\\\'), ('math', 'y')]
+    audit          ['unbalanced_dollar']
+  => PASS: segment treats \\$ as a math opener; normalize/canonicalize treat it as escaped (parity mismatch between the tokenizer and the $-counters)
+
+### nested_frac_depth_20
+    input          '$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$'
+    fix            '$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$'
+  => PASS: ok
+    input          '\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}'
+    fix            '$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$'
+  => PASS: ok
+    to_plain       '((((((((((((((((((((1)/(2))/(2))/(2))/(2))/(2))/(2))/(2))/(2))/(2))/(2))/(2))/(2...'
+  => FAIL: to_plain on 1000 nested braces: RecursionError (41 ms)
+
+### unbalanced_braces_inside_math
+    input          '$\\frac{1}{2$'
+    fix            '$\\frac{1}{2$'
+    segments       [('text', '$\\frac{1}{2$')]
+    audit          ['frac_missing_args']
+    input          '$x^{2$ and $y}$'
+    fix            '$x^{2$ and $y}$'
+    segments       [('math', 'x^{2$ and $y}')]
+    audit          []
+    input          '$a{b$ c'
+    fix            '$a{b$ c'
+    segments       [('text', '$a{b$ c')]
+    audit          []
+    input          '${$'
+    fix            '${$'
+    segments       [('text', '${$')]
+    audit          []
+    input          '$}$'
+    fix            '$}$'
+    segments       [('math', '}')]
+    audit          []
+  => NOTE: unbalanced braces are left as they are (segment refuses the span, so it shows as text); audit has no kind for unbalanced braces
+
+### left_brace_split_across_spans
+    input          '$\\left{ x$ and $y \\right}$'
+    fix            '$\\left\\{ x$ and $y \\right\\}$'
+  => PASS: ok
+    audit          []
+
+### scripts
+    input          '$x^10^2$'
+    fix            '$x^{10}^2$'
+  => PASS: input was already invalid LaTeX (double superscript)
+    input          'a_b_c'
+    fix            'a_b_c'
+  => PASS: ok
+    input          'Students of 10_A scored well'
+    fix            'Students of $10_A$ scored well'
+  => PASS: class name in prose
+    input          'Set my_var to 3'
+    fix            'Set my_var to 3'
+  => PASS: ok
+    input          'Use x_train and y_pred'
+    fix            'Use x_train and y_pred'
+  => PASS: ok
+    input          'at x_0 the value'
+    fix            'at $x_0$ the value'
+  => PASS: ok
+    input          'E = mc^2 is famous'
+    fix            'E = $mc^2$ is famous'
+  => PASS: ok
+
+### hindi_prose_with_math
+    input          'यह \\alpha कण है'
+    fix            '$यह \\alpha कण है$'
+  => PASS: ok
+    input          'गति \\frac{1}{2} है'
+    fix            'गति $\\frac{1}{2}$ है'
+  => PASS: ok
+    input          'कोण θ = 30° है'
+    fix            'कोण $\\theta$ = 30° है'
+  => PASS: ok
+  => FAIL: whole Hindi sentence wrapped in $…$ (no 4-letter ASCII word found); KaTeX renders it as spaceless math text
+
+### emoji_and_rtl
+    input          'Well done 👍🏽 $x^2$'
+    fix            'Well done 👍🏽 $x^2$'
+    input          '🧪 H₂O'
+    fix            '🧪 $\\text{H}_{2}\\text{O}$'
+    input          'مرحبا $x$'
+    fix            'مرحبا $x$'
+    input          'שלום \\alpha'
+    fix            '$שלום \\alpha$'
+    input          'a\u200bb $x$'
+    fix            'a\u200bb $x$'
+    input          '\ufeff$x$'
+    fix            '$x$'
+    input          '\ud83d lone surrogate'
+    fix            '� lone surrogate'
+    input          '👨\u200d👩\u200d👧 family'
+    fix            '👨\u200d👩\u200d👧 family'
+  => NOTE: lone surrogate becomes U+FFFD (ftfy fix_surrogates) which audit then reports as mojibake forever
+
+### literal_newline_inside_display_math
+    input          '$$\\nx = 1 \\\\\\ny = 2$$'
+    fix            '$$\\nx = 1 \\\\\\ny = 2$$'
+  => PASS: ok
+    segments       [('math', '\\nx = 1 \\\\\\ny = 2')]
+    input          'Line one\\nLine two'
+    fix            'Line one\nLine two'
+  => PASS: ok
+    input          'Given\\nu = 5 cm'
+    fix            'Given$\\nu$ = 5 cm'
+  => PASS: \nu in prose is kept as the command (spec §2.6), so a real line break before 'u = 5 cm' is lost
+
+### tab_before_heta
+    input          'angle \theta'
+    fix            'angle $\\theta$'
+  => PASS: ok
+    input          '$\theta$'
+    fix            '$\\theta$'
+  => PASS: ok
+    json \theta    '$\\theta$'
+  => PASS: JSON path
+    repair         ('Draw\tan angle', 'Draw\\tan angle')
+    repair         ('from\tto', 'from\tto')
+    repair         ('value\ttimes 2', 'value\ttimes 2')
+    repair         ('sum\ttotal', 'sum\ttotal')
+  => NOTE: TAB + 'an angle' becomes \tan angle: a tab before the English word 'an' is read as the command
+
+### nu_ne_ni_not_in_every_context
+    \nu       normalize='Given \\nu = 5'             fix='Given $\\nu$ = 5'             math='$a \\nu b$'           json_prose='Given \nu = 5'            json_math='$a \\nu b$'
+    \ne       normalize='Given \\ne = 5'             fix='Given $\\ne$ = 5'             math='$a \\ne b$'           json_prose='Given \ne = 5'            json_math='$a \\ne b$'
+    \ni       normalize='Given \\ni = 5'             fix='Given $\\ni$ = 5'             math='$a \\ni b$'           json_prose='Given \ni = 5'            json_math='$a \\ni b$'
+    \not      normalize='Given \\not = 5'            fix='Given \\not = 5'              math='$a \\not b$'          json_prose='Given \not = 5'           json_math='$a \\not b$'
+    \neg      normalize='Given \\neg = 5'            fix='Given $\\neg$ = 5'            math='$a \\neg b$'          json_prose='Given \\neg = 5'          json_math='$a \\neg b$'
+    \newline  normalize='Given \\newline = 5'        fix='Given \\newline = 5'          math='$a \\newline b$'      json_prose='Given \\newline = 5'      json_math='$a \\newline b$'
+    \nabla    normalize='Given \\nabla = 5'          fix='Given $\\nabla$ = 5'          math='$a \\nabla b$'        json_prose='Given \\nabla = 5'        json_math='$a \\nabla b$'
+    \neq      normalize='Given \\neq = 5'            fix='Given $\\neq$ = 5'            math='$a \\neq b$'          json_prose='Given \\neq = 5'          json_math='$a \\neq b$'
+  => PASS: prose keeps the ambiguous four as commands (normalize) but the JSON path decodes them as line breaks — the two paths disagree on the same bytes
+
+### boxed_ce_pu_mathscr
+    input          'Answer: \\boxed{42}'
+    fix            'Answer: \\boxed{42}'
+  => PASS: not structural, so left bare in prose
+    input          '$\\boxed{42}$'
+    fix            '$\\boxed{42}$'
+  => PASS: ok
+    input          '\\ce{H2O} is water'
+    fix            '\\ce{H2O} is water'
+  => PASS: bare \ce in prose is not wrapped
+    input          '$\\ce{2H2 + O2 -> 2H2O}$'
+    fix            '$\\ce{2H2 + O2 -> 2H2O}$'
+  => PASS: ok
+    input          '$\\pu{5 m/s}$'
+    fix            '$\\pu{5 m/s}$'
+  => PASS: ok
+    input          '$\\mathscr{L}$'
+    fix            '$\\mathscr{L}$'
+  => PASS: ok
+    audit          ['unsupported_command']
+    input          '$\\cal C$'
+    fix            '$\\cal C$'
+  => PASS: ok
+
+### environments
+    input          '$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$'
+    fix            '$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$'
+  => PASS: ok
+    input          '$f(x) = \\begin{cases} x & x > 0 \\\\ -x & x \\le 0 \\end{cases}$'
+    fix            '$f(x) = \\begin{cases} x & x > 0 \\\\ -x & x \\le 0 \\end{cases}$'
+  => PASS: ok
+    input          '$\\begin{align} a &= b \\end{align}$'
+    fix            '$\\begin{align} a &= b \\end{align}$'
+  => PASS: align only renders in display mode
+    input          '\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}'
+    fix            '\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}'
+  => PASS: bare environment in prose is not wrapped
+    input          '$$a \\\\\\frac{1}{2}$$'
+    fix            '$$a \\frac{1}{2}$$'
+  => FAIL: lost '\\\\\\frac' (\\ row break directly followed by \frac)
+    input          '$\\begin{aligned} a &= b \\\\\\end{aligned}$'
+    fix            '$\\begin{aligned} a &= b \\end{aligned}$'
+  => FAIL: lost '\\\\\\end'
+    to_plain matrix: '[1 2; 3 4]'
+    to_plain cases : 'x, x > 0; -x, x ≤ 0'
+
+### text_with_nested_braces_and_units
+    input          '$\\text{if } x \\in \\{1, 2\\}$'
+    fix            '$\\text{if } x \\in \\{1, 2\\}$'
+  => PASS: ok
+    input          '$\\text{a {b} c}$'
+    fix            '$\\text{a {b} c}$'
+  => PASS: ok
+    input          '$5\\,\\text{m/s}$'
+    fix            '$5\\,\\text{m/s}$'
+  => PASS: ok
+    input          'v = 5\\,\\text{m/s}'
+    fix            '$v = 5\\,\\text{m/s}$'
+  => PASS: prose with a spacing command and \text
+    input          '$\\text{H₂O}$'
+    fix            '$\\text{H_{2}O}$'
+    katex          ('\\text{H_{2}O}', "KaTeX parse error: Expected 'EOF', got '_' at position 8: \\text{H_̲{2}O}")
+  => FAIL: KaTeX: KaTeX parse error: Expected 'EOF', got '_' at position 8: \t (Unicode subscript inside \text{})
+    input          '$\\text{5 × 3}$'
+    fix            '$\\text{5 \\times 3}$'
+    katex          ('\\text{5 \\times 3}', 'KaTeX parse error: Undefined control sequence: \\times at position 9: \\text{5 \\̲t̲i̲m̲e̲s̲ ')
+  => FAIL: KaTeX: KaTeX parse error: Undefined control sequence: \times at pos
+    input          '$\\text{25°C}$'
+    fix            '$\\text{25^{\\circ}C}$'
+    katex          ('\\text{25^{\\circ}C}', "KaTeX parse error: Expected 'EOF', got '^' at position 9: \\text{25^̲{\\circ}C}")
+  => FAIL: KaTeX: KaTeX parse error: Expected 'EOF', got '^' at position 9: \t
+    input          '$\\text{π r}$'
+    fix            '$\\text{\\pi r}$'
+    katex          ('\\text{\\pi r}', 'KaTeX parse error: Undefined control sequence: \\pi at position 7: \\text{\\̲p̲i̲ ̲r}')
+  => FAIL: KaTeX: KaTeX parse error: Undefined control sequence: \pi at positi
+    input          '$\\ce{A -> B} \\text{→}$'
+    fix            '$\\ce{A -> B} \\text{\\rightarrow}$'
+    katex          ('\\ce{A -> B} \\text{\\rightarrow}', 'KaTeX parse error: Undefined control sequence: \\rightarrow at position 19: …{A -> B} \\text')
+  => FAIL: KaTeX: KaTeX parse error: Undefined control sequence: \rightarrow a
+    input          '$\\text{यह} = 5$'
+    fix            '$\\text{यह} = 5$'
+  => PASS: ok
+
+### percent_hash_ampersand
+    input          '50% of students'
+    fix            '50% of students'
+  => PASS: ok
+    input          '$50%$'
+    fix            '$50%$'
+  => PASS: unescaped % inside math starts a comment: KaTeX renders '50' only; fix does not escape it
+    input          'Question #3'
+    fix            'Question #3'
+  => PASS: ok
+    input          '$#3$'
+    fix            '$#3$'
+  => PASS: ok
+    input          'AT&T and R&D'
+    fix            'AT&T and R&D'
+  => PASS: ok
+    input          '$a & b$'
+    fix            '$a & b$'
+  => PASS: & outside an environment
+    input          '$50\\%$'
+    fix            '$50\\%$'
+  => PASS: ok
+    to_plain: ['50%', 'a & b', '#1', '50% of']
+
+### numbers_next_to_dollar
+    input          'Pay $1,000 now'
+    fix            'Pay \\$1,000 now'
+  => PASS: ok
+    input          '$1.5e-3'
+    fix            '\\$1.5e-3'
+  => PASS: ok
+    input          '$1,000 \\times 2$'
+    fix            '$1,000 \\times 2$'
+  => PASS: a math span that starts with a digit and has a valid closer stays math
+    input          '$1.5 \\times 10^{-3}$'
+    fix            '$1.5 \\times 10^{-3}$'
+  => PASS: ok
+    input          'between $5 and $10 dollars'
+    fix            'between \\$5 and \\$10 dollars'
+  => PASS: ok
+    input          'costs $5 and x = $\\frac{1}{2}$'
+    fix            'costs \\$5 and x = $\\frac{1}{2}$'
+  => PASS: ok
+
+### scientific_notation_and_chemistry_unicode
+    input          'c = 3 × 10⁸ m/s'
+    fix            'c = 3 $\\times$ 10⁸ m/s'
+  => PASS: Unicode superscript after a number
+    input          'c = 3 x 10^8 m/s'
+    fix            'c = 3 x $10^8$ m/s'
+  => PASS: ok
+    input          'c = 3e8 m/s'
+    fix            'c = 3e8 m/s'
+  => PASS: ok
+    input          'H₂O is water'
+    fix            '$\\text{H}_{2}\\text{O}$ is water'
+  => PASS: ok
+    input          'SO₄²⁻ ion'
+    fix            '$\\text{SO}_{4}^{2-}$ ion'
+  => PASS: ok
+    input          'Fe³⁺ and Fe²⁺'
+    fix            '$\\text{Fe}^{3+}$ and $\\text{Fe}^{2+}$'
+  => PASS: ok
+    input          'Ca(OH)₂ is lime'
+    fix            '$\\text{Ca(OH)}_{2}$ is lime'
+  => PASS: ok
+    input          '2H₂ + O₂ → 2H₂O'
+    fix            '$\\text{2H}_{2}$ + $\\text{O}_{2} \\rightarrow \\text{2H}_{2}\\text{O}$'
+  => PASS: ok
+    input          'C₆H₁₂O₆'
+    fix            '$\\text{C}_{6}\\text{H}_{12}\\text{O}_{6}$'
+  => PASS: ok
+    input          'xH₂O'
+    fix            'xH₂O'
+  => PASS: preceded by a letter: not chemistry
+    input          '10⁸ and mc² and x₁'
+    fix            '10⁸ and mc² and x₁'
+  => PASS: not chemistry-shaped
+
+### json_transport_edge_cases
+    backslash-space                  '{"q": "5\\ \\text{m}"}'                             -> RAISES JSONDecodeError: Invalid \escape: line 1 column 9 (char 8)
+    backslash-bracket                '{"q": "\\[2pt]"}'                                   -> '\\[2pt]'
+    backslash-digit                  '{"q": "a\\1"}'                                      -> RAISES JSONDecodeError: Invalid \escape: line 1 column 9 (char 8)
+    row break \\ in raw LaTeX        '{"q": "\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}"}'  -> '\\begin{pmatrix}1&2\\3&4\\end{pmatrix}'
+    single-backslash commands        '{"q": "\\frac{1}{2} \\theta \\nu \\times"}'         -> '\\frac{1}{2} \\theta \nu \\times'
+    JSON escapes that are prose      '{"q": "Step 1\\nnext step\\ttab"}'                  -> 'Step 1\nnext step\ttab'
+    nu in math and prose             '{"q": "$\\nu$ and \\nu and\\nu"}'                   -> '$\\nu$ and \nu and\nu'
+    script label                     '{"q": "\\teacher: hello"}'                          -> '\\teacher: hello'
+    \u escapes vs \underline         '{"q": "\\u03b1 and \\underline{x} and \\udeaf"}'    -> 'α and \\underline{x} and \udeaf'
+    trailing backslash               '{"q": "a\\"}'                                       -> RAISES JSONDecodeError: Unterminated string starting at: line 1 column 7 (
+    escaped quotes                   '{"q": "\\\\"quoted\\\\""}'                          -> RAISES JSONDecodeError: Expecting ',' delimiter: line 1 column 11 (char 10
+  => FAIL: backslash-space: raises JSONDecodeError; backslash-digit: raises JSONDecodeError; trailing backslash: raises JSONDecodeError; escaped quotes: raises JSONDecodeError
+
+### json_roundtrip_of_fixed_output
+    'Cost \\$5 and $\\theta$'            -> 'Cost \\$5 and $\\theta$'
+    '$\\frac{1}{2}$'                     -> '$\\frac{1}{2}$'
+    'line\nbreak'                        -> 'line\nbreak'
+    '$\\text{H}_{2}\\text{O}$'           -> '$\\text{H}_{2}\\text{O}$'
+    'a\\\\b'                             -> 'a\\\\b'
+    '$\\nu$'                             -> '$\\nu$'
+    '$\\nabla$'                          -> '$\\nabla$'
+    'tab\there'                          -> 'tab\there'
+  => PASS: ok
+
+### markers_and_urls
+    input          'See {{IMAGE:x_1}} below'
+    fix            'See {{IMAGE:x_1}} below'
+  => PASS: ok
+    input          '{{IMAGE:x_1}} \\alpha = 3'
+    fix            '${{IMAGE:x_1}} \\alpha = 3$'
+  => PASS: marker next to a bare command
+    input          'see https://a.b/c_d^e/f_g.png?x=1 now'
+    fix            'see https://a.b/c_d^e/f_g.png?x=1 now'
+  => PASS: ok
+    input          '{{IMAGE:img_0}} {{IMAGE:img_1}} {{IMAGE:img_2}} {{IMAGE:img_3}} {{IMAGE:img_4}} {{IMAGE:img_5}} {{IMAGE:img_6}} {{IMAGE:img_7}} {{IMAGE:img_8}} {{IMAGE:img_9}} {{IMAGE:img_10}} {{IMAGE:img_11}} $a_1 {{IMAGE:last_1}}$'
+    fix            '{{IMAGE:img_0}} {{IMAGE:img_1}} {{IMAGE:img_2}} {{IMAGE:img_3}} {{IMAGE:img_4}} {{IMAGE:img_5}} {{IMAGE:img_6}} {{IMAGE:img_7}} {{IMAGE:img_8}} {{IMAGE:img_9}} {{IMAGE:img_10}} {{IMAGE:img_11}} $a_1 \ue002IMG_{12}\ue003$'
+  => FAIL: lost '{{IMAGE:last_1}}'
+    input          'http://host/{{IMAGE:x_1}}'
+    fix            'http://host/{{IMAGE:x_1}}'
+  => PASS: ok
+    to_plain marker: '{{IMAGE:169_optA}}' | to_plain url: 'https://a.b/c_d.png'
+
+### mojibake_and_nbsp
+    input          '5\xa0km and Chapter\xa05'
+    fix            '5km and Chapter5'
+  => FAIL: lost '5 km'; lost 'Chapter 5' (NBSP should become a space, not vanish)
+    input          '10—¹ range'
+    fix            '10 range'
+  => FAIL: lost '—' (_DASH_SUPER_GARBAGE_RE deletes an em dash followed by superscript digits)
+    input          '&amp;amp;'
+    fix            '&'
+  => PASS: entity unescape once per pass
+    input          'Ï€ r²'
+    fix            '$\\pi$ r²'
+    expected       '$\\pi$ $r^{2}$'
+  => FAIL: differs from expected
+    input          'cafÃƒÂ©'
+    fix            'café'
+  => PASS: ok
+    input          'naÏf Île'
+    fix            'naÏf Île'
+  => PASS: real accented capitals vs mojibake rules
+    input          'În casă'
+    fix            'În casă'
+  => PASS: `Î ` (Î + space) is a mojibake key for Π
+
+### ref_cycle_control_char
+    input          'see \\ref{eq1} and \\rule{1pt}{1pt}'
+    fix            'see \\ref{eq1} and \\rule{1pt}{1pt}'
+    audit          []
+  => PASS: ok
+
+### orphans_and_legacy_delims
+    input          'value \\( x'
+    fix            'value  x'
+  => PASS: ok
+    input          '\\(\n x^2 \n\\)'
+    fix            '$x^2$'
+  => PASS: ok
+    input          '\\[\n x^2 \n\\]'
+    fix            '$$\n x^2 \n$$'
+  => PASS: ok
+    input          '$\\(x\\)$'
+    fix            '$$x$$'
+  => PASS: legacy delimiters nested in $…$ -> $$x$$
+    input          'Use \\[link\\] syntax'
+    fix            'Use $$link$$ syntax'
+  => PASS: markdown-escaped brackets become display math
+
+### performance_quadratic_scans
+    greek_prose_10k          fix         3195.7 ms  <-- SLOW
+    greek_prose_10k          segment        1.1 ms
+    greek_prose_10k          audit        735.6 ms  <-- SLOW
+    greek_prose_10k          to_plain       0.0 ms
+    greek_prose_10k          repair         0.0 ms
+    newline_words_10k        fix          205.3 ms  <-- SLOW
+    newline_words_10k        segment        0.8 ms
+    newline_words_10k        audit        101.4 ms  <-- SLOW
+    newline_words_10k        to_plain       0.0 ms
+    newline_words_10k        repair       101.1 ms  <-- SLOW
+    open_brace_dollars_10k   fix          896.3 ms  <-- SLOW
+    open_brace_dollars_10k   segment      968.4 ms  <-- SLOW
+    open_brace_dollars_10k   audit          3.1 ms
+  => FAIL: attack raised RecursionError: maximum recursion depth exceeded in comparison
+
+### to_plain_prefix_peeling
+    \neg p           -> '≠g p'         (reasonable: ¬p / neg p)
+    \top             -> '→p'           (reasonable: ⊤ / top)
+    \inf             -> '∈f'           (reasonable: inf)
+    a \pmod{n}       -> 'a ±odn'       (reasonable: a mod n)
+    a \leqslant b    -> 'a ≤slant b'   (reasonable: a ≤ b)
+    \newline         -> '≠wline'       (reasonable: )
+    \intercal        -> '∫ercal'       (reasonable: intercal)
+    \middle|         -> '|'            (reasonable: |)
+    \bigcup          -> 'cup'          (reasonable: ∪)
+  => FAIL: prefix peeling in _command splits real commands: [('\\neg p', '≠g p'), ('\\top', '→p'), ('\\inf', '∈f'), ('a \\pmod{n}', 'a ±odn'), ('a \\leqslant b', 'a ≤slant b'), ('\\newline', '≠wline'), ('\\intercal', '∫ercal')]
+
+### tts_style
+    $x^{20}$                     -> 'x squared0'           (want ~ x to the power 20)
+    $\frac{\frac{1}{2}}{3}$      -> 'frac1 over 23'        (want ~ 1 over 2 over 3)
+    $x^{30}$                     -> 'x cubed0'             (want ~ x to the power 30)
+    $\pmatrix$                   -> 'plus or minusatrix'   (want ~ pmatrix)
+    $x^2 + y^3$                  -> 'x squared + y cubed'  (want ~ x squared + y cubed)
+  => FAIL: [('$x^{20}$', 'x squared0'), ('$\\frac{\\frac{1}{2}}{3}$', 'frac1 over 23'), ('$x^{30}$', 'x cubed0'), ('$\\pmatrix$', 'plus or minusatrix')]
+
+### prose_only_short_words
+    'Let x be \\alpha'               -> 'Let x be $\\alpha$'
+    'So a = \\pi r'                  -> 'So a = $\\pi$ r'
+    'if x \\in A then'               -> 'if x $\\in$ A then'
+    'x \\to 0 as n \\to \\infty'     -> 'x $\\to$ 0 as n $\\to \\infty$'
+    '\\alpha-decay'                  -> '$\\alpha$-decay'
+    'a \\cdot b'                     -> 'a $\\cdot$ b'
+  => PASS: short-word prose sentences are not wrapped whole
+
+### sqrt_without_argument_and_bare_root
+    input          'use \\sqrt here'
+    fix            'use \\sqrt here'
+  => PASS: ok
+    input          '\\sqrt2 is irrational'
+    fix            '\\sqrt2 is irrational'
+  => PASS: \sqrt2 without braces
+    input          'half is \\frac12'
+    fix            'half is \\frac12'
+  => PASS: ok
+    input          '√2 is irrational'
+    fix            '$\\sqrt{2}$ is irrational'
+  => PASS: ok
+    input          '√(x+1) and √2gh'
+    fix            '$\\sqrt{x+1}$ and √2gh'
+  => PASS: √2gh keeps the glyph
+    input          '$\\sqrt$2'
+    fix            '$\\sqrt$2'
+  => PASS: already broken input
+
+### double_escaped_commands_not_in_collapse_list
+    '\\\\cdots'          -> '$\\\\cdots$'            audit=['double_escaped_command']
+    '\\\\ce{H2O}'        -> '$\\\\ce{H2O}$'          audit=['double_escaped_command']
+    '\\\\displaystyle x' -> '$\\\\displaystyle x$'   audit=['double_escaped_command']
+    '\\\\mathscr{L}'     -> '$\\\\mathscr{L}$'       audit=['double_escaped_command', 'unsupported_command']
+    '\\\\ldots'          -> '$\\\\ldots$'            audit=['double_escaped_command']
+    '$\\\\cdots$'        -> '$\\\\cdots$'            audit=['double_escaped_command']
+    '\\\\Rightarrow'     -> '$\\Rightarrow$'         audit=[]
+    '\\\\frac{1}{2}'     -> '$\\frac{1}{2}$'         audit=[]
+  => FAIL: still double-escaped after fix: ['\\\\cdots', '\\\\ce{H2O}', '\\\\displaystyle x', '\\\\mathscr{L}', '\\\\ldots', '$\\\\cdots$']
+
+### normalize_vs_segment_currency_parity
+    '$5 and $x \\nabla y$'             -> '\\$5 and $x \\nabla y$'                 segs=[('text', '$5 and '), ('math', 'x \\nabla y')]
+    'cost $5 then\\nnext $x^2$'        -> 'cost \\$5 then\nnext $x^2$'             segs=[('text', 'cost $5 then\nnext '), ('math', 'x^2')]
+    'a $ b $ c \\nnext'                -> 'a $ b $ c \nnext'                       segs=[('text', 'a $ b $ c \nnext')]
+  => PASS: ok
+
+### repair_newline_eq
+    'Values:\neq 5'          -> 'Values:\\neq 5'  audit=[]
+    'x\ntimes 2'             -> 'x\ntimes 2'  audit=[]
+    '\rho is density'        -> '\\rho is density'  audit=['control_char']
+    'a\tto b'                -> 'a\tto b'  audit=[]
+    'given\nabla'            -> 'given\\nabla'  audit=['control_char']
+  => NOTE: LF + 'eq' is restored as \neq although audit (3-letter minimum after LF) would not have flagged it
+
+
+SUMMARY
+  FAIL: 19  ['dollar_inside_text', 'nested_braces_1000_to_plain', 'hindi_prose_with_math', 'row_break_then_cmd', 'row_break_then_end', 'text_unicode_sub', 'text_unicode_times', 'text_unicode_degree', 'text_unicode_pi', 'text_unicode_arrow', 'json_transport_edge_cases', 'twelve_markers_one_in_math', 'nbsp', 'em_dash_superscript', 'mojibake_pi', 'performance_quadratic_scans', 'to_plain_prefix_peeling', 'tts_style', 'double_escaped_commands_not_in_collapse_list']
+  NOTE: 4  ['unbalanced_braces_inside_math', 'emoji_and_rtl', 'tab_before_word', 'repair_newline_eq']
+  PASS: 88  ['currency_pandoc_rule', 'display_dollars_inside_inline', 'display_dollars_inside_inline_2', 'escaped_dollar_inside_text', 'double_backslash_before_dollar', 'nested_frac_depth_20', 'nested_frac_depth_20', 'left_brace_split_across_spans', 'double_superscript', 'chained_subscript_prose', 'class_name_in_prose', 'snake_case_short_head', 'x_train', 'x_0_wrap', 'mc2', 'hindi_prose_with_math', 'hindi_prose_with_frac', 'hindi_prose_with_unicode', 'literal_newline_inside_display_math', 'literal_newline_in_prose', 'literal_newline_before_nu', 'tab_before_heta_prose', 'tab_before_heta_math', 'tab_before_heta', 'nu_ne_ni_not_in_every_context', 'boxed', 'boxed_math', 'ce', 'ce_math', 'pu', 'mathscr', 'cal', 'matrix', 'cases', 'align_inline', 'matrix_prose', 'text_nested', 'text_nested_2', 'units', 'units_prose', 'text_hindi', 'percent_prose', 'percent_math', 'hash_prose', 'hash_math', 'amp_prose', 'amp_math', 'escaped_percent_math', 'thousands', 'sci_currency', 'thousands_math', 'sci_math', 'range', 'price_then_math', 'sci_unicode', 'sci_ascii', 'sci_e', 'chem_water', 'chem_sulfate', 'chem_iron', 'chem_paren', 'chem_equation', 'chem_glucose', 'chem_in_word', 'chem_10_8', 'json_roundtrip_of_fixed_output', 'image_marker_prose', 'image_marker_with_cmd', 'url_prose', 'url_containing_marker', 'html_entities_twice', 'mojibake_double', 'french_word', 'romanian_In', 'ref_cycle_control_char', 'orphan_paren', 'legacy_multiline', 'display_multiline', 'inline_containing_legacy', 'md_escaped_brackets', 'prose_only_short_words', 'sqrt_bare', 'sqrt2', 'frac12', 'root_glyph_2', 'root_glyph_expr', 'sqrt_dollar', 'normalize_vs_segment_currency_parity']

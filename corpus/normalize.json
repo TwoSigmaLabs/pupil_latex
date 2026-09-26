@@ -1,0 +1,974 @@
+{
+ "function": "normalize",
+ "version": "1.1.0",
+ "cases": [
+  {
+   "id": "curated-paren-inline",
+   "input": "\\(\\theta\\)",
+   "expected": "$\\theta$",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-bracket-display",
+   "input": "\\[x^2\\]",
+   "expected": "$$x^2$$",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-inline-newline-collapsed",
+   "input": "\\(a\n   b\\)",
+   "expected": "$a b$",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-line-break-not-delimiter",
+   "input": "x \\\\[2pt] y",
+   "expected": "x \\\\[2pt] y",
+   "tags": [
+    "B4",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-orphan-open-stripped",
+   "input": "stray \\( here",
+   "expected": "stray  here",
+   "tags": [
+    "B4",
+    "script_editor#420"
+   ]
+  },
+  {
+   "id": "curated-orphan-close-stripped",
+   "input": "end \\] here",
+   "expected": "end  here",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-currency-before-math",
+   "input": "$5000 and $\\frac14$",
+   "expected": "\\$5000 and $\\frac14$",
+   "tags": [
+    "B3"
+   ]
+  },
+  {
+   "id": "curated-currency-range",
+   "input": "$5-$10",
+   "expected": "\\$5-\\$10",
+   "tags": [
+    "B3"
+   ]
+  },
+  {
+   "id": "curated-currency-no-closer",
+   "input": "costs $5.",
+   "expected": "costs \\$5.",
+   "tags": [
+    "B3"
+   ]
+  },
+  {
+   "id": "curated-math-starting-with-digit",
+   "input": "$2x + 3$",
+   "expected": "$2x + 3$",
+   "tags": [
+    "B3",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-currency-already-escaped",
+   "input": "Cost \\$60 and $x^2$",
+   "expected": "Cost \\$60 and $x^2$",
+   "tags": [
+    "B3",
+    "B7",
+    "fillers#273"
+   ]
+  },
+  {
+   "id": "curated-prose-newline-decoded",
+   "input": "A is true.\\nB) The electric field",
+   "expected": "A is true.\nB) The electric field",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-prose-crlf-decoded",
+   "input": "one\\r\\ntwo",
+   "expected": "one\ntwo",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-prose-tab-decoded",
+   "input": "a\\tTab",
+   "expected": "a\tTab",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-theta-in-prose-kept",
+   "input": "angle \\theta here",
+   "expected": "angle \\theta here",
+   "tags": [
+    "B5",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-neq-in-prose-kept",
+   "input": "a \\neq b",
+   "expected": "a \\neq b",
+   "tags": [
+    "B5",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-nu-in-prose-is-a-line-break",
+   "input": "frequency \\nu",
+   "expected": "frequency \nu",
+   "tags": [
+    "B7",
+    "review-F21"
+   ],
+   "note": "Backend production evidence: a line break followed by 'u = 5 cm'; same vocabulary as the JSON transport"
+  },
+  {
+   "id": "curated-text-in-prose-kept",
+   "input": "\\text{x}",
+   "expected": "\\text{x}",
+   "tags": [
+    "B5",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-escape-inside-math-kept",
+   "input": "$a\\nb$",
+   "expected": "$a\\nb$",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-step-order-theta-in-parens",
+   "input": "\\(\\theta\\) and \\(\\times 2\\)",
+   "expected": "$\\theta$ and $\\times 2$",
+   "tags": [
+    "B5",
+    "script_editor#420",
+    "tutor#383"
+   ]
+  },
+  {
+   "id": "curated-mojibake-pi",
+   "input": "Ï€ r^2",
+   "expected": "π r^2",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-mojibake-times",
+   "input": "3 Ã— 4",
+   "expected": "3 × 4",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-mojibake-root",
+   "input": "âˆš2",
+   "expected": "√2",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-control-char-repaired",
+   "input": "\frac{1}{2}",
+   "expected": "\\frac{1}{2}",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-no-wrapping-ever",
+   "input": "√2 and π and \\frac{1}{2} and H_{2}O",
+   "expected": "√2 and π and \\frac{1}{2} and H_{2}O",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-url-and-marker-untouched",
+   "input": "https://a/b_c.png {{IMAGE:59_1}}",
+   "expected": "https://a/b_c.png {{IMAGE:59_1}}",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-full-pipeline",
+   "input": "\\(\\theta\\) costs $5000 and $\\frac14$ then \\nNext",
+   "expected": "$\\theta$ costs \\$5000 and $\\frac14$ then \nNext",
+   "tags": [
+    "B3",
+    "B4",
+    "B5"
+   ]
+  },
+  {
+   "id": "curated-script-labels-not-escapes",
+   "input": "\\teacher: Hello \\type: mcq \\read: page 4 \\tool: ruler",
+   "expected": "\\teacher: Hello \\type: mcq \\read: page 4 \\tool: ruler",
+   "tags": [
+    "B1",
+    "real-data-D0"
+   ]
+  },
+  {
+   "id": "curated-broken-sqrt-span-untouched",
+   "input": "Root: $\\sqrt$2",
+   "expected": "Root: $\\sqrt$2",
+   "tags": [
+    "B3",
+    "B7",
+    "real-data-D2"
+   ]
+  },
+  {
+   "id": "curated-html-entities-decoded",
+   "input": "a &amp; b &lt; c &#960;",
+   "expected": "a & b < c π",
+   "tags": [
+    "B6",
+    "real-data-D8"
+   ]
+  },
+  {
+   "id": "curated-cp1252-psi",
+   "input": "The Ïˆ(x) wave",
+   "expected": "The ψ(x) wave",
+   "tags": [
+    "B6",
+    "real-data-D6"
+   ]
+  },
+  {
+   "id": "curated-crlf-kept",
+   "input": "a\r\nb",
+   "expected": "a\r\nb",
+   "tags": [
+    "B7",
+    "real-data-D9"
+   ]
+  },
+  {
+   "id": "curated-nbsp-becomes-space",
+   "input": "5 km",
+   "expected": "5 km",
+   "tags": [
+    "B7",
+    "review-F8"
+   ]
+  },
+  {
+   "id": "curated-dash-superscript-kept",
+   "input": "10—¹ range",
+   "expected": "10—¹ range",
+   "tags": [
+    "B7",
+    "review-F9"
+   ]
+  },
+  {
+   "id": "curated-latin1-xi-fixed-once",
+   "input": "Î ",
+   "expected": "Ξ ",
+   "tags": [
+    "B6",
+    "review-F10"
+   ]
+  },
+  {
+   "id": "curated-double-encoded-entity",
+   "input": "&amp;amp;",
+   "expected": "&",
+   "tags": [
+    "B6",
+    "review-F18"
+   ]
+  },
+  {
+   "id": "curated-nu-in-prose-is-a-line-break",
+   "input": "Given\\nu = 5 cm",
+   "expected": "Given\nu = 5 cm",
+   "tags": [
+    "B7",
+    "review-F21"
+   ]
+  },
+  {
+   "id": "curated-closer-followed-by-opener",
+   "input": "$1$$\\gamma$",
+   "expected": "$1$$\\gamma$",
+   "tags": [
+    "B3",
+    "B7",
+    "review-F5"
+   ]
+  },
+  {
+   "id": "curated-capitalised-name-after-newline-decoded",
+   "input": "Host: Priya\\nGuest: Vikram",
+   "expected": "Host: Priya\nGuest: Vikram",
+   "tags": [
+    "B1",
+    "final-R3"
+   ]
+  },
+  {
+   "id": "curated-lowercase-label-kept",
+   "input": "\\teacher: Hello\\nguest: hi",
+   "expected": "\\teacher: Hello\\nguest: hi",
+   "tags": [
+    "B7",
+    "final-R3"
+   ]
+  },
+  {
+   "id": "curated-audit2-mojibake-euro",
+   "input": "â‚¬5",
+   "expected": "€5",
+   "tags": [
+    "B6",
+    "audit2-currency-mojibake"
+   ]
+  },
+  {
+   "id": "curated-audit2-mojibake-currencies",
+   "input": "Price Â£5, â‚¹500, Â¥3, 25Â°C",
+   "expected": "Price £5, ₹500, ¥3, 25°C",
+   "tags": [
+    "B6",
+    "audit2-currency-mojibake"
+   ]
+  },
+  {
+   "id": "curated-audit2-double-pi-kept",
+   "input": "ππ",
+   "expected": "ππ",
+   "tags": [
+    "B6",
+    "B7",
+    "audit2-double-greek"
+   ]
+  },
+  {
+   "id": "curated-audit2-double-omega-kept",
+   "input": "ωω",
+   "expected": "ωω",
+   "tags": [
+    "B6",
+    "B7",
+    "audit2-double-greek"
+   ]
+  },
+  {
+   "id": "curated-audit2-double-root-kept",
+   "input": "√√2",
+   "expected": "√√2",
+   "tags": [
+    "B6",
+    "B7",
+    "audit2-double-greek"
+   ]
+  },
+  {
+   "id": "curated-audit2-mojibake-double-pi",
+   "input": "Ï€Ï€",
+   "expected": "ππ",
+   "tags": [
+    "B6",
+    "audit2-double-greek"
+   ],
+   "note": "UTF-8 ππ read as cp1252; the harvested script_editor case expecting one π is in review"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0001",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/\\(x^2\\) becomes $x^2$",
+   "via": "normalizeMathDelimiters",
+   "input": "Solve \\(x^2\\) now.",
+   "expected": "Solve $x^2$ now.",
+   "tags": [
+    "B4",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0002",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/\\[…\\] becomes $$…$$",
+   "via": "normalizeMathDelimiters",
+   "input": "\\[a+b\\]",
+   "expected": "$$a+b$$",
+   "tags": [
+    "B4",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0003",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/an inline span wrapped onto two lines is joined",
+   "via": "normalizeMathDelimiters",
+   "input": "\\(a +\n   b\\)",
+   "expected": "$a + b$",
+   "tags": [
+    "B4",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText; the newline+indent inside the span collapses to one space"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0004",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/a LaTeX line break \\\\[2pt] inside display maths is not a delimiter",
+   "via": "normalizeMathDelimiters",
+   "input": "$$a \\\\[2pt] b$$",
+   "expected": "$$a \\\\[2pt] b$$",
+   "tags": [
+    "B4",
+    "B7",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0005",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\theta inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\theta b\\) here",
+   "expected": "Angle $a \\theta b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0006",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\times inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\times b\\) here",
+   "expected": "Angle $a \\times b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0007",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\right) inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\right) b\\) here",
+   "expected": "Angle $a \\right) b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0008",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\neq inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\neq b\\) here",
+   "expected": "Angle $a \\neq b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0009",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\tau inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\tau b\\) here",
+   "expected": "Angle $a \\tau b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0010",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\nleq inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\nleq b\\) here",
+   "expected": "Angle $a \\nleq b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0011",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\rvert inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\rvert b\\) here",
+   "expected": "Angle $a \\rvert b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0012",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\tbinom{n}{k} inside \\(…\\) is intact",
+   "via": "preprocessLatexText",
+   "input": "Angle \\(a \\tbinom{n}{k} b\\) here",
+   "expected": "Angle $a \\tbinom{n}{k} b$ here",
+   "tags": [
+    "B5",
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "pins step ORDER: delimiter normalisation runs before prose escape decoding; also asserts no TAB or LF in the output"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0013",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\theta inside $…$ was already safe and still is",
+   "via": "preprocessLatexText",
+   "input": "$\\theta$",
+   "expected": "$\\theta$",
+   "tags": [
+    "B7",
+    "script_editor#420"
+   ]
+  },
+  {
+   "id": "script-editor-latex-preprocess-0014",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/literal \\n in prose becomes a newline",
+   "via": "decodeEscapesOutsideMath",
+   "input": "A is true.\\nC) The electric",
+   "expected": "A is true.\nC) The electric",
+   "tags": [
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "input has literal backslash-n; asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0015",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/\\r\\n and \\t decode",
+   "via": "decodeEscapesOutsideMath",
+   "input": "a\\r\\nb\\tc",
+   "expected": "a\nb\tc",
+   "tags": [
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "literal \\r\\n decodes to a single LF; asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0016",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+   "via": "decodeEscapesOutsideMath",
+   "input": "the angle \\theta grows",
+   "expected": "the angle \\theta grows",
+   "tags": [
+    "B1",
+    "B7",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0017",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+   "via": "decodeEscapesOutsideMath",
+   "input": "so \\neq holds",
+   "expected": "so \\neq holds",
+   "tags": [
+    "B1",
+    "B7",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0018",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+   "via": "decodeEscapesOutsideMath",
+   "input": "\\rho is density",
+   "expected": "\\rho is density",
+   "tags": [
+    "B1",
+    "B7",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0019",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/\\n followed by a capital that is not a command still decodes",
+   "via": "decodeEscapesOutsideMath",
+   "input": "x\\nNext",
+   "expected": "x\nNext",
+   "tags": [
+    "B1",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0021",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::orphan delimiters/a lone \\) and \\] are stripped too",
+   "via": "stripOrphanMathDelimiters",
+   "input": "a \\) b \\] c",
+   "expected": "a  b  c",
+   "tags": [
+    "B4",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0022",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$5000 and $\\frac{1}{4}$ keeps the fraction as maths",
+   "via": "escapeCurrencyDollars",
+   "input": "Cost $5000 and $\\frac{1}{4}$ off",
+   "expected": "Cost \\$5000 and $\\frac{1}{4}$ off",
+   "tags": [
+    "B3",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0023",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$5-$10 is two prices",
+   "via": "escapeCurrencyDollars",
+   "input": "from $5-$10",
+   "expected": "from \\$5-\\$10",
+   "tags": [
+    "B3",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0025",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$2x + 3$ is maths, not a price",
+   "via": "escapeCurrencyDollars",
+   "input": "Solve $2x + 3$.",
+   "expected": "Solve $2x + 3$.",
+   "tags": [
+    "B3",
+    "script_editor#420",
+    "B7"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0026",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$$…$$ starting with a digit is untouched",
+   "via": "escapeCurrencyDollars",
+   "input": "$$2x$$",
+   "expected": "$$2x$$",
+   "tags": [
+    "B3",
+    "script_editor#420",
+    "B7"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0027",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/already-escaped currency is stable (idempotent)",
+   "via": "escapeCurrencyDollars",
+   "input": "Cost \\$5000 and $\\frac{1}{4}$ off",
+   "expected": "Cost \\$5000 and $\\frac{1}{4}$ off",
+   "tags": [
+    "B3",
+    "script_editor#420",
+    "B7"
+   ],
+   "note": "asserted through preprocessLatexText"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0029",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/FF+rac is \\frac, BS+eta is \\beta, VT+ec is \\vec",
+   "via": "preprocessLatexText",
+   "input": "$\frac{1}{2}$",
+   "expected": "$\\frac{1}{2}$",
+   "tags": [
+    "B1",
+    "backend#1564"
+   ],
+   "note": "same assertion as in repair.json; recorded here because the test calls the full pipeline"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0031",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/FF+rac is \\frac, BS+eta is \\beta, VT+ec is \\vec",
+   "via": "preprocessLatexText",
+   "input": "$\beta$",
+   "expected": "$\\beta$",
+   "tags": [
+    "B1",
+    "backend#1564"
+   ],
+   "note": "same assertion as in repair.json; recorded here because the test calls the full pipeline"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0033",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/FF+rac is \\frac, BS+eta is \\beta, VT+ec is \\vec",
+   "via": "preprocessLatexText",
+   "input": "$\u000bec{v}$",
+   "expected": "$\\vec{v}$",
+   "tags": [
+    "B1",
+    "backend#1564"
+   ],
+   "note": "same assertion as in repair.json; recorded here because the test calls the full pipeline"
+  },
+  {
+   "id": "script-editor-latex-preprocess-0035",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/other control characters are dropped, not rendered",
+   "via": "preprocessLatexText",
+   "input": "a\u0000b\u0007c\u001fde",
+   "expected": "abcde",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "script-editor-latex-preprocess-0037",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::control characters/a control char with no letter after it is dropped",
+   "via": "preprocessLatexText",
+   "input": "x \f y",
+   "expected": "x  y",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0001",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::empty / clean input/empty string is returned unchanged",
+   "via": "mojibake",
+   "input": "",
+   "expected": "",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0002",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::empty / clean input/already-clean ASCII text is untouched",
+   "via": "mojibake",
+   "input": "The velocity is 5 m/s and the angle is 30 degrees.",
+   "expected": "The velocity is 5 m/s and the angle is 30 degrees.",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0003",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::math symbol repairs/'Ã—' is repaired to multiplication sign ×",
+   "via": "mojibake",
+   "input": "Force = mass Ã— acceleration",
+   "expected": "Force = mass × acceleration",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0004",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::math symbol repairs/'Ã·' becomes ÷, 'Â±' becomes ±, 'Â²' becomes ²",
+   "via": "mojibake",
+   "input": "10 Ã· 2",
+   "expected": "10 ÷ 2",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0005",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::math symbol repairs/'Ã·' becomes ÷, 'Â±' becomes ±, 'Â²' becomes ²",
+   "via": "mojibake",
+   "input": "x Â± y",
+   "expected": "x ± y",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0006",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::math symbol repairs/'Ã·' becomes ÷, 'Â±' becomes ±, 'Â²' becomes ²",
+   "via": "mojibake",
+   "input": "aÂ²",
+   "expected": "a²",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0007",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::math symbol repairs/'âˆš' becomes the square-root sign √",
+   "via": "mojibake",
+   "input": "âˆš2 is irrational",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output starts with '√2' and does not contain 'âˆš'",
+   "contains": [
+    "√2"
+   ],
+   "not_contains": [
+    "âˆš"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0008",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::math symbol repairs/'âˆž' becomes infinity ∞",
+   "via": "mojibake",
+   "input": "approaches âˆž",
+   "expected": "approaches ∞",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0009",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::Greek letter repairs/'Ï€' becomes π",
+   "via": "mojibake",
+   "input": "area = Ï€ r squared",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'π' and not 'Ï€'",
+   "contains": [
+    "π"
+   ],
+   "not_contains": [
+    "Ï€"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0010",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::Greek letter repairs/'Î±' becomes α and 'Î²' becomes β",
+   "via": "mojibake",
+   "input": "Î± decay and Î² decay",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'α' and 'β'",
+   "contains": [
+    "α",
+    "β"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0011",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::Greek letter repairs/uppercase 'Î©' becomes Ω",
+   "via": "mojibake",
+   "input": "Resistance Î©",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'Ω'",
+   "contains": [
+    "Ω"
+   ]
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0014",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::a string with several distinct corruptions is fully repaired",
+   "via": "mojibake",
+   "input": "mass Ã— g, area Ï€rÂ², âˆž limit",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains '×', 'π', '²', '∞' and none of 'Ã—', 'Ï€', 'Â²', 'âˆž'",
+   "contains": [
+    "×",
+    "π",
+    "²",
+    "∞"
+   ],
+   "not_contains": [
+    "Ã—",
+    "Ï€",
+    "Â²",
+    "âˆž"
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0001",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::normalizeMathDelimiters converts \\(..\\) and \\[..\\] to dollar delimiters",
+   "via": "normalizeMathDelimiters",
+   "input": "a \\(x^2\\) b",
+   "expected": "a $x^2$ b",
+   "tags": [
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0002",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::normalizeMathDelimiters converts \\(..\\) and \\[..\\] to dollar delimiters",
+   "via": "normalizeMathDelimiters",
+   "input": "\\[\\int f\\,dx\\]",
+   "expected": "$$\\int f\\,dx$$",
+   "tags": [
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0003",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::normalizeMathDelimiters converts \\(..\\) and \\[..\\] to dollar delimiters",
+   "via": "normalizeMathDelimiters",
+   "input": "plain $x$ stays",
+   "expected": "plain $x$ stays",
+   "tags": [
+    "B4",
+    "B7"
+   ]
+  }
+ ]
+}

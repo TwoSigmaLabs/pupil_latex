@@ -1,0 +1,4322 @@
+{
+ "function": "must_not_change",
+ "version": "1.1.0",
+ "cases": [
+  {
+   "id": "curated-identifier-caps",
+   "input": "MCQ_SINGLE",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "assessment-ui#b8834fb"
+   ]
+  },
+  {
+   "id": "curated-slug",
+   "input": "q_001_easy_2026",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-hex-id",
+   "input": "ahs_69e74f5e84fd",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "backend#454"
+   ]
+  },
+  {
+   "id": "curated-audio-url",
+   "input": "https://storage.googleapis.com/x/ahs_69e74f5e84fd_vocab_20260425.wav",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7",
+    "backend#454"
+   ]
+  },
+  {
+   "id": "curated-image-marker",
+   "input": "{{IMAGE:169_optA}}",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-question-number",
+   "input": "Q17 is next",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7",
+    "tutor#982d982"
+   ]
+  },
+  {
+   "id": "curated-plain-prose",
+   "input": "The quick brown fox jumps over the lazy dog.",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-plain-chem-text",
+   "input": "H2O is water",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-balanced-math",
+   "input": "The formula is $x^{2} + y^{2} = r^{2}$.",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-escaped-currency",
+   "input": "Cost \\$60 and \\$15 then $x^2$ end",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B3",
+    "B7",
+    "script_editor#420"
+   ]
+  },
+  {
+   "id": "curated-real-whitespace",
+   "input": "col1\tcol2\nrow2",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-accented-name",
+   "input": "Ångström and café",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B6",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-snake-case-field",
+   "input": "user_id and student_id",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-markdown-bold",
+   "input": "**Important:** read this",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-canonical-chemistry",
+   "input": "$\\text{H}_{2}\\text{SO}_{4}$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-script-lines",
+   "input": "\\teacher: Explain the water cycle.\n\\type: mcq\n\\read: page 4\n\\tool: ruler",
+   "functions": [
+    "repair",
+    "normalize",
+    "canonicalize",
+    "fix"
+   ],
+   "tags": [
+    "B7",
+    "real-data-D0"
+   ]
+  },
+  {
+   "id": "curated-prose-ellipsis",
+   "input": "I used to think… now I think",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "real-data-D3"
+   ]
+  },
+  {
+   "id": "curated-enum-values",
+   "input": "status no_capture then ai_recreate",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "real-data-D4"
+   ]
+  },
+  {
+   "id": "curated-crlf-text",
+   "input": "line one\r\nline two",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7",
+    "real-data-D9"
+   ]
+  },
+  {
+   "id": "curated-image-marker-in-url",
+   "input": "gs://{{IMAGE:q2_fig}} -",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7",
+    "fuzz"
+   ]
+  },
+  {
+   "id": "curated-class-names",
+   "input": "Students of 10_A and 12_PCM",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "fuzz"
+   ]
+  },
+  {
+   "id": "curated-hindi-prose",
+   "input": "यह एक वाक्य है",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "to_plain"
+   ],
+   "tags": [
+    "B7",
+    "fuzz"
+   ]
+  },
+  {
+   "id": "curated-nbsp-prose",
+   "input": "Chapter 5 begins",
+   "functions": [
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "review-F8"
+   ]
+  },
+  {
+   "id": "curated-identifier-in-math",
+   "input": "$q_001_easy_2026$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "review-F13"
+   ]
+  },
+  {
+   "id": "curated-text-group-unicode",
+   "input": "$\\text{H₂O} and \\text{25°C}$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "review-F1"
+   ]
+  },
+  {
+   "id": "curated-line-break-before-command",
+   "input": "$$a \\\\\\frac{1}{2}$$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "review-F4"
+   ]
+  },
+  {
+   "id": "curated-matrix-rows",
+   "input": "$\\begin{bmatrix}x&y\\\\cos x&d\\end{bmatrix}$ and $$\\begin{aligned}x&=1\\\\alpha&=2\\end{aligned}$$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair",
+    "audit"
+   ],
+   "tags": [
+    "B7",
+    "final-R1"
+   ]
+  },
+  {
+   "id": "curated-audit2-currency-with-spaces",
+   "input": "I paid $ 5 and got $ 3 back",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B3",
+    "B7",
+    "audit2-padded-span"
+   ]
+  },
+  {
+   "id": "curated-audit2-padded-currency-equation",
+   "input": "Cost $ 5 = 5 $ only",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B3",
+    "B7",
+    "audit2-padded-span"
+   ]
+  },
+  {
+   "id": "curated-audit2-prose-digits",
+   "input": "2.5583 and 1,00,000 and ₹2,50,000 and 9:3:3:1 and 45°",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-line-break-then-span",
+   "input": "\\\\$\\frac{1}{2}$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B3",
+    "B5",
+    "audit2-line-break-dollar"
+   ]
+  },
+  {
+   "id": "curated-audit2-double-greek-normalize",
+   "input": "ππ and ωω",
+   "functions": [
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B6",
+    "B7",
+    "audit2-double-greek"
+   ]
+  },
+  {
+   "id": "curated-audit2-radical-coefficient-kept",
+   "input": "2$\\sqrt{3}$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B7",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-empty-second-argument",
+   "input": "$\\frac{1}{$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-empty-first-argument",
+   "input": "$\\frac{$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-empty-script",
+   "input": "$x^{$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-command-without-argument",
+   "input": "$\\frac{1}{\\sqrt$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-would-leave-frac-short",
+   "input": "$\\frac{\\frac{1}{2$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-left-without-right",
+   "input": "$\\left( x^{2$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-more-closers",
+   "input": "$a}{b$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-escaped-brace",
+   "input": "$\\{x$",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize",
+    "repair"
+   ],
+   "tags": [
+    "B4",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-prose-and-currency",
+   "input": "cost $5 and {5 more $",
+   "functions": [
+    "canonicalize",
+    "repair"
+   ],
+   "tags": [
+    "B3",
+    "B7",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "input": "$x^2$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_preserves_single_char_superscript",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0000"
+  },
+  {
+   "input": "The formula $\\frac{x^{2}}{y}$ applies.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_preserves_already_braced",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0001"
+  },
+  {
+   "input": "The price is \\$5",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_preserves_escaped_currency_dollar",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0002"
+  },
+  {
+   "input": "The price is \\$5 and pi is $\\pi$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_currency_idempotent",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0003"
+  },
+  {
+   "input": "$\\sqrt{2}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_already_wrapped_sqrt_preserves_delimiters",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0004"
+  },
+  {
+   "input": "$\\frac{3q^2}{4\\pi\\epsilon_0 a^2}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_well_formed_option_with_math_is_unchanged",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0005"
+  },
+  {
+   "input": "The answer is $\\frac{1}{2}$ exactly",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_prose_with_math_span_not_merged",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0006"
+  },
+  {
+   "input": "$$f = \\frac{1}{T}$$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_display_math_frac_is_not_rewrapped",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0007"
+  },
+  {
+   "input": "$$\\int_0^1 \\frac{\\sin x}{x} dx$$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_display_math_multiple_commands_preserved",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0008"
+  },
+  {
+   "input": "Costs \\$50.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_currency_already_escaped_not_double_escaped",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0009"
+  },
+  {
+   "input": "Hello world.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_no_false_positive_on_plain_prose",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0010"
+  },
+  {
+   "input": "Simple text with no math at all.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_does_not_fire_without_scripts",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0011"
+  },
+  {
+   "input": "https://storage.googleapis.com/pupil-suite-podcasts/podcasts/ahs/ahs_69e74f5e84fd_vocabulary_quick_reads_20260425_043531.wav",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_preserves_audio_url",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0012"
+  },
+  {
+   "input": "https://example.com/x_y_z_2026.png",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_url_regardless_of_key",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0013"
+  },
+  {
+   "input": "ahs_69e74f5e84fd",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0014"
+  },
+  {
+   "input": "user_69e74f5e84fda7fe87eca496",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0015"
+  },
+  {
+   "input": "session_69ce3dfb",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0016"
+  },
+  {
+   "input": "Aairah_0713",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0017"
+  },
+  {
+   "input": "teacher_001@school.in",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0018"
+  },
+  {
+   "input": "10_A",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0019"
+  },
+  {
+   "input": "10_10_A",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0020"
+  },
+  {
+   "input": "2026-04-25T03:31:00Z",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0021"
+  },
+  {
+   "input": "active_user",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0022"
+  },
+  {
+   "input": "ahs_69e7",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_arrays",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0023"
+  },
+  {
+   "input": "ahs_70a1",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_arrays",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0024"
+  },
+  {
+   "input": "https://storage.googleapis.com/x/podcast_v1.mp3",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0025"
+  },
+  {
+   "input": "ahs_69e74f5e84fd",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0026"
+  },
+  {
+   "input": "Aairah_0713",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0027"
+  },
+  {
+   "input": "10_A",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0028"
+  },
+  {
+   "input": "ahs_inner_69e7",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0029"
+  },
+  {
+   "input": "q_001_v2",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0030"
+  },
+  {
+   "input": "prose ° prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0032"
+  },
+  {
+   "input": "prose ² prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0034"
+  },
+  {
+   "input": "prose ³ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0035"
+  },
+  {
+   "input": "prose ¹ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0037"
+  },
+  {
+   "input": "prose ¼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0038"
+  },
+  {
+   "input": "prose ½ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0039"
+  },
+  {
+   "input": "prose ¾ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0040"
+  },
+  {
+   "input": "prose ʰ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0043"
+  },
+  {
+   "input": "prose ʲ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0044"
+  },
+  {
+   "input": "prose ʳ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0045"
+  },
+  {
+   "input": "prose ʷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0046"
+  },
+  {
+   "input": "prose ʸ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0047"
+  },
+  {
+   "input": "prose ˡ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0048"
+  },
+  {
+   "input": "prose ˢ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0049"
+  },
+  {
+   "input": "prose ˣ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0050"
+  },
+  {
+   "input": "prose ᴬ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0091"
+  },
+  {
+   "input": "prose ᴮ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0092"
+  },
+  {
+   "input": "prose ᴰ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0093"
+  },
+  {
+   "input": "prose ᴱ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0094"
+  },
+  {
+   "input": "prose ᴳ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0095"
+  },
+  {
+   "input": "prose ᴴ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0096"
+  },
+  {
+   "input": "prose ᴵ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0097"
+  },
+  {
+   "input": "prose ᴶ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0098"
+  },
+  {
+   "input": "prose ᴷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0099"
+  },
+  {
+   "input": "prose ᴸ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0100"
+  },
+  {
+   "input": "prose ᴹ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0101"
+  },
+  {
+   "input": "prose ᴺ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0102"
+  },
+  {
+   "input": "prose ᴼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0103"
+  },
+  {
+   "input": "prose ᴾ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0104"
+  },
+  {
+   "input": "prose ᴿ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0105"
+  },
+  {
+   "input": "prose ᵀ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0106"
+  },
+  {
+   "input": "prose ᵁ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0107"
+  },
+  {
+   "input": "prose ᵂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0108"
+  },
+  {
+   "input": "prose ᵃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0109"
+  },
+  {
+   "input": "prose ᵇ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0110"
+  },
+  {
+   "input": "prose ᵈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0111"
+  },
+  {
+   "input": "prose ᵉ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0112"
+  },
+  {
+   "input": "prose ᵍ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0113"
+  },
+  {
+   "input": "prose ᵏ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0114"
+  },
+  {
+   "input": "prose ᵐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0115"
+  },
+  {
+   "input": "prose ᵒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0116"
+  },
+  {
+   "input": "prose ᵖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0117"
+  },
+  {
+   "input": "prose ᵗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0118"
+  },
+  {
+   "input": "prose ᵘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0119"
+  },
+  {
+   "input": "prose ᵛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0120"
+  },
+  {
+   "input": "prose ᵢ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0121"
+  },
+  {
+   "input": "prose ᵣ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0122"
+  },
+  {
+   "input": "prose ᵤ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0123"
+  },
+  {
+   "input": "prose ᵥ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0124"
+  },
+  {
+   "input": "prose ᵦ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0125"
+  },
+  {
+   "input": "prose ᵧ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0126"
+  },
+  {
+   "input": "prose ᵨ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0127"
+  },
+  {
+   "input": "prose ᵩ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0128"
+  },
+  {
+   "input": "prose ᵪ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0129"
+  },
+  {
+   "input": "prose ᶜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0130"
+  },
+  {
+   "input": "prose ᶠ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0131"
+  },
+  {
+   "input": "prose ᶻ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0132"
+  },
+  {
+   "input": "prose … prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0133"
+  },
+  {
+   "input": "prose ⁰ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0134"
+  },
+  {
+   "input": "prose ⁱ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0135"
+  },
+  {
+   "input": "prose ⁴ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0136"
+  },
+  {
+   "input": "prose ⁵ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0137"
+  },
+  {
+   "input": "prose ⁶ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0138"
+  },
+  {
+   "input": "prose ⁷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0139"
+  },
+  {
+   "input": "prose ⁸ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0140"
+  },
+  {
+   "input": "prose ⁹ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0141"
+  },
+  {
+   "input": "prose ⁺ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0142"
+  },
+  {
+   "input": "prose ⁻ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0143"
+  },
+  {
+   "input": "prose ⁼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0144"
+  },
+  {
+   "input": "prose ⁽ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0145"
+  },
+  {
+   "input": "prose ⁾ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0146"
+  },
+  {
+   "input": "prose ⁿ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0147"
+  },
+  {
+   "input": "prose ₀ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0148"
+  },
+  {
+   "input": "prose ₁ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0149"
+  },
+  {
+   "input": "prose ₂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0150"
+  },
+  {
+   "input": "prose ₃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0151"
+  },
+  {
+   "input": "prose ₄ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0152"
+  },
+  {
+   "input": "prose ₅ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0153"
+  },
+  {
+   "input": "prose ₆ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0154"
+  },
+  {
+   "input": "prose ₇ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0155"
+  },
+  {
+   "input": "prose ₈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0156"
+  },
+  {
+   "input": "prose ₉ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0157"
+  },
+  {
+   "input": "prose ₊ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0158"
+  },
+  {
+   "input": "prose ₋ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0159"
+  },
+  {
+   "input": "prose ₌ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0160"
+  },
+  {
+   "input": "prose ₍ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0161"
+  },
+  {
+   "input": "prose ₎ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0162"
+  },
+  {
+   "input": "prose ₐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0163"
+  },
+  {
+   "input": "prose ₑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0164"
+  },
+  {
+   "input": "prose ₒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0165"
+  },
+  {
+   "input": "prose ₓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0166"
+  },
+  {
+   "input": "prose ₕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0167"
+  },
+  {
+   "input": "prose ₖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0168"
+  },
+  {
+   "input": "prose ₗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0169"
+  },
+  {
+   "input": "prose ₘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0170"
+  },
+  {
+   "input": "prose ₙ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0171"
+  },
+  {
+   "input": "prose ₚ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0172"
+  },
+  {
+   "input": "prose ₛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0173"
+  },
+  {
+   "input": "prose ₜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0174"
+  },
+  {
+   "input": "prose ⅐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0183"
+  },
+  {
+   "input": "prose ⅑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0184"
+  },
+  {
+   "input": "prose ⅒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0185"
+  },
+  {
+   "input": "prose ⅓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0186"
+  },
+  {
+   "input": "prose ⅔ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0187"
+  },
+  {
+   "input": "prose ⅕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0188"
+  },
+  {
+   "input": "prose ⅖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0189"
+  },
+  {
+   "input": "prose ⅗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0190"
+  },
+  {
+   "input": "prose ⅘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0191"
+  },
+  {
+   "input": "prose ⅙ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0192"
+  },
+  {
+   "input": "prose ⅚ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0193"
+  },
+  {
+   "input": "prose ⅛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0194"
+  },
+  {
+   "input": "prose ⅜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0195"
+  },
+  {
+   "input": "prose ⅝ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0196"
+  },
+  {
+   "input": "prose ⅞ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0197"
+  },
+  {
+   "input": "prose √ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0222"
+  },
+  {
+   "input": "prose ∛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0223"
+  },
+  {
+   "input": "prose ∜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0224"
+  },
+  {
+   "input": "prose ⱼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0272"
+  },
+  {
+   "input": "prose ⱽ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0273"
+  },
+  {
+   "input": "prose ° prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0274"
+  },
+  {
+   "input": "prose ² prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0275"
+  },
+  {
+   "input": "prose ³ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0276"
+  },
+  {
+   "input": "prose ¹ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0277"
+  },
+  {
+   "input": "prose ¼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0278"
+  },
+  {
+   "input": "prose ½ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0279"
+  },
+  {
+   "input": "prose ¾ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0280"
+  },
+  {
+   "input": "prose ʰ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0281"
+  },
+  {
+   "input": "prose ʲ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0282"
+  },
+  {
+   "input": "prose ʳ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0283"
+  },
+  {
+   "input": "prose ʷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0284"
+  },
+  {
+   "input": "prose ʸ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0285"
+  },
+  {
+   "input": "prose ˡ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0286"
+  },
+  {
+   "input": "prose ˢ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0287"
+  },
+  {
+   "input": "prose ˣ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0288"
+  },
+  {
+   "input": "prose ᴬ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0289"
+  },
+  {
+   "input": "prose ᴮ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0290"
+  },
+  {
+   "input": "prose ᴰ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0291"
+  },
+  {
+   "input": "prose ᴱ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0292"
+  },
+  {
+   "input": "prose ᴳ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0293"
+  },
+  {
+   "input": "prose ᴴ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0294"
+  },
+  {
+   "input": "prose ᴵ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0295"
+  },
+  {
+   "input": "prose ᴶ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0296"
+  },
+  {
+   "input": "prose ᴷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0297"
+  },
+  {
+   "input": "prose ᴸ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0298"
+  },
+  {
+   "input": "prose ᴹ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0299"
+  },
+  {
+   "input": "prose ᴺ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0300"
+  },
+  {
+   "input": "prose ᴼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0301"
+  },
+  {
+   "input": "prose ᴾ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0302"
+  },
+  {
+   "input": "prose ᴿ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0303"
+  },
+  {
+   "input": "prose ᵀ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0304"
+  },
+  {
+   "input": "prose ᵁ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0305"
+  },
+  {
+   "input": "prose ᵂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0306"
+  },
+  {
+   "input": "prose ᵃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0307"
+  },
+  {
+   "input": "prose ᵇ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0308"
+  },
+  {
+   "input": "prose ᵈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0309"
+  },
+  {
+   "input": "prose ᵉ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0310"
+  },
+  {
+   "input": "prose ᵍ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0311"
+  },
+  {
+   "input": "prose ᵏ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0312"
+  },
+  {
+   "input": "prose ᵐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0313"
+  },
+  {
+   "input": "prose ᵒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0314"
+  },
+  {
+   "input": "prose ᵖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0315"
+  },
+  {
+   "input": "prose ᵗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0316"
+  },
+  {
+   "input": "prose ᵘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0317"
+  },
+  {
+   "input": "prose ᵛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0318"
+  },
+  {
+   "input": "prose ᵢ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0319"
+  },
+  {
+   "input": "prose ᵣ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0320"
+  },
+  {
+   "input": "prose ᵤ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0321"
+  },
+  {
+   "input": "prose ᵥ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0322"
+  },
+  {
+   "input": "prose ᵦ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0323"
+  },
+  {
+   "input": "prose ᵧ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0324"
+  },
+  {
+   "input": "prose ᵨ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0325"
+  },
+  {
+   "input": "prose ᵩ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0326"
+  },
+  {
+   "input": "prose ᵪ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0327"
+  },
+  {
+   "input": "prose ᶜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0328"
+  },
+  {
+   "input": "prose ᶠ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0329"
+  },
+  {
+   "input": "prose ᶻ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0330"
+  },
+  {
+   "input": "prose ⁰ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0331"
+  },
+  {
+   "input": "prose ⁱ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0332"
+  },
+  {
+   "input": "prose ⁴ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0333"
+  },
+  {
+   "input": "prose ⁵ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0334"
+  },
+  {
+   "input": "prose ⁶ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0335"
+  },
+  {
+   "input": "prose ⁷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0336"
+  },
+  {
+   "input": "prose ⁸ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0337"
+  },
+  {
+   "input": "prose ⁹ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0338"
+  },
+  {
+   "input": "prose ⁺ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0339"
+  },
+  {
+   "input": "prose ⁻ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0340"
+  },
+  {
+   "input": "prose ⁼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0341"
+  },
+  {
+   "input": "prose ⁽ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0342"
+  },
+  {
+   "input": "prose ⁾ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0343"
+  },
+  {
+   "input": "prose ⁿ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0344"
+  },
+  {
+   "input": "prose ₀ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0345"
+  },
+  {
+   "input": "prose ₁ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0346"
+  },
+  {
+   "input": "prose ₂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0347"
+  },
+  {
+   "input": "prose ₃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0348"
+  },
+  {
+   "input": "prose ₄ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0349"
+  },
+  {
+   "input": "prose ₅ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0350"
+  },
+  {
+   "input": "prose ₆ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0351"
+  },
+  {
+   "input": "prose ₇ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0352"
+  },
+  {
+   "input": "prose ₈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0353"
+  },
+  {
+   "input": "prose ₉ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0354"
+  },
+  {
+   "input": "prose ₊ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0355"
+  },
+  {
+   "input": "prose ₋ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0356"
+  },
+  {
+   "input": "prose ₌ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0357"
+  },
+  {
+   "input": "prose ₍ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0358"
+  },
+  {
+   "input": "prose ₎ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0359"
+  },
+  {
+   "input": "prose ₐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0360"
+  },
+  {
+   "input": "prose ₑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0361"
+  },
+  {
+   "input": "prose ₒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0362"
+  },
+  {
+   "input": "prose ₓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0363"
+  },
+  {
+   "input": "prose ₕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0364"
+  },
+  {
+   "input": "prose ₖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0365"
+  },
+  {
+   "input": "prose ₗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0366"
+  },
+  {
+   "input": "prose ₘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0367"
+  },
+  {
+   "input": "prose ₙ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0368"
+  },
+  {
+   "input": "prose ₚ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0369"
+  },
+  {
+   "input": "prose ₛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0370"
+  },
+  {
+   "input": "prose ₜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0371"
+  },
+  {
+   "input": "prose ⅐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0372"
+  },
+  {
+   "input": "prose ⅑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0373"
+  },
+  {
+   "input": "prose ⅒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0374"
+  },
+  {
+   "input": "prose ⅓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0375"
+  },
+  {
+   "input": "prose ⅔ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0376"
+  },
+  {
+   "input": "prose ⅕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0377"
+  },
+  {
+   "input": "prose ⅖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0378"
+  },
+  {
+   "input": "prose ⅗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0379"
+  },
+  {
+   "input": "prose ⅘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0380"
+  },
+  {
+   "input": "prose ⅙ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0381"
+  },
+  {
+   "input": "prose ⅚ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0382"
+  },
+  {
+   "input": "prose ⅛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0383"
+  },
+  {
+   "input": "prose ⅜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0384"
+  },
+  {
+   "input": "prose ⅝ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0385"
+  },
+  {
+   "input": "prose ⅞ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0386"
+  },
+  {
+   "input": "prose ⱼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0387"
+  },
+  {
+   "input": "prose ⱽ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0388"
+  },
+  {
+   "input": "$√$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0389"
+  },
+  {
+   "input": "prose √ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0390"
+  },
+  {
+   "input": "$∛$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0391"
+  },
+  {
+   "input": "prose ∛ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0392"
+  },
+  {
+   "input": "$∜$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0393"
+  },
+  {
+   "input": "prose ∜ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0394"
+  },
+  {
+   "input": "",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_unicode_math_to_latex_empty_string",
+   "via": "unicode_math_to_latex",
+   "id": "harvested-must_not_change-0395"
+  },
+  {
+   "input": "The quick brown fox jumps over the lazy dog.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_unicode_math_to_latex_no_math_chars_unchanged",
+   "via": "unicode_math_to_latex",
+   "id": "harvested-must_not_change-0396"
+  },
+  {
+   "input": "",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_empty_string",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0397"
+  },
+  {
+   "input": "No math chars here at all.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_no_target_chars_unchanged",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0398"
+  },
+  {
+   "input": "$\\pi$ and also $\\nu = 1$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_inside_span_not_double_wrapped",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0399"
+  },
+  {
+   "input": "fire emoji 🔥 stays put",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_leaves_non_table_chars_alone",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0401"
+  },
+  {
+   "input": "half is ½ here",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_leaves_fractions_alone",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0402"
+  },
+  {
+   "input": "Nothing here needs normalization.",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_no_targets_unchanged",
+   "via": "normalize_homoglyphs",
+   "id": "harvested-must_not_change-0403"
+  },
+  {
+   "input": "",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_empty_and_non_string",
+   "via": "normalize_homoglyphs",
+   "id": "harvested-must_not_change-0404"
+  },
+  {
+   "input": "plain vector notation",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_combining_vec_no_combiner_unchanged",
+   "via": "convert_combining_vec",
+   "id": "harvested-must_not_change-0405"
+  },
+  {
+   "input": "",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_combining_vec_empty_and_non_string",
+   "via": "convert_combining_vec",
+   "id": "harvested-must_not_change-0406"
+  },
+  {
+   "input": "$\\sqrt{2}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0407"
+  },
+  {
+   "input": "$2\\sqrt{3}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0408"
+  },
+  {
+   "input": "$\\sqrt[3]{8}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0409"
+  },
+  {
+   "input": "x = $\\sqrt{a+b}$ and $\\frac{1}{\\sqrt{2}}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+   "via": "sanitize_latex_text",
+   "id": "harvested-must_not_change-0410"
+  },
+  {
+   "input": "$x = √$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_inside_a_math_span",
+   "via": "unicode_math_to_latex",
+   "id": "harvested-must_not_change-0411"
+  },
+  {
+   "input": "$∛$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_inside_a_math_span",
+   "via": "unicode_math_to_latex",
+   "id": "harvested-must_not_change-0412"
+  },
+  {
+   "input": "$\\frac{√}{2}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_inside_a_math_span",
+   "via": "unicode_math_to_latex",
+   "id": "harvested-must_not_change-0413"
+  },
+  {
+   "input": "The side is √2 cm",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[sqrt]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0414"
+  },
+  {
+   "input": "Visit https://www.youtube.com/watch?v=l_CySKUI5W4 and use √2.",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_in_prose]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0415"
+  },
+  {
+   "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_whole_content_key]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0416"
+  },
+  {
+   "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_whole_url_key]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0417"
+  },
+  {
+   "input": "$\\frac{1}{2}$",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[frac]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0418"
+  },
+  {
+   "input": "H_2O and x_1",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[subscripts]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0419"
+  },
+  {
+   "input": "see \\(x\\) and \\[y\\]",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[paren_bracket_delims]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0420"
+  },
+  {
+   "input": "Cost $50 only.",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[currency]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0421"
+  },
+  {
+   "input": "µ = 3 and Ângelo",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[micro]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0422"
+  },
+  {
+   "input": "$\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}$",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[matrix_row_break]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0423"
+  },
+  {
+   "input": "ai_recreate",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[enum_under_unlisted_key]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0424"
+  },
+  {
+   "input": "3×10^8",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[times_power]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0425"
+  },
+  {
+   "input": "Water H₂O boils",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[unicode_chem]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0426"
+  },
+  {
+   "input": "Frequency Î½",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[mojibake_left_alone]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0427"
+  },
+  {
+   "input": "Line one\nLine two\r\nitem\tcol",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[tab_lf_cr]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0429"
+  },
+  {
+   "input": "Pay \\$5; solve $5x+1=0$.",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[escaped_currency]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0430"
+  },
+  {
+   "input": "x\ny\rz",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[lf_cr_untouched]",
+   "via": "repair_hard_control_bytes",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0432"
+  },
+  {
+   "input": "",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[empty]",
+   "via": "repair_hard_control_bytes",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0433"
+  },
+  {
+   "input": "x^2",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0434"
+  },
+  {
+   "input": "H_2O",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0435"
+  },
+  {
+   "input": "H_2O",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_other_mode_values_keep_byte_identity",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0436"
+  },
+  {
+   "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[url_whole]",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0437"
+  },
+  {
+   "input": "ai_recreate",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[unlisted_enum]",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0438"
+  },
+  {
+   "input": "Matrix $\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[matrix]",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0439"
+  },
+  {
+   "input": "22/7",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[nested]",
+   "via": "sanitize_json_strings",
+   "id": "harvested-must_not_change-0440"
+  },
+  {
+   "input": "2.5 m/s²",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0441"
+  },
+  {
+   "input": "line one\nline two",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0442"
+  },
+  {
+   "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_sync_writers_never_store_a_control_character",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0443"
+  },
+  {
+   "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_put_and_after_hour_writers_never_store_a_control_character",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0444"
+  },
+  {
+   "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0445"
+  },
+  {
+   "input": "A shirt costs \\$50",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "id": "harvested-must_not_change-0446"
+  },
+  {
+   "input": "\\$50 and \\$60",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "id": "harvested-must_not_change-0447"
+  },
+  {
+   "input": "$\\frac{1}{2}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "id": "harvested-must_not_change-0448"
+  },
+  {
+   "input": "plain text",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "id": "harvested-must_not_change-0449"
+  },
+  {
+   "input": "A shirt costs \\$50",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_sanitize_latex_option_ignores_escaped_dollars",
+   "via": "sanitize_latex_option",
+   "id": "harvested-must_not_change-0450"
+  },
+  {
+   "input": "Price \\$5 and $x^2$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_sanitize_latex_option_ignores_escaped_dollars",
+   "via": "sanitize_latex_option",
+   "id": "harvested-must_not_change-0451"
+  },
+  {
+   "input": "plain ascii answer",
+   "functions": [
+    "to_plain"
+   ],
+   "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+   "via": "latex_to_plain",
+   "style": "text",
+   "id": "harvested-must_not_change-0452"
+  },
+  {
+   "input": "(b) Balmer series",
+   "functions": [
+    "to_plain"
+   ],
+   "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+   "via": "latex_to_plain",
+   "style": "text",
+   "id": "harvested-must_not_change-0453"
+  },
+  {
+   "input": "$\\frac{1}{2}\\beta$",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0454"
+  },
+  {
+   "input": "5\\text{ N} \\times 2",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0455"
+  },
+  {
+   "input": "$\\theta \\rightarrow \\rho$",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0456"
+  },
+  {
+   "input": "$x \\neq y$",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0457"
+  },
+  {
+   "input": "abc",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0458"
+  },
+  {
+   "input": "line one\nline two",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0459"
+  },
+  {
+   "input": "Statement I: x\nStatement II: y",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0460"
+  },
+  {
+   "input": "i) first\nii) second\ne) none",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0461"
+  },
+  {
+   "input": "Mirror formula:\nu = -25 cm",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0462"
+  },
+  {
+   "input": "not this\nnot that",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0463"
+  },
+  {
+   "input": "col a\tcol b",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0464"
+  },
+  {
+   "input": "windows\r\nline",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0465"
+  },
+  {
+   "input": "2.5 m/s²",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+   "via": "repair_control_char_corruption",
+   "id": "harvested-must_not_change-0466"
+  },
+  {
+   "input": "2.5 m/s²",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0467"
+  },
+  {
+   "input": "line one\nline two",
+   "functions": [
+    "repair"
+   ],
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+   "via": "repair_control_chars_deep",
+   "id": "harvested-must_not_change-0468"
+  },
+  {
+   "input": "Erythrocytes ($\\text{RBCs}$) have a unique biconcave disc shape",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0469"
+  },
+  {
+   "input": "carboxyhemoglobin ($\\text{HbCO}$)",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0470"
+  },
+  {
+   "input": "$\\text{CO}_{2} + \\text{H}_{2}\\text{O} \\rightleftharpoons \\text{H}_{2}\\text{CO}_{3}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0471"
+  },
+  {
+   "input": "travels at $3 \\times 10^{8}$ metres per second",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0472"
+  },
+  {
+   "input": "the fraction $\\frac{1}{2}$ of the total",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0473"
+  },
+  {
+   "input": "about $5 \\textmu m$ across",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0474"
+  },
+  {
+   "input": "$\\textmu m$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0475"
+  },
+  {
+   "input": "$5 \\ldots 10$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0476"
+  },
+  {
+   "input": "$\\ldots x$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0477"
+  },
+  {
+   "input": "$x, \\ldots, y$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0478"
+  },
+  {
+   "input": "$\\text{CO}_{2}$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0479"
+  },
+  {
+   "input": "$\\ldots",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0480"
+  },
+  {
+   "input": "plain prose with no maths at all",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0482"
+  },
+  {
+   "input": "",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0483"
+  },
+  {
+   "input": "$x, \\ldots, y$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_mutation_blunt_delete_would_corrupt_real_maths",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0484"
+  },
+  {
+   "input": "$$a \\\\[2pt] b$$",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/a LaTeX line break \\\\[2pt] inside display maths is not a delimiter",
+   "via": "normalizeMathDelimiters",
+   "id": "harvested-must_not_change-0485"
+  },
+  {
+   "input": "$\\theta$",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\theta inside $…$ was already safe and still is",
+   "via": "preprocessLatexText",
+   "id": "harvested-must_not_change-0486"
+  },
+  {
+   "input": "the angle \\theta grows",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+   "via": "decodeEscapesOutsideMath",
+   "id": "harvested-must_not_change-0487"
+  },
+  {
+   "input": "so \\neq holds",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+   "via": "decodeEscapesOutsideMath",
+   "id": "harvested-must_not_change-0488"
+  },
+  {
+   "input": "\\rho is density",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+   "via": "decodeEscapesOutsideMath",
+   "id": "harvested-must_not_change-0489"
+  },
+  {
+   "input": "Solve $2x + 3$.",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$2x + 3$ is maths, not a price",
+   "via": "escapeCurrencyDollars",
+   "id": "harvested-must_not_change-0490"
+  },
+  {
+   "input": "$$2x$$",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$$…$$ starting with a digit is untouched",
+   "via": "escapeCurrencyDollars",
+   "id": "harvested-must_not_change-0491"
+  },
+  {
+   "input": "Cost \\$5000 and $\\frac{1}{4}$ off",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/already-escaped currency is stable (idempotent)",
+   "via": "escapeCurrencyDollars",
+   "id": "harvested-must_not_change-0492"
+  },
+  {
+   "input": "",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::empty / clean input/empty string is returned unchanged",
+   "via": "mojibake",
+   "id": "harvested-must_not_change-0493"
+  },
+  {
+   "input": "The velocity is 5 m/s and the angle is 30 degrees.",
+   "functions": [
+    "normalize"
+   ],
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::empty / clean input/already-clean ASCII text is untouched",
+   "via": "mojibake",
+   "id": "harvested-must_not_change-0494"
+  },
+  {
+   "input": "plain $x$ stays",
+   "functions": [
+    "normalize"
+   ],
+   "source": "Fillers/tests/js/test_period_content_math.mjs::normalizeMathDelimiters converts \\(..\\) and \\[..\\] to dollar delimiters",
+   "via": "normalizeMathDelimiters",
+   "id": "harvested-must_not_change-0495"
+  },
+  {
+   "input": "a\tb\nc\r\nd",
+   "functions": [
+    "repair"
+   ],
+   "source": "Fillers/tests/js/test_period_content_math.mjs::stripControlChars removes C0 controls and DEL but keeps tab / newline / CR",
+   "via": "stripControlChars",
+   "id": "harvested-must_not_change-0496"
+  },
+  {
+   "input": "no dollars here",
+   "functions": [
+    "segment"
+   ],
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "id": "harvested-must_not_change-0498"
+  }
+ ]
+}

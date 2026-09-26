@@ -1,0 +1,135 @@
+3879 corpus strings + 1200 random inputs
+
+== 1 normalize(canonicalize(x)) == canonicalize(x): 291 / 5079 exceptions ==
+    in : '$5x'
+    got: ['$5x', '\\$5x']
+    in : '\\n\\'
+    got: ['$\\n\\$', '$\n\\$']
+    in : 'A\\n'
+    got: ['A\\n', 'A\n']
+    in : 'a\\n'
+    got: ['a\\n', 'a\n']
+    in : '$1e'
+    got: ['$1e', '\\$1e']
+    in : '$5}'
+    got: ['$5}', '\\$5}']
+    in : '$0}'
+    got: ['$0}', '\\$0}']
+    in : '$1}'
+    got: ['$1}', '\\$1}']
+    in : '$5$$'
+    got: ['$5$$', '\\$5$$']
+    in : '$5$1'
+    got: ['$5$1', '\\$5\\$1']
+    in : 'heri\\n'
+    got: ['heri\\n', 'heri\n']
+    in : 'line\\n'
+    got: ['line\\n', 'line\n']
+
+== 2 fix(normalize(x)) == fix(x): 2 / 5079 exceptions ==
+    in : 'Î\x9e '
+    got: ['Î ', '$\\Pi$']
+    in : 'Î\xa0 '
+    got: ['Î ', '$\\Pi$']
+
+== 3 normalize idempotent: 3 / 5079 exceptions ==
+    in : 'Î\x9e '
+    got: ['Î ', 'Π']
+    in : 'Î\xa0 '
+    got: ['Î ', 'Π']
+    in : '$\\no'
+    got: ['$\no', '$\\to']
+
+== 4 canonicalize idempotent: 7 / 5079 exceptions ==
+    in : '\\S\nu'
+    got: ['$\\S\nu$', '$\\S\\nu$']
+    in : '\\c\nu'
+    got: ['$\\c\nu$', '$\\c\\nu$']
+    in : '}\ni\\e'
+    got: ['$}\ni\\e$', '$}\\ni\\e$']
+    in : '\\(\nu\\)'
+    got: ['$\nu$', '$\\nu$']
+    in : '$3 $\re$'
+    got: ['\\$3 $\re$', '\\$3 $\\ne$']
+    in : 'x^0∋$\\(\num_L\\)'
+    got: ['$x^0$$\\ni$$$\num_L$', '$x^0$$\\ni$$$\n$um_L$$']
+
+== 5 repair idempotent: 0 / 5079 exceptions ==
+
+== 6 segment raw slices reassemble the input: 0 / 5079 exceptions ==
+
+== 7 fix output is a fixed point of normalize and canonicalize: 17 / 5079 exceptions ==
+    in : 'Â'
+    got: ['normalize', '\xa0yyy def', 'yyy def']
+    in : 'Î\x9e '
+    got: ['normalize', 'Î ', 'Π']
+    in : 'Î\xa0 '
+    got: ['normalize', 'Î ', 'Π']
+    in : '0_A$'
+    got: ['normalize', '$0_A$$', '\\$0_A$$']
+    in : '$ H⁺'
+    got: ['canonicalize', '$ $\\text{H}^{+}$', '$ \\text{H}^{+}$']
+    in : '0\\x\\'
+    got: ['normalize', '$0\\x\\$', '\\$0\\x\\$']
+    in : '\\H\\te'
+    got: ['normalize', '$\\H\te$', '$\\H\\ne$']
+    in : 'SO₄\x08m'
+    got: ['canonicalize', '$\\text{SO}_{4}$\\bm', '$\\text{SO}_{4}\\bm$']
+    in : '\\c\\nt'
+    got: ['normalize', '$\\c\nt$', '$\\c\\tt$']
+    in : 'Ïƒâ€�'
+    got: ['canonicalize', '$\\sigma$â€�', '$\\sigma$�']
+    in : '$ \\in'
+    got: ['canonicalize', '$ $\\in$', '$ \\in$']
+    in : '\\to:\\f'
+    got: ['canonicalize', '$\\to$:\\f', '$\\to:\\f$']
+
+== 8 audit(fix(x)) has no control_char / legacy_delimiter / bare_left_brace: 0 / 5079 exceptions ==
+
+== 9 to_plain(fix(x)) == to_plain(x) when x is already canonical: 0 / 5079 exceptions ==
+
+== 9b to_plain(fix(x)) == to_plain(x) when audit(x) is empty: 449 / 5079 exceptions ==
+    in : 'µ'
+    got: ['µ', 'μ', '$\\mu$']
+    in : '∆'
+    got: ['∆', 'Δ', '$\\Delta$']
+    in : '−'
+    got: ['−', '-', '-']
+    in : 'a⃗'
+    got: ['a⃗', 'a', '$\\vec{a}$']
+    in : '\neq'
+    got: ['\neq', '≠', '$\\neq$']
+    in : 'c^2'
+    got: ['c^2', 'c²', '$c^2$']
+    in : '$µ$'
+    got: ['µ', 'μ', '$\\mu$']
+    in : 'H_2'
+    got: ['H_2', 'H₂', '$H_2$']
+    in : '∑$$'
+    got: ['∑$$', 'Σ$$', '$\\sum$$$']
+    in : '$⋅$'
+    got: ['⋅', '·', '$\\cdot$']
+    in : '$ᵀ$'
+    got: ['ᵀ', '^T', '$^{T}$']
+    in : '0^2'
+    got: ['0^2', '0²', '$0^2$']
+
+== 11 JSON round trip of control-free strings: 0 / 5079 exceptions ==
+
+== 12 audit kinds that survive fix ==
+  mojibake                      91   e.g. '\ud83d' -> '�'
+  unbalanced_dollar             85   e.g. '$x' -> '$x'
+  unsupported_command           73   e.g. '$a\\nb$' -> '$a\\nb$'
+  double_escaped_command        68   e.g. '\\\\cdots' -> '$\\\\cdots$'
+  command_missing_argument      35   e.g. '\x0crac' -> '$\\frac$'
+  frac_missing_args             22   e.g. '$\\frac{1}$' -> '$\\frac{1}$'
+  bare_unicode_math             21   e.g. '√' -> '√'
+  script_missing_braces         15   e.g. '$e^-x$ decay' -> '$e^-x$ decay'
+  unicode_chemistry              8   e.g. 'mc² and x₁ and xH₂O' -> 'mc² and x₁ and xH₂O'
+Traceback (most recent call last):
+  File "C:\Users\Ankit\Desktop\pupiltree\pupiltree-latex\verification\review\consistency.py", line 281, in <module>
+    json.dump(report, f, ensure_ascii=False, indent=1)
+  File "C:\Users\Ankit\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 180, in dump
+    fp.write(chunk)
+UnicodeEncodeError: 'utf-8' codec can't encode character '\ud83d' in position 1: surrogates not allowed
+CONS_DONE

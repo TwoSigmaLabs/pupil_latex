@@ -1,0 +1,145 @@
+
+== KaTeX failures of fix(x) segments (class, input-rendered-before) ==
+[  40] blamed_on_fix=False  Expected '\right', got 'EOF'
+        in='diagram mass\n\nsalt, velocity - $\\left{$ and $\\right}$'
+        seg='\\left\\{'
+[  37] blamed_on_fix=False  Expected 'EOF', got '}'
+        in='angle \\(}}\\): \\(\\frac{5 × 10^3}{\\\\frac{1}{2} + \\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2} +  \n  + \\r
+        seg='}}'
+[  31] blamed_on_fix=False  Expected 'EOF', got '\right'
+        in='diagram mass\n\nsalt, velocity - $\\left{$ and $\\right}$'
+        seg='\\right\\}'
+[  18] blamed_on_fix=True  Double superscript
+        in='\\(a\n\\\\ b = θ = 30° = 3 × 10⁸\\)\n$νκ\\#\\%10⁻³$. H₂O \x11 $'
+        seg='\\nu \\kappa\\#\\%10^{-}^{3}'
+[  15] blamed_on_fix=False  Double superscript
+        in='\x16 { x^10^2orbit \\[Ωξ, \\rho, \\left( x\\]'
+        seg='x^{10}^2orbit'
+[   8] blamed_on_fix=False  Double subscript
+        in='\\(πr²\n\\) \x12\tequal. $$a_b_c, τΠ$$\n\n\x1d student'
+        seg='a_b_c, \\tau \\Pi'
+[   7] blamed_on_fix=False  undefined \nicefrac
+        in='\ud83d\nis solve\n\n$5, $\\nicefrac{1}{2}$\tकक्षा दस: in ×ᴺ'
+        seg='\\nicefrac{1}{2}'
+[   7] blamed_on_fix=False  Can't use function '$' in math mode
+        in='$\\text{costs $5}\\ne\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$ \\left( \\frac{a}{b} \\right)\t\\\\displayst
+        seg='\\frac{$\\xi\\Omega$, \\alpha}{x^{10}}'
+[   7] blamed_on_fix=False  {align} can be used only in display mode.
+        in='ħω: value, $\\begin{align} a &= b \\end{align}$\n{{IMAGE:69e74f5e84fd}}. voltage'
+        seg='\\begin{align} a &= b \\end{align}'
+[   7] blamed_on_fix=False  Expected 'EOF', got '&'
+        in='⅖ₘ - an\tSO₄²⁻ q_001_easy_2026 - if equal\n\n$$\\text{a & b}$$'
+        seg='\\text{a & b}'
+[   6] blamed_on_fix=False  undefined \ref
+        in='\\left( \\frac{a}{b} \\right)\x05 water, \\[\n + ξΣΓ + \\text{{a}} + a \\\\ b\\]: \\text{a}\nSO₄²⁻\nhttps://storage.googleapis.com/pupiltree/a_b/c_d.png $\\ref{eq1}$'
+        seg='\\ref{eq1}'
+[   6] blamed_on_fix=False  undefined \nStatement
+        in='solutionâ€”¹ $Na⁺\\nStatement$if z'
+        seg='Na^{+}\\nStatement'
+[   6] blamed_on_fix=False  undefined \textmu
+        in='triangle: $\\mu$\n\n\\(\\textmu m, a\\quad b\\), heat\tquestion'
+        seg='\\textmu m, a\\quad b'
+[   6] blamed_on_fix=False  undefined \n
+        in='work\n\ncell. $\\r\\n = \\mu$\n\nexam: 5$ - ℝ. momentum z'
+        seg='\\r\\n = \\mu'
+[   6] blamed_on_fix=True  Double subscript
+        in='69e74f5e84fd1a2b3c4d5e6f, 2^10\t\\[C₆H₁₂O₆\\]: is_valid\n\nanimalO₂ + 2H₂ → 2H₂O \\\\text{m}'
+        seg='C_{6}H_{1}_{2}O_{6}'
+[   5] blamed_on_fix=False  undefined \textsuperscript
+        in='$$\\theta$$ triangle \\top{"key": "value"}, reaction on: current\n$x^10, \\leq, \\textsuperscript{2}$'
+        seg='x^{10}, \\leq, \\textsuperscript{2}'
+[   4] blamed_on_fix=True  Unexpected end of input in a macro argument, expected '}'
+        in='\\[\\begin{aligned} a &= b \\\\ c &= d \\end{aligned} + 5\\,\\text{m/s}\\]\t\tbinom, $\\left. x \\right|$. NH₄⁺ \\[\n\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{
+        seg='\\tbinom'
+[   4] blamed_on_fix=True  Expected 'EOF', got '\right'
+        in='\\\\right)'
+        seg='\\right)'
+[   4] blamed_on_fix=False  undefined \t
+        in='\\[\\t\\] distance: temperature. solve cell: \\\\)'
+        seg='\\t'
+[   4] blamed_on_fix=True  Can't use function '$' in math mode
+        in='$5) \\[x⃗\\]\x08igwedge\tsquare\nwavelength'
+        seg='$\\vec{x}'
+[   4] blamed_on_fix=False  Expected 'EOF', got '#'
+        in='\x08ackprime{1}{2} - $5\\,\\text{m/s} + ¾∬$ $$# + \\mu$$\t$. Let\n\nvDash x, if, teacher'
+        seg='# + \\mu'
+[   4] blamed_on_fix=False  Expected '$', got 'EOF'
+        in='$\\text{costs $5}\\ne\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$ \\left( \\frac{a}{b} \\right)\t\\\\displayst
+        seg='\\text{costs $5}\\ne'
+[   3] blamed_on_fix=False  Expected group as argument to '\sqrt'
+        in='$\\left{$ and $\\right}$. 🧪 - \x18 \rfloor x\t$\\nStatement ↦⅗ ¹ \\nu$\tit, $\\sqrt$. $5 to $10'
+        seg='\\sqrt'
+[   3] blamed_on_fix=False  undefined \cbrt
+        in='mixture\n\ud800x: â\x82\x83 $\\cbrt{8}$\n\norbit שלום\tvoltage\nahs_69e74f5e84fd'
+        seg='\\cbrt{8}'
+[   2] blamed_on_fix=False  Expected 'EOF', got '}'
+
+        in='satellite\n\nwavelength\ndescribe\u200b\n$$\n{{{{{{{{{{{{{{{{{{x}}}}}}}}}}}}}}}}}}}}}\nabla\n$$ - $'
+        seg='\n{{{{{{{{{{{{{{{{{{x}}}}}}}}}}}}}}}}}}}}}\\nabla\n'
+[   2] blamed_on_fix=False  Unexpected end of input in a macro argument, expected '}'
+        in='energy Na⁺schoolhttps://storage.googleapis.com/pupiltree/a_b/c_d.png $\x00$ - power \\(\\text{50%}\\leq%\\ddot{x}\n\\) 10^{-3}'
+        seg='\\text{50%}\\leq%\\ddot{x}'
+[   2] blamed_on_fix=True  Expected 'EOF', got '_'
+        in='filter\\nabla. $$\\text{H₂O}\\pu{5 m/s}$$, שלום'
+        seg='\\text{H_{2}O}\\pu{5 m/s}'
+[   2] blamed_on_fix=False  Extra }
+        in='{{IMAGE:69e74f5e84fd}}\\[ᵀ\nΔ\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}\\], $\\frac{\\neg∫CO₂}}}{a_{12
+        seg='\\frac{\\neg\\int CO_{2}}}}{a_{12} = \\theta = 2^{10} = Na^{+}}'
+[   2] blamed_on_fix=True  undefined \cbrt
+        in='$1,000 {{IMAGE:69e74f5e84fd}} work\n69e74f5e84fd1a2b3c4d5e6f 👨\u200d👩\u200d👧. { = \\cbrt{8} = \\frac{a \\\\ b\\begin{matrix} a \\\\\\frac{1}{2} \\end{matrix}x\ny}{ \n  10\\ \\text{kg} ²⅝}'
+        seg='\\cbrt{8}'
+[   2] blamed_on_fix=True  Double superscript
+
+        in='\\[\n\\ddot{x}, ν⋯Θ\n\\]\n\n\x1d. respiration\n\\[\n\\sqrt2 + \\% + Fe³⁺\n\\]\nΘΥμβ: $5 &lt;: \\left\\{ x \\right\\}'
+        seg='\n\\sqrt2 + \\% + Fe^{3}^{+}\n'
+[   1] blamed_on_fix=True  undefined \rightarrow
+        in='\\(\\text{if } x > 0\\) \textquotedblright2$$\\prod_{k}, ⅔ℝ⊅, ΘμΛ, \\$5$$ \\(\\text{→} = \\frac12 = \\tilde{y}\\)'
+        seg='\\text{\\rightarrow} = \\frac12 = \\tilde{y}'
+[   1] blamed_on_fix=False  Expected 'EOF', got '#'
+#̲
+
+        in='\x17, 😀: gs://bucket/dir_1/img_2.jpg\t{"a": 1, "b": [2, 3]} \\[\\tilde{y}\\] \\tau +  \n : $$\n#\n$$ $τιδιψ \\int_0^1 f(x)\\,dx \\\\\\\\pi ħω$'
+        seg='\n#\n'
+[   1] blamed_on_fix=False  Expected 'EOF', got '_'
+
+        in='10⁻³ \x03\ncell\\r: energy \\[\nΔΛ = \\text{यह} = \\text{H₂O}\n\\]- item one, $\x7f, \\#$'
+        seg='\n\\Delta \\Lambda = \\text{यह} = \\text{H_{2}O}\n'
+[   1] blamed_on_fix=False  Can't use function '$' in math mode
+$̲
+
+        in='$$\n$\n$$\t$\\theta$'
+        seg='\n$\n'
+[   1] blamed_on_fix=False  Unexpected end of input in a macro argument, expected '}'
+
+        in='\\[\nΥλτΘ = ριΓχτ = β = \\text{50%}\n\\] acidweight - 6.022 × 10²³$\\infty\\mathrm{H_2O}\x7f\\text{costs $5}$. \\\\mathscr{L} â\x80¦Î½, ⋅ᵣᴶ'
+        seg='\n\\Upsilon \\lambda \\tau \\Theta = \\rho \\iota \\Gamma \\chi \\tau = \\beta = \\text{50%}\n'
+[   1] blamed_on_fix=False  Can't use function '$' in math mode
+$̲\vec{x}$ = \lef…
+        in='language\nhttp://example.com/path_with_under^caret?x=1&y=2\\[\nx⃗ = \\left[ \\frac{a}{b} \\right] = \\textsuperscript{2}\n\\]solve\n\n\x16'
+        seg='\n$\\vec{x}$ = \\left[ \\frac{a}{b} \\right] = \\textsuperscript{2}\n'
+[   1] blamed_on_fix=False  undefined \taue
+        in='$x^10, C₆H₁₂O₆,  \n $\nTRUE_FALSE - $ζω\\taue^{i\\pi}\\dot{x}$$100k'
+        seg='\\zeta \\omega\\taue^{i\\pi}\\dot{x}'
+[   1] blamed_on_fix=True  {align} can be used only in display mode.
+        in='apple. ## Heading - lesson, \\right\\frac{\\tt \\ce{Ca(OH)2} \\begin{align} a &= b \\end{align} \\text{25°C}}{\\ne 5\\,\\text{m/s} ᴷᵩ} = \\frac{\\begin{matrix} a \\\\\\frac{1}{2} \\end{matrix}, \\not\\subset, \\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}, {{{{{{x}}}}}}}}}}}}}}}}}
+        seg='\\frac{\\tt \\ce{Ca(OH)2} \\begin{align} a &= b \\end{align} \\text{25^{\\circ}C}}{\\ne 5\\,\\text{m/s} ^{K}_{\\phi}}'
+[   1] blamed_on_fix=False  undefined \betax
+        in='diagram: $$\x08etax^10O₂ + 2H₂ → 2H₂O\n$$\nis_valid, my_var, at'
+        seg='\\betax^{10}O_{2} + 2H_{2} \\rightarrow 2H_{2}O\n'
+[   1] blamed_on_fix=True  Expected a control sequence
+        in='\x0cuturelet{x}. {{IMAGE:69e74f5e84fd}}: $\\cal C$'
+        seg='\\futurelet{x}. {{IMAGE:69e74f5e84fd}}: \\cal C'
+[   1] blamed_on_fix=False  Double subscript
+\ni, a_b_̲c, C_{6}H_{1}_{…
+        in='{{IMAGE:x_1}} - $$\n\\ni, a_b_c, C₆H₁₂O₆, C₆H₁₂O₆\n$$ Cl⁻$$\\ce{SO4^{2-}} SO₄²⁻ x⃗$$'
+        seg='\n\\ni, a_b_c, C_{6}H_{1}_{2}O_{6}, C_{6}H_{1}_{2}O_{6}\n'
+[   1] blamed_on_fix=True  undefined \pi
+        in='number\t$\\mathscr{L} \\text{π}$http://example.com/path_with_under^caret?x=1&y=2\t\\\\timessentence'
+        seg='\\mathscr{L} \\text{\\pi}'
+[   1] blamed_on_fix=False  Expected 'EOF', got '&'
+ = \text{a &̲ b} = \gamma \n…
+        in='river gravity\\[\\\\text{x} = \n = \\text{a & b} = γν\\]: ψκρ: \\[1.5e-3 Ca(OH)₂ π x\ny\\]\tahs_69e74f5e84fd: \\[\n⅚ \\frac12 ᴹᵪς₋ \\left{ x \\right}\n\\] $5,000.50'
+        seg='\\text{x} = \n = \\text{a & b} = \\gamma \\nu'
+[   1] blamed_on_fix=False  Expected 'EOF', got '}'
+{x}}̲}}}}
+        in='69e74f5e84fd1a2b

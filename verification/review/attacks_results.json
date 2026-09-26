@@ -1,0 +1,743 @@
+[
+ {
+  "attack": "currency_pandoc_rule",
+  "status": "PASS",
+  "why": "pandoc closer rule as specified; note `$5$` stays math (a price written `$5$` renders as the number 5)"
+ },
+ {
+  "attack": "display_dollars_inside_inline",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$a $$ b$",
+  "output": "$a $$ b$"
+ },
+ {
+  "attack": "display_dollars_inside_inline_2",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$x$$y$",
+  "output": "$x$$y$"
+ },
+ {
+  "attack": "escaped_dollar_inside_text",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\text{cost \\$5}$",
+  "output": "$\\text{cost \\$5}$"
+ },
+ {
+  "attack": "dollar_inside_text",
+  "status": "FAIL",
+  "why": "KaTeX: KaTeX parse error: Expected '$', got 'EOF' at position 14: \\ (a bare $ inside \\text{} is a KaTeX error; fix should escape it)",
+  "input": "$\\text{cost $5}$",
+  "output": "$\\text{cost $5}$"
+ },
+ {
+  "attack": "double_backslash_before_dollar",
+  "status": "PASS",
+  "why": "segment treats \\\\$ as a math opener; normalize/canonicalize treat it as escaped (parity mismatch between the tokenizer and the $-counters)"
+ },
+ {
+  "attack": "nested_frac_depth_20",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$",
+  "output": "$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$"
+ },
+ {
+  "attack": "nested_frac_depth_20",
+  "status": "PASS",
+  "why": "ok",
+  "input": "\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}",
+  "output": "$\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{\\frac{1}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}}{2}$"
+ },
+ {
+  "attack": "nested_braces_1000_to_plain",
+  "status": "FAIL",
+  "why": "to_plain on 1000 nested braces: RecursionError (41 ms)"
+ },
+ {
+  "attack": "unbalanced_braces_inside_math",
+  "status": "NOTE",
+  "why": "unbalanced braces are left as they are (segment refuses the span, so it shows as text); audit has no kind for unbalanced braces"
+ },
+ {
+  "attack": "left_brace_split_across_spans",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\left{ x$ and $y \\right}$",
+  "output": "$\\left\\{ x$ and $y \\right\\}$"
+ },
+ {
+  "attack": "double_superscript",
+  "status": "PASS",
+  "why": "input was already invalid LaTeX (double superscript)",
+  "input": "$x^10^2$",
+  "output": "$x^{10}^2$"
+ },
+ {
+  "attack": "chained_subscript_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "a_b_c",
+  "output": "a_b_c"
+ },
+ {
+  "attack": "class_name_in_prose",
+  "status": "PASS",
+  "why": "class name in prose",
+  "input": "Students of 10_A scored well",
+  "output": "Students of $10_A$ scored well"
+ },
+ {
+  "attack": "snake_case_short_head",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Set my_var to 3",
+  "output": "Set my_var to 3"
+ },
+ {
+  "attack": "x_train",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Use x_train and y_pred",
+  "output": "Use x_train and y_pred"
+ },
+ {
+  "attack": "x_0_wrap",
+  "status": "PASS",
+  "why": "ok",
+  "input": "at x_0 the value",
+  "output": "at $x_0$ the value"
+ },
+ {
+  "attack": "mc2",
+  "status": "PASS",
+  "why": "ok",
+  "input": "E = mc^2 is famous",
+  "output": "E = $mc^2$ is famous"
+ },
+ {
+  "attack": "hindi_prose_with_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "यह \\alpha कण है",
+  "output": "$यह \\alpha कण है$"
+ },
+ {
+  "attack": "hindi_prose_with_frac",
+  "status": "PASS",
+  "why": "ok",
+  "input": "गति \\frac{1}{2} है",
+  "output": "गति $\\frac{1}{2}$ है"
+ },
+ {
+  "attack": "hindi_prose_with_unicode",
+  "status": "PASS",
+  "why": "ok",
+  "input": "कोण θ = 30° है",
+  "output": "कोण $\\theta$ = 30° है"
+ },
+ {
+  "attack": "hindi_prose_with_math",
+  "status": "FAIL",
+  "why": "whole Hindi sentence wrapped in $…$ (no 4-letter ASCII word found); KaTeX renders it as spaceless math text",
+  "output": "$यह \\alpha कण है$"
+ },
+ {
+  "attack": "emoji_and_rtl",
+  "status": "NOTE",
+  "why": "lone surrogate becomes U+FFFD (ftfy fix_surrogates) which audit then reports as mojibake forever"
+ },
+ {
+  "attack": "literal_newline_inside_display_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$$\\nx = 1 \\\\\\ny = 2$$",
+  "output": "$$\\nx = 1 \\\\\\ny = 2$$"
+ },
+ {
+  "attack": "literal_newline_in_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Line one\\nLine two",
+  "output": "Line one\nLine two"
+ },
+ {
+  "attack": "literal_newline_before_nu",
+  "status": "PASS",
+  "why": "\\nu in prose is kept as the command (spec §2.6), so a real line break before 'u = 5 cm' is lost",
+  "input": "Given\\nu = 5 cm",
+  "output": "Given$\\nu$ = 5 cm"
+ },
+ {
+  "attack": "tab_before_heta_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "angle \theta",
+  "output": "angle $\\theta$"
+ },
+ {
+  "attack": "tab_before_heta_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\theta$",
+  "output": "$\\theta$"
+ },
+ {
+  "attack": "tab_before_heta",
+  "status": "PASS",
+  "why": "JSON path"
+ },
+ {
+  "attack": "tab_before_word",
+  "status": "NOTE",
+  "why": "TAB + 'an angle' becomes \\tan angle: a tab before the English word 'an' is read as the command",
+  "output": "Draw\\tan angle"
+ },
+ {
+  "attack": "nu_ne_ni_not_in_every_context",
+  "status": "PASS",
+  "why": "prose keeps the ambiguous four as commands (normalize) but the JSON path decodes them as line breaks — the two paths disagree on the same bytes"
+ },
+ {
+  "attack": "boxed",
+  "status": "PASS",
+  "why": "not structural, so left bare in prose",
+  "input": "Answer: \\boxed{42}",
+  "output": "Answer: \\boxed{42}"
+ },
+ {
+  "attack": "boxed_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\boxed{42}$",
+  "output": "$\\boxed{42}$"
+ },
+ {
+  "attack": "ce",
+  "status": "PASS",
+  "why": "bare \\ce in prose is not wrapped",
+  "input": "\\ce{H2O} is water",
+  "output": "\\ce{H2O} is water"
+ },
+ {
+  "attack": "ce_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\ce{2H2 + O2 -> 2H2O}$",
+  "output": "$\\ce{2H2 + O2 -> 2H2O}$"
+ },
+ {
+  "attack": "pu",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\pu{5 m/s}$",
+  "output": "$\\pu{5 m/s}$"
+ },
+ {
+  "attack": "mathscr",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\mathscr{L}$",
+  "output": "$\\mathscr{L}$"
+ },
+ {
+  "attack": "cal",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\cal C$",
+  "output": "$\\cal C$"
+ },
+ {
+  "attack": "matrix",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$",
+  "output": "$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$"
+ },
+ {
+  "attack": "cases",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$f(x) = \\begin{cases} x & x > 0 \\\\ -x & x \\le 0 \\end{cases}$",
+  "output": "$f(x) = \\begin{cases} x & x > 0 \\\\ -x & x \\le 0 \\end{cases}$"
+ },
+ {
+  "attack": "align_inline",
+  "status": "PASS",
+  "why": "align only renders in display mode",
+  "input": "$\\begin{align} a &= b \\end{align}$",
+  "output": "$\\begin{align} a &= b \\end{align}$"
+ },
+ {
+  "attack": "matrix_prose",
+  "status": "PASS",
+  "why": "bare environment in prose is not wrapped",
+  "input": "\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}",
+  "output": "\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}"
+ },
+ {
+  "attack": "row_break_then_cmd",
+  "status": "FAIL",
+  "why": "lost '\\\\\\\\\\\\frac' (\\\\ row break directly followed by \\frac)",
+  "input": "$$a \\\\\\frac{1}{2}$$",
+  "output": "$$a \\frac{1}{2}$$"
+ },
+ {
+  "attack": "row_break_then_end",
+  "status": "FAIL",
+  "why": "lost '\\\\\\\\\\\\end'",
+  "input": "$\\begin{aligned} a &= b \\\\\\end{aligned}$",
+  "output": "$\\begin{aligned} a &= b \\end{aligned}$"
+ },
+ {
+  "attack": "text_nested",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\text{if } x \\in \\{1, 2\\}$",
+  "output": "$\\text{if } x \\in \\{1, 2\\}$"
+ },
+ {
+  "attack": "text_nested_2",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\text{a {b} c}$",
+  "output": "$\\text{a {b} c}$"
+ },
+ {
+  "attack": "units",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$5\\,\\text{m/s}$",
+  "output": "$5\\,\\text{m/s}$"
+ },
+ {
+  "attack": "units_prose",
+  "status": "PASS",
+  "why": "prose with a spacing command and \\text",
+  "input": "v = 5\\,\\text{m/s}",
+  "output": "$v = 5\\,\\text{m/s}$"
+ },
+ {
+  "attack": "text_unicode_sub",
+  "status": "FAIL",
+  "why": "KaTeX: KaTeX parse error: Expected 'EOF', got '_' at position 8: \\t (Unicode subscript inside \\text{})",
+  "input": "$\\text{H₂O}$",
+  "output": "$\\text{H_{2}O}$"
+ },
+ {
+  "attack": "text_unicode_times",
+  "status": "FAIL",
+  "why": "KaTeX: KaTeX parse error: Undefined control sequence: \\times at pos",
+  "input": "$\\text{5 × 3}$",
+  "output": "$\\text{5 \\times 3}$"
+ },
+ {
+  "attack": "text_unicode_degree",
+  "status": "FAIL",
+  "why": "KaTeX: KaTeX parse error: Expected 'EOF', got '^' at position 9: \\t",
+  "input": "$\\text{25°C}$",
+  "output": "$\\text{25^{\\circ}C}$"
+ },
+ {
+  "attack": "text_unicode_pi",
+  "status": "FAIL",
+  "why": "KaTeX: KaTeX parse error: Undefined control sequence: \\pi at positi",
+  "input": "$\\text{π r}$",
+  "output": "$\\text{\\pi r}$"
+ },
+ {
+  "attack": "text_unicode_arrow",
+  "status": "FAIL",
+  "why": "KaTeX: KaTeX parse error: Undefined control sequence: \\rightarrow a",
+  "input": "$\\ce{A -> B} \\text{→}$",
+  "output": "$\\ce{A -> B} \\text{\\rightarrow}$"
+ },
+ {
+  "attack": "text_hindi",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$\\text{यह} = 5$",
+  "output": "$\\text{यह} = 5$"
+ },
+ {
+  "attack": "percent_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "50% of students",
+  "output": "50% of students"
+ },
+ {
+  "attack": "percent_math",
+  "status": "PASS",
+  "why": "unescaped % inside math starts a comment: KaTeX renders '50' only; fix does not escape it",
+  "input": "$50%$",
+  "output": "$50%$"
+ },
+ {
+  "attack": "hash_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Question #3",
+  "output": "Question #3"
+ },
+ {
+  "attack": "hash_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$#3$",
+  "output": "$#3$"
+ },
+ {
+  "attack": "amp_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "AT&T and R&D",
+  "output": "AT&T and R&D"
+ },
+ {
+  "attack": "amp_math",
+  "status": "PASS",
+  "why": "& outside an environment",
+  "input": "$a & b$",
+  "output": "$a & b$"
+ },
+ {
+  "attack": "escaped_percent_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$50\\%$",
+  "output": "$50\\%$"
+ },
+ {
+  "attack": "thousands",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Pay $1,000 now",
+  "output": "Pay \\$1,000 now"
+ },
+ {
+  "attack": "sci_currency",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$1.5e-3",
+  "output": "\\$1.5e-3"
+ },
+ {
+  "attack": "thousands_math",
+  "status": "PASS",
+  "why": "a math span that starts with a digit and has a valid closer stays math",
+  "input": "$1,000 \\times 2$",
+  "output": "$1,000 \\times 2$"
+ },
+ {
+  "attack": "sci_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "$1.5 \\times 10^{-3}$",
+  "output": "$1.5 \\times 10^{-3}$"
+ },
+ {
+  "attack": "range",
+  "status": "PASS",
+  "why": "ok",
+  "input": "between $5 and $10 dollars",
+  "output": "between \\$5 and \\$10 dollars"
+ },
+ {
+  "attack": "price_then_math",
+  "status": "PASS",
+  "why": "ok",
+  "input": "costs $5 and x = $\\frac{1}{2}$",
+  "output": "costs \\$5 and x = $\\frac{1}{2}$"
+ },
+ {
+  "attack": "sci_unicode",
+  "status": "PASS",
+  "why": "Unicode superscript after a number",
+  "input": "c = 3 × 10⁸ m/s",
+  "output": "c = 3 $\\times$ 10⁸ m/s"
+ },
+ {
+  "attack": "sci_ascii",
+  "status": "PASS",
+  "why": "ok",
+  "input": "c = 3 x 10^8 m/s",
+  "output": "c = 3 x $10^8$ m/s"
+ },
+ {
+  "attack": "sci_e",
+  "status": "PASS",
+  "why": "ok",
+  "input": "c = 3e8 m/s",
+  "output": "c = 3e8 m/s"
+ },
+ {
+  "attack": "chem_water",
+  "status": "PASS",
+  "why": "ok",
+  "input": "H₂O is water",
+  "output": "$\\text{H}_{2}\\text{O}$ is water"
+ },
+ {
+  "attack": "chem_sulfate",
+  "status": "PASS",
+  "why": "ok",
+  "input": "SO₄²⁻ ion",
+  "output": "$\\text{SO}_{4}^{2-}$ ion"
+ },
+ {
+  "attack": "chem_iron",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Fe³⁺ and Fe²⁺",
+  "output": "$\\text{Fe}^{3+}$ and $\\text{Fe}^{2+}$"
+ },
+ {
+  "attack": "chem_paren",
+  "status": "PASS",
+  "why": "ok",
+  "input": "Ca(OH)₂ is lime",
+  "output": "$\\text{Ca(OH)}_{2}$ is lime"
+ },
+ {
+  "attack": "chem_equation",
+  "status": "PASS",
+  "why": "ok",
+  "input": "2H₂ + O₂ → 2H₂O",
+  "output": "$\\text{2H}_{2}$ + $\\text{O}_{2} \\rightarrow \\text{2H}_{2}\\text{O}$"
+ },
+ {
+  "attack": "chem_glucose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "C₆H₁₂O₆",
+  "output": "$\\text{C}_{6}\\text{H}_{12}\\text{O}_{6}$"
+ },
+ {
+  "attack": "chem_in_word",
+  "status": "PASS",
+  "why": "preceded by a letter: not chemistry",
+  "input": "xH₂O",
+  "output": "xH₂O"
+ },
+ {
+  "attack": "chem_10_8",
+  "status": "PASS",
+  "why": "not chemistry-shaped",
+  "input": "10⁸ and mc² and x₁",
+  "output": "10⁸ and mc² and x₁"
+ },
+ {
+  "attack": "json_transport_edge_cases",
+  "status": "FAIL",
+  "why": "backslash-space: raises JSONDecodeError; backslash-digit: raises JSONDecodeError; trailing backslash: raises JSONDecodeError; escaped quotes: raises JSONDecodeError"
+ },
+ {
+  "attack": "json_roundtrip_of_fixed_output",
+  "status": "PASS",
+  "why": "ok"
+ },
+ {
+  "attack": "image_marker_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "See {{IMAGE:x_1}} below",
+  "output": "See {{IMAGE:x_1}} below"
+ },
+ {
+  "attack": "image_marker_with_cmd",
+  "status": "PASS",
+  "why": "marker next to a bare command",
+  "input": "{{IMAGE:x_1}} \\alpha = 3",
+  "output": "${{IMAGE:x_1}} \\alpha = 3$"
+ },
+ {
+  "attack": "url_prose",
+  "status": "PASS",
+  "why": "ok",
+  "input": "see https://a.b/c_d^e/f_g.png?x=1 now",
+  "output": "see https://a.b/c_d^e/f_g.png?x=1 now"
+ },
+ {
+  "attack": "twelve_markers_one_in_math",
+  "status": "FAIL",
+  "why": "lost '{{IMAGE:last_1}}'",
+  "input": "{{IMAGE:img_0}} {{IMAGE:img_1}} {{IMAGE:img_2}} {{IMAGE:img_3}} {{IMAGE:img_4}} {{IMAGE:img_5}} {{IMAGE:img_6}} {{IMAGE:img_7}} {{IMAGE:img_8}} {{IMAGE:img_9}} {{IMAGE:img_10}} {{IMAGE:img_11}} $a_1 {{IMAGE:last_1}}$",
+  "output": "{{IMAGE:img_0}} {{IMAGE:img_1}} {{IMAGE:img_2}} {{IMAGE:img_3}} {{IMAGE:img_4}} {{IMAGE:img_5}} {{IMAGE:img_6}} {{IMAGE:img_7}} {{IMAGE:img_8}} {{IMAGE:img_9}} {{IMAGE:img_10}} {{IMAGE:img_11}} $a_1 IMG_{12}$"
+ },
+ {
+  "attack": "url_containing_marker",
+  "status": "PASS",
+  "why": "ok",
+  "input": "http://host/{{IMAGE:x_1}}",
+  "output": "http://host/{{IMAGE:x_1}}"
+ },
+ {
+  "attack": "nbsp",
+  "status": "FAIL",
+  "why": "lost '5 km'; lost 'Chapter 5' (NBSP should become a space, not vanish)",
+  "input": "5 km and Chapter 5",
+  "output": "5km and Chapter5"
+ },
+ {
+  "attack": "em_dash_superscript",
+  "status": "FAIL",
+  "why": "lost '—' (_DASH_SUPER_GARBAGE_RE deletes an em dash followed by superscript digits)",
+  "input": "10—¹ range",
+  "output": "10 range"
+ },
+ {
+  "attack": "html_entities_twice",
+  "status": "PASS",
+  "why": "entity unescape once per pass",
+  "input": "&amp;amp;",
+  "output": "&"
+ },
+ {
+  "attack": "mojibake_pi",
+  "status": "FAIL",
+  "why": "differs from expected",
+  "input": "Ï€ r²",
+  "output": "$\\pi$ r²"
+ },
+ {
+  "attack": "mojibake_double",
+  "status": "PASS",
+  "why": "ok",
+  "input": "cafÃƒÂ©",
+  "output": "café"
+ },
+ {
+  "attack": "french_word",
+  "status": "PASS",
+  "why": "real accented capitals vs mojibake rules",
+  "input": "naÏf Île",
+  "output": "naÏf Île"
+ },
+ {
+  "attack": "romanian_In",
+  "status": "PASS",
+  "why": "`Î ` (Î + space) is a mojibake key for Π",
+  "input": "În casă",
+  "output": "În casă"
+ },
+ {
+  "attack": "ref_cycle_control_char",
+  "status": "PASS",
+  "why": "ok"
+ },
+ {
+  "attack": "orphan_paren",
+  "status": "PASS",
+  "why": "ok",
+  "input": "value \\( x",
+  "output": "value  x"
+ },
+ {
+  "attack": "legacy_multiline",
+  "status": "PASS",
+  "why": "ok",
+  "input": "\\(\n x^2 \n\\)",
+  "output": "$x^2$"
+ },
+ {
+  "attack": "display_multiline",
+  "status": "PASS",
+  "why": "ok",
+  "input": "\\[\n x^2 \n\\]",
+  "output": "$$\n x^2 \n$$"
+ },
+ {
+  "attack": "inline_containing_legacy",
+  "status": "PASS",
+  "why": "legacy delimiters nested in $…$ -> $$x$$",
+  "input": "$\\(x\\)$",
+  "output": "$$x$$"
+ },
+ {
+  "attack": "md_escaped_brackets",
+  "status": "PASS",
+  "why": "markdown-escaped brackets become display math",
+  "input": "Use \\[link\\] syntax",
+  "output": "Use $$link$$ syntax"
+ },
+ {
+  "attack": "performance_quadratic_scans",
+  "status": "FAIL",
+  "why": "attack raised RecursionError: maximum recursion depth exceeded in comparison"
+ },
+ {
+  "attack": "to_plain_prefix_peeling",
+  "status": "FAIL",
+  "why": "prefix peeling in _command splits real commands: [('\\\\neg p', '≠g p'), ('\\\\top', '→p'), ('\\\\inf', '∈f'), ('a \\\\pmod{n}', 'a ±odn'), ('a \\\\leqslant b', 'a ≤slant b'), ('\\\\newline', '≠wline'), ('\\\\intercal', '∫ercal')]"
+ },
+ {
+  "attack": "tts_style",
+  "status": "FAIL",
+  "why": "[('$x^{20}$', 'x squared0'), ('$\\\\frac{\\\\frac{1}{2}}{3}$', 'frac1 over 23'), ('$x^{30}$', 'x cubed0'), ('$\\\\pmatrix$', 'plus or minusatrix')]"
+ },
+ {
+  "attack": "prose_only_short_words",
+  "status": "PASS",
+  "why": "short-word prose sentences are not wrapped whole"
+ },
+ {
+  "attack": "sqrt_bare",
+  "status": "PASS",
+  "why": "ok",
+  "input": "use \\sqrt here",
+  "output": "use \\sqrt here"
+ },
+ {
+  "attack": "sqrt2",
+  "status": "PASS",
+  "why": "\\sqrt2 without braces",
+  "input": "\\sqrt2 is irrational",
+  "output": "\\sqrt2 is irrational"
+ },
+ {
+  "attack": "frac12",
+  "status": "PASS",
+  "why": "ok",
+  "input": "half is \\frac12",
+  "output": "half is \\frac12"
+ },
+ {
+  "attack": "root_glyph_2",
+  "status": "PASS",
+  "why": "ok",
+  "input": "√2 is irrational",
+  "output": "$\\sqrt{2}$ is irrational"
+ },
+ {
+  "attack": "root_glyph_expr",
+  "status": "PASS",
+  "why": "√2gh keeps the glyph",
+  "input": "√(x+1) and √2gh",
+  "output": "$\\sqrt{x+1}$ and √2gh"
+ },
+ {
+  "attack": "sqrt_dollar",
+  "status": "PASS",
+  "why": "already broken input",
+  "input": "$\\sqrt$2",
+  "output": "$\\sqrt$2"
+ },
+ {
+  "attack": "double_escaped_commands_not_in_collapse_list",
+  "status": "FAIL",
+  "why": "still double-escaped after fix: ['\\\\\\\\cdots', '\\\\\\\\ce{H2O}', '\\\\\\\\displaystyle x', '\\\\\\\\mathscr{L}', '\\\\\\\\ldots', '$\\\\\\\\cdots$']"
+ },
+ {
+  "attack": "normalize_vs_segment_currency_parity",
+  "status": "PASS",
+  "why": "ok"
+ },
+ {
+  "attack": "repair_newline_eq",
+  "status": "NOTE",
+  "why": "LF + 'eq' is restored as \\neq although audit (3-letter minimum after LF) would not have flagged it"
+ }
+]

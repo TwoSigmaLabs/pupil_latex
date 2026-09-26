@@ -1,0 +1,4 @@
+# Corpus, tables and generated sources are compared byte for byte; keep LF on every OS.
+* text=auto eol=lf
+*.png binary
+*.ttf binary

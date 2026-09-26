@@ -1,0 +1,808 @@
+{
+ "function": "fix",
+ "version": "1.1.0",
+ "cases": [
+  {
+   "id": "curated-everything-at-once",
+   "input": "Cost $5 and \\(\\theta\\) with \frac{1}{2} and π and H₂O",
+   "expected": "Cost \\$5 and $\\theta$ with $\\frac{1}{2}$ and $\\pi$ and $\\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B1",
+    "B3",
+    "B4",
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-water",
+   "input": "H₂O",
+   "expected": "$\\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-baking-soda",
+   "input": "NaHCO₃",
+   "expected": "$\\text{NaHCO}_{3}$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-sulfate",
+   "input": "SO₄²⁻",
+   "expected": "$\\text{SO}_{4}^{2-}$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-iron-ion",
+   "input": "Fe³⁺",
+   "expected": "$\\text{Fe}^{3+}$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-parens",
+   "input": "Ca(OH)₂",
+   "expected": "$\\text{Ca(OH)}_{2}$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-prose-parens",
+   "input": "Water (H₂O) and CO₂.",
+   "expected": "Water ($\\text{H}_{2}\\text{O}$) and $\\text{CO}_{2}$.",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-coefficient",
+   "input": "2H₂ + O₂ → 2H₂O",
+   "expected": "$\\text{2H}_{2}$ + $\\text{O}_{2} \\rightarrow \\text{2H}_{2}\\text{O}$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-chem-inside-math-untouched",
+   "input": "$H₂O$ and H₂O",
+   "expected": "$H_{2}O$ and $\\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B6",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-power-of-ten-is-a-script",
+   "input": "10⁸",
+   "expected": "$10^{8}$",
+   "tags": [
+    "B6",
+    "review-S6"
+   ]
+  },
+  {
+   "id": "curated-lowercase-scripts-and-hydrate",
+   "input": "mc² and x₁ and xH₂O",
+   "expected": "$mc^{2}$ and $x_{1}$ and $\\text{xH}_{2}\\text{O}$",
+   "tags": [
+    "B6",
+    "review-S6"
+   ]
+  },
+  {
+   "id": "curated-plain-chem-text",
+   "input": "H2O is water",
+   "expected": "H2O is water",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-greek-and-symbols",
+   "input": "α + β ≤ π × 2",
+   "expected": "$\\alpha$ + $\\beta \\leq \\pi \\times$ 2",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-mojibake-then-wrap",
+   "input": "Ï€ r^2",
+   "expected": "$\\pi r^2$",
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-currency-and-formula",
+   "input": "Cost $60 and $x^2$ end",
+   "expected": "Cost \\$60 and $x^2$ end",
+   "tags": [
+    "B3"
+   ]
+  },
+  {
+   "id": "curated-orphan-and-escape",
+   "input": "\\(\\theta\\) then \\nNext \\( orphan",
+   "expected": "$\\theta$ then \nNext  orphan",
+   "tags": [
+    "B4",
+    "B5"
+   ]
+  },
+  {
+   "id": "curated-identifiers-kept",
+   "input": "MCQ_SINGLE and q_001_easy and https://a/b_c.png and {{IMAGE:59_1}}",
+   "expected": "MCQ_SINGLE and q_001_easy and https://a/b_c.png and {{IMAGE:59_1}}",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-control-chars",
+   "input": "3 \times 10^8 and \frac{a}{b}",
+   "expected": "3 $\\times 10^8$ and $\\frac{a}{b}$",
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-bare-symbol-command",
+   "input": "speed is 3 \\times 10^8 m/s",
+   "expected": "speed is 3 $\\times 10^8$ m/s",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-bare-greek-command",
+   "input": "the angle \\theta is small",
+   "expected": "the angle $\\theta$ is small",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-adjacent-spans-merged",
+   "input": "$\\alpha$ $\\beta$ and $x$  $y$",
+   "expected": "$\\alpha \\beta$ and $x y$",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-display-spans-not-merged",
+   "input": "$$a$$ $$b$$",
+   "expected": "$$a$$ $$b$$",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-spans-with-prose-not-merged",
+   "input": "$a$ + $b$",
+   "expected": "$a$ + $b$",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-nested-frac-renders",
+   "input": "\\frac{\\frac{1}{2}}{3}",
+   "expected": "$\\frac{\\frac{1}{2}}{3}$",
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-sci-notation-unicode",
+   "input": "3 × 10⁸ m/s",
+   "expected": "3 $\\times 10^{8}$ m/s",
+   "tags": [
+    "B6",
+    "review-S6"
+   ]
+  },
+  {
+   "id": "curated-bare-sqrt-without-argument-left-alone",
+   "input": "use \\sqrt here",
+   "expected": "use \\sqrt here",
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-degree-and-units",
+   "input": "25 °C and 9.8 m/s²",
+   "expected": "25 °C and 9.8 m/$\\text{s}^{2}$",
+   "tags": [
+    "B6",
+    "audit2-units"
+   ]
+  },
+  {
+   "id": "curated-double-escaped-command-collapsed-and-wrapped",
+   "input": "a \\\\times b",
+   "expected": "a $\\times$ b",
+   "tags": [
+    "B1",
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-script-labels-untouched",
+   "input": "\\teacher: Hello class \\type: mcq \\read: page 4",
+   "expected": "\\teacher: Hello class \\type: mcq \\read: page 4",
+   "tags": [
+    "B1",
+    "real-data-D0"
+   ]
+  },
+  {
+   "id": "curated-broken-span-not-merged",
+   "input": "$\\bigcup$ $\\begin{pmatrix}$ $\\forall$",
+   "expected": "$\\bigcup$ $\\begin{pmatrix}$ $\\forall$",
+   "tags": [
+    "B7",
+    "real-data-D7"
+   ]
+  },
+  {
+   "id": "curated-grade-level-value-in-prose",
+   "input": "Grade 6_A section",
+   "expected": "Grade 6_A section",
+   "tags": [
+    "B4"
+   ],
+   "note": "a class name (digits, underscore, capitals) is an identifier even in prose"
+  },
+  {
+   "id": "curated-html-entity-and-symbol",
+   "input": "a &amp; b &times; c",
+   "expected": "a & b $\\times$ c",
+   "tags": [
+    "B6",
+    "real-data-D8"
+   ]
+  },
+  {
+   "id": "curated-underscore-before-chemistry",
+   "input": "TRUE_FALSE⁻",
+   "expected": "TRUE_FALSE⁻",
+   "tags": [
+    "B7",
+    "fuzz"
+   ]
+  },
+  {
+   "id": "curated-image-marker-inside-url",
+   "input": "see gs://{{IMAGE:q2_fig}} -",
+   "expected": "see gs://{{IMAGE:q2_fig}} -",
+   "tags": [
+    "B7",
+    "fuzz"
+   ]
+  },
+  {
+   "id": "curated-hindi-prose-with-symbols",
+   "input": "यह α कण \\frac{1}{2} है",
+   "expected": "यह $\\alpha$ कण $\\frac{1}{2}$ है",
+   "tags": [
+    "B6",
+    "fuzz"
+   ]
+  },
+  {
+   "id": "curated-unicode-scripts-outside-math",
+   "input": "3 × 10⁻³ and mc² and x₁",
+   "expected": "3 $\\times 10^{-3}$ and $mc^{2}$ and $x_{1}$",
+   "tags": [
+    "B6",
+    "review-S6"
+   ]
+  },
+  {
+   "id": "curated-percent-in-math-escaped",
+   "input": "$50%$",
+   "expected": "$50\\%$",
+   "tags": [
+    "B4",
+    "review-F22"
+   ]
+  },
+  {
+   "id": "curated-dollar-inside-text-escaped",
+   "input": "$\\text{costs $5}$",
+   "expected": "$\\text{costs \\$5}$",
+   "tags": [
+    "B3",
+    "review-F22"
+   ]
+  },
+  {
+   "id": "curated-adjacent-without-blank-merged",
+   "input": "$1$γ",
+   "expected": "$1 \\gamma$",
+   "tags": [
+    "B4",
+    "review-F5"
+   ]
+  },
+  {
+   "id": "curated-text-group-unicode-kept-through-fix",
+   "input": "$\\text{H₂O}$",
+   "expected": "$\\text{H₂O}$",
+   "tags": [
+    "B7",
+    "review-F1"
+   ]
+  },
+  {
+   "id": "curated-greek-prose-linear",
+   "input": "α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω α β γ π ω",
+   "expected": "$\\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega \\alpha \\beta \\gamma \\pi \\omega$",
+   "tags": [
+    "B6",
+    "review-perf"
+   ]
+  },
+  {
+   "id": "curated-unit-after-number-upright",
+   "input": "240 cm³ and E = mc²",
+   "expected": "240 $\\text{cm}^{3}$ and E = $mc^{2}$",
+   "tags": [
+    "B6",
+    "final-C2"
+   ]
+  },
+  {
+   "id": "curated-matrix-survives-fix",
+   "input": "$\\begin{vmatrix}a&b\\\\c&d\\end{vmatrix}$",
+   "expected": "$\\begin{vmatrix}a&b\\\\c&d\\end{vmatrix}$",
+   "tags": [
+    "B7",
+    "final-R1"
+   ]
+  },
+  {
+   "id": "curated-audit2-times-chain",
+   "input": "The product 3×4×5=60 is easy.",
+   "expected": "The product $3\\times4\\times5$=60 is easy.",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-relations-with-digits",
+   "input": "If x≤5 then y≥2.",
+   "expected": "If $x\\leq5$ then $y\\geq2$.",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-sci-notation-in-prose",
+   "input": "Find 3.14×10⁻⁵ in standard form.",
+   "expected": "Find $3.14\\times10^{-5}$ in standard form.",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-sci-notation-alone",
+   "input": "3.14×10⁻⁵",
+   "expected": "$3.14\\times10^{-5}$",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-sci-notation-with-math",
+   "input": "3×10⁸ m/s and $E=mc^2$",
+   "expected": "$3\\times10^{8}$ m/s and $E=mc^2$",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-avogadro-tight",
+   "input": "6.022×10²³ particles",
+   "expected": "$6.022\\times10^{23}$ particles",
+   "tags": [
+    "B6",
+    "audit2-cluster",
+    "audit2-script-not-word"
+   ]
+  },
+  {
+   "id": "curated-audit2-avogadro-alone",
+   "input": "6.022×10²³",
+   "expected": "$6.022\\times10^{23}$",
+   "tags": [
+    "B6",
+    "audit2-script-not-word"
+   ]
+  },
+  {
+   "id": "curated-audit2-hydrate",
+   "input": "CuSO₄·5H₂O",
+   "expected": "$\\text{CuSO}_{4} \\cdot5 \\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-arrows-with-operands",
+   "input": "Take n→∞ and x→0.",
+   "expected": "Take $n\\rightarrow\\infty$ and $x\\rightarrow0$.",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-greek-subscript",
+   "input": "Given ε₀ and μ₀, find c.",
+   "expected": "Given $\\epsilon_{0}$ and $\\mu_{0}$, find c.",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-greek-subscript-list",
+   "input": "λ₁, λ₂ are eigenvalues.",
+   "expected": "$\\lambda_{1}$, $\\lambda_{2}$ are eigenvalues.",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-greek-two-digit-subscript",
+   "input": "σ₁₂",
+   "expected": "$\\sigma_{12}$",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-micro-sign-subscript",
+   "input": "µ₀ = 4π × 10⁻⁷ T·m/A",
+   "expected": "$\\mu_{0}$ = $4\\pi \\times 10^{-7}$ T$\\cdot$m/A",
+   "tags": [
+    "B6",
+    "audit2-cluster",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit2-operands-both-sides",
+   "input": "a×b and x→y",
+   "expected": "$a\\times b$ and $x\\rightarrow y$",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-script-then-relation",
+   "input": "x²≤5",
+   "expected": "$x^{2}\\leq5$",
+   "tags": [
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-bare-command-before-digit",
+   "input": "x\\leq5 holds",
+   "expected": "$x\\leq5$ holds",
+   "tags": [
+    "B4",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-stray-dollars-before-digit",
+   "input": "x$\\leq$5 holds",
+   "expected": "$x\\leq5$ holds",
+   "tags": [
+    "B4",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-bare-pi-before-digit",
+   "input": "Use \\pi2 here",
+   "expected": "Use $\\pi2$ here",
+   "tags": [
+    "B4",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-mixed-times",
+   "input": "2×10 and 3 \\times4",
+   "expected": "$2\\times10$ and 3 $\\times4$",
+   "tags": [
+    "B4",
+    "B6",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-command-with-scripts",
+   "input": "\\alpha_1 and \\beta^2",
+   "expected": "$\\alpha_1$ and $\\beta^2$",
+   "tags": [
+    "B4",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-units-next-to-greek-stay-out",
+   "input": "µs and kΩ and J·s",
+   "expected": "$\\mu$s and k$\\Omega$ and J$\\cdot$s",
+   "tags": [
+    "B6",
+    "B7",
+    "audit2-cluster"
+   ]
+  },
+  {
+   "id": "curated-audit2-lone-dollar-before-symbol",
+   "input": "$×5",
+   "expected": "$ $\\times5$",
+   "tags": [
+    "B4",
+    "audit2-lone-dollar"
+   ]
+  },
+  {
+   "id": "curated-audit2-line-break-then-frac",
+   "input": "\\\\\\frac{1}{2}",
+   "expected": "\\\\$\\frac{1}{2}$",
+   "tags": [
+    "B4",
+    "audit2-line-break-dollar"
+   ]
+  },
+  {
+   "id": "curated-audit2-lone-dollar-then-chemistry",
+   "input": "$ H₂",
+   "expected": "$ $\\text{H}_{2}$",
+   "tags": [
+    "B4",
+    "B6",
+    "audit2-lone-dollar"
+   ]
+  },
+  {
+   "id": "curated-audit2-padded-span-trimmed",
+   "input": "Solve $ x^2 + 1 = 0 $ now",
+   "expected": "Solve $x^2 + 1 = 0$ now",
+   "tags": [
+    "B4",
+    "audit2-padded-span"
+   ]
+  },
+  {
+   "id": "curated-audit2-padded-span-with-command",
+   "input": "Let $ \\theta = 30° $ here",
+   "expected": "Let $\\theta = 30^{\\circ}$ here",
+   "tags": [
+    "B4",
+    "audit2-padded-span"
+   ]
+  },
+  {
+   "id": "curated-audit2-unit-after-slash",
+   "input": "m/s²",
+   "expected": "m/$\\text{s}^{2}$",
+   "tags": [
+    "B6",
+    "audit2-units"
+   ]
+  },
+  {
+   "id": "curated-audit2-unit-mol",
+   "input": "6.022 × 10²³ mol⁻¹",
+   "expected": "6.022 $\\times 10^{23} \\text{mol}^{-1}$",
+   "tags": [
+    "B6",
+    "audit2-units"
+   ]
+  },
+  {
+   "id": "curated-audit2-unit-per-mm",
+   "input": "per mm³",
+   "expected": "per $\\text{mm}^{3}$",
+   "tags": [
+    "B6",
+    "audit2-units"
+   ]
+  },
+  {
+   "id": "curated-audit2-unit-slash-and-number",
+   "input": "N/m² and 5 m² and 3 km²",
+   "expected": "N/$\\text{m}^{2}$ and 5 $\\text{m}^{2}$ and 3 $\\text{km}^{2}$",
+   "tags": [
+    "B6",
+    "audit2-units"
+   ]
+  },
+  {
+   "id": "curated-audit2-variables-stay-italic",
+   "input": "x² and a² and a/b²",
+   "expected": "$x^{2}$ and $a^{2}$ and a/$b^{2}$",
+   "tags": [
+    "B6",
+    "B7",
+    "audit2-units"
+   ]
+  },
+  {
+   "id": "curated-audit2-mojibake-euro",
+   "input": "â‚¬5",
+   "expected": "€5",
+   "tags": [
+    "B6",
+    "audit2-currency-mojibake"
+   ]
+  },
+  {
+   "id": "curated-audit2-mojibake-rupee",
+   "input": "â‚¹2,50,000 and Â£5",
+   "expected": "₹2,50,000 and £5",
+   "tags": [
+    "B6",
+    "audit2-currency-mojibake"
+   ]
+  },
+  {
+   "id": "curated-audit2-double-pi",
+   "input": "ππ",
+   "expected": "$\\pi\\pi$",
+   "tags": [
+    "B6",
+    "audit2-double-greek"
+   ]
+  },
+  {
+   "id": "curated-audit2-mojibake-double-pi",
+   "input": "Ï€Ï€",
+   "expected": "$\\pi\\pi$",
+   "tags": [
+    "B6",
+    "audit2-double-greek"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-circle",
+   "input": "Area = 2πr and πr²",
+   "expected": "Area = $2\\pi r$ and $\\pi r^{2}$",
+   "tags": [
+    "B6",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-uncertainty",
+   "input": "Δx·Δp ≥ ħ/2",
+   "expected": "$\\Delta x\\cdot\\Delta p \\geq \\hbar$/2",
+   "tags": [
+    "B6",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-chemistry-left-to-chemistry",
+   "input": "ΔH₂O",
+   "expected": "$\\Delta \\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B6",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-with-ascii-script",
+   "input": "πr^2 and 2πr_1",
+   "expected": "$\\pi r^2$ and $2\\pi r_1$",
+   "tags": [
+    "B6",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-after-joining-operator",
+   "input": "x≤2πr and 3×πr",
+   "expected": "$x\\leq2\\pi r$ and $3\\times\\pi r$",
+   "tags": [
+    "B6",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-units-kept",
+   "input": "5 µs, 10 kΩ, 3 MΩ, 2 µm, 5 µg, 4 mΩ, Ω·m, J·s",
+   "expected": "5 $\\mu$s, 10 k$\\Omega$, 3 M$\\Omega$, 2 $\\mu$m, 5 $\\mu$g, 4 m$\\Omega$, $\\Omega\\cdot$m, J$\\cdot$s",
+   "tags": [
+    "B6",
+    "B7",
+    "audit3-greek-word"
+   ]
+  },
+  {
+   "id": "curated-audit3-greek-word-radical-coefficient-kept",
+   "input": "2√3",
+   "expected": "2$\\sqrt{3}$",
+   "tags": [
+    "B7",
+    "audit3-greek-word"
+   ],
+   "note": "√ is not a Greek letter: Backend #1654 shape"
+  },
+  {
+   "id": "curated-audit3-brace-close-frac",
+   "input": "a $\\frac{1}{2$ b",
+   "expected": "a $\\frac{1}{2}$ b",
+   "tags": [
+    "B4",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-brace-close-then-closed-span",
+   "input": "$\\sqrt{x+1$ and $y$",
+   "expected": "$\\sqrt{x+1}$ and $y$",
+   "tags": [
+    "B4",
+    "audit3-brace-close"
+   ]
+  },
+  {
+   "id": "curated-audit3-script-group-euler",
+   "input": "e^{iπ}",
+   "expected": "$e^{i\\pi}$",
+   "tags": [
+    "B5",
+    "B6",
+    "audit3-script-group"
+   ]
+  },
+  {
+   "id": "curated-audit3-script-group-symbol-after-script",
+   "input": "10^{-3}μ and sin^{2}θ",
+   "expected": "$10^{-3} \\mu$ and $sin^{2} \\theta$",
+   "tags": [
+    "B6",
+    "audit3-script-group"
+   ]
+  },
+  {
+   "id": "curated-audit3-script-group-command-arguments",
+   "input": "use \\frac{π}{2} here and e^{iθ}",
+   "expected": "use $\\frac{\\pi}{2}$ here and $e^{i\\theta}$",
+   "tags": [
+    "B5",
+    "B6",
+    "audit3-script-group"
+   ]
+  }
+ ]
+}

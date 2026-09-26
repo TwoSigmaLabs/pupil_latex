@@ -1,0 +1,78 @@
+  1000/3000 inputs, 3s, failures so far: a_idempotent=34, d_keep=5, e_audit=120, f_katex=184, g_to_plain=27, h_json_raw=96
+  2000/3000 inputs, 5s, failures so far: a_idempotent=57, d_keep=9, e_audit=240, f_katex=401, g_to_plain=58, h_json_raw=191
+Ran 3000 inputs in 8s
+
+== a_idempotent: 90 failing inputs ==
+  [ 57] second pass wraps/escapes $ differently (currency / span parity changes after first pass)
+        in : '$ H₂'
+        fix: '$ $\\text{H}_{2}$'
+        in : '\to2a'
+        fix: '$\\to$2a'
+  [ 18] other
+        in : '$1$γ'
+        fix: '$1$$\\gamma$'
+        in : '0_A∈'
+        fix: '$0_A$$\\in$'
+  [  7] wrapping ($…$ added by wrap_bare_latex_commands / wrap_bare_scripts / pure-math) happens AFTER unicode_math_to_latex (Unicode converted on 2nd pass)
+        in : '$…H₂'
+        fix: '$…$\\text{H}_{2}$'
+  [  5] ftfy unescape_html applied once per pass (&amp;amp; -> &amp; -> &)
+  [  3] wrap_bare_scripts wraps x^10/a_12 AFTER _normalize_braces ran (braces added on 2nd pass)
+        in : '$³\\ro'
+        fix: '$³$\\to$'
+        in : 'x⃗ħ_25\\ne'
+        fix: '$\\vec{x}$$\\hbar$_25$\\ne$'
+
+== d_keep: 15 failing inputs ==
+  [  5] lost tokens: ahs_69e74f5e84fd
+        in : '$ahs_69e74f5e84fd$'
+        fix: '$ahs_{69}e74f5e84fd$'
+        in : '$ahs_69e74f5e84fd$'
+        fix: '$ahs_{69}e74f5e84fd$'
+  [  1] lost tokens: sess_2026_09_25, sess_2026_09_25, sess_2026_09_25, sess_2026_09_25, sess_2026_09_25
+        in : '$$µsess_2026_09_25Î³'
+        fix: '$$$\\mu$sess_{2026}_{09}_{25}$\\gamma$'
+  [  1] lost tokens: gs://bucket/dir_1/img_2.jpg, gs://bucket/dir_1/img_2.jpg, gs://bucket/dir_1/img_2.jpg
+        in : '$${{IMAGE:1}}https://s\nhttp://: http://e2\ngs://bucket/dir_1/img_2.jpg }$${{IMAGE:x}}{{IMAGE:_b}}{{IMAGE:1}}{{IMAGE:b}}{{IMAGE:1}}{{IMAGE:d}}'
+        fix: '$${{IMAGE:1}}https://s\nhttp://: http://e2\n\ue002IMG_{10}\ue003 }$${{IMAGE:x}}{{IMAGE:_b}}{{IMAGE:1}}{{IMAGE:b}}{{IMAGE:1}}{{IMAGE:d}}'
+  [  1] lost tokens: q_001_easy_2026, q_001_easy_2026, q_001_easy_2026, q_001_easy_2026
+        in : '$q_001_easy_2026$'
+        fix: '$q_{001}_easy_{2026}$'
+  [  1] lost tokens: sess_2026_09_25, sess_2026_09_25
+        in : '\\sess_2026_09_25'
+        fix: '$\\sess_{2026}_{09}_{25}$'
+  [  1] lost tokens: gs://bucket/dir_1/img_2.jpg
+        in : '{{IMAGE:1}}{{IMAGE:d}}{{IMAGE:q2}}https://. {{IMAGE:e7}}$τ$Ï†{{IMAGE:6d}}https://s gs://bucket/dir_1/img_2.jpg{{IMAGE:e7}} b⃗{{IMAGE:qg}}{{IMAGE:x}}'
+        fix: '{{IMAGE:1}}{{IMAGE:d}}{{IMAGE:q2}}https://. {{IMAGE:e7}}$\\tau$$\\phi${{IMAGE:6d}}https://s \ue002IMG_{10}\ue003 $\\vec{b}${{IMAGE:qg}}{{IMAGE:x}}'
+  [  1] lost tokens: q_001_easy_2026
+        in : '\\[q_001_easy_2026\\]'
+        fix: '$$q_{001}_easy_{2026}$$'
+  [  1] lost tokens: q_001_easy_2026, q_001_easy_2026
+        in : '$q_001_easy_2026$'
+        fix: '$q_{001}_easy_{2026}$'
+  [  1] lost tokens: https://storage.googleapis.com/pupiltree/a_b/c_d.png, https://storage.googleapis.com/pupiltree/a_b/c_d.png, https://storage.googleapis.com/pupiltree/a_b/c_d.png
+        in : 'http://{{IMAGE: https://storage.googleapis.com/pupiltree/a_b/c_d.png}}'
+        fix: 'http://\ue002IMG_0\ue003'
+  [  1] lost tokens: http://example.com/path_with_under^caret?x=1&y=2
+        in : 'http://example.com/path_with_under^caret?x=1&y=2N⁺'
+        fix: 'http://example.com/path_with_under^caret?x=1&y=$\\text{2N}^{+}$'
+  [  1] lost tokens: {{IMAGE:diagram_a_b}}
+        in : 'http://{{IMAGE:diagram_a_b}}\tw'
+        fix: 'http://\ue002IMG_0\ue003\tw'
+
+== e_audit: 370 failing inputs ==
+  [219] audit kinds after fix: mojibake
+        in : '\ude00'
+        fix: '�'
+        in : '\ud800'
+        fix: '�'
+  [136] audit kinds after fix: double_escaped_command
+        in : '\\\\cs'
+        fix: '$\\\\cs$'
+        in : '\\\\th'
+        fix: '$\\\\th$'
+  [ 12] audit kinds after fix: double_escaped_command,mojibake
+  [  3] audit kinds after fix: control_char,mojibake
+
+== f_katex: 582 failing inputs ==
+FUZZ_DONE

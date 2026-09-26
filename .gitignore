@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+python/build/
+python/dist/
+.dart_tool/
+dart/**/build/
+dart/**/pubspec.lock
+node_modules/
+js/dist/*
+!js/dist/pupiltree-latex.iife.js
+.DS_Store
+.ruff_cache/
+
+# Real-data verification inputs and outputs are extracted from production
+# database dumps. Keep the scripts and reports in git, never the data.
+verification/real_data/*.json
+verification/real_data/prev/

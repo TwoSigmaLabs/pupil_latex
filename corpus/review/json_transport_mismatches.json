@@ -1,0 +1,1126 @@
+{
+ "function": "json_transport",
+ "cases": [
+  {
+   "id": "backend-latex-rules-0020",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_parse_json_any_sanitizes_output_strings",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"q\": \"The value is \\\\(x^10\\\\)\"}",
+   "expected": {
+    "q": "The value is $x^{10}$"
+   },
+   "tags": [
+    "B1",
+    "B4"
+   ],
+   "note": "parse_json_with_latex_any also runs sanitize_latex_text on the decoded strings",
+   "python_got": {
+    "q": "The value is \\(x^10\\)"
+   }
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0001",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-pdf_extractor._parse_json_with_fixes]",
+   "via": "GeminiQuestionExtractor._parse_json_with_fixes(raw)[0]",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0002",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-pdf_extractor._parse_json_with_fixes]",
+   "via": "GeminiQuestionExtractor._parse_json_with_fixes(raw)[0]",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0003",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-pdf_extractor._parse_json_with_fixes]",
+   "via": "GeminiQuestionExtractor._parse_json_with_fixes(raw)[0]",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0004",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-pdf_extractor._parse_json_with_fixes]",
+   "via": "GeminiQuestionExtractor._parse_json_with_fixes(raw)[0]",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0005",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-pdf_extractor._parse_json_with_fixes]",
+   "via": "GeminiQuestionExtractor._parse_json_with_fixes(raw)[0]",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0006",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[pdf_extractor._parse_json_with_fixes]",
+   "via": "GeminiQuestionExtractor._parse_json_with_fixes(raw)[0]",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0007",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-ai.utils.parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0008",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-ai.utils.parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0009",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-ai.utils.parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0010",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-ai.utils.parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0011",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-ai.utils.parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0012",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[ai.utils.parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0013",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-ai.utils.loads_latex_aware]",
+   "via": "loads_latex_aware",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0014",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-ai.utils.loads_latex_aware]",
+   "via": "loads_latex_aware",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0015",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-ai.utils.loads_latex_aware]",
+   "via": "loads_latex_aware",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0016",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-ai.utils.loads_latex_aware]",
+   "via": "loads_latex_aware",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0017",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-ai.utils.loads_latex_aware]",
+   "via": "loads_latex_aware",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0018",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[ai.utils.loads_latex_aware]",
+   "via": "loads_latex_aware",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0019",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-ai.utils.loads_latex_aware[strict=False]]",
+   "via": "loads_latex_aware(strict=False)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0020",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-ai.utils.loads_latex_aware[strict=False]]",
+   "via": "loads_latex_aware(strict=False)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0021",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-ai.utils.loads_latex_aware[strict=False]]",
+   "via": "loads_latex_aware(strict=False)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0022",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-ai.utils.loads_latex_aware[strict=False]]",
+   "via": "loads_latex_aware(strict=False)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0023",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-ai.utils.loads_latex_aware[strict=False]]",
+   "via": "loads_latex_aware(strict=False)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0024",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[ai.utils.loads_latex_aware[strict=False]]",
+   "via": "loads_latex_aware(strict=False)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0025",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-ai_apis_tasks._parse_llm_json]",
+   "via": "_parse_llm_json",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0026",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-ai_apis_tasks._parse_llm_json]",
+   "via": "_parse_llm_json",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0027",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-ai_apis_tasks._parse_llm_json]",
+   "via": "_parse_llm_json",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0028",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-ai_apis_tasks._parse_llm_json]",
+   "via": "_parse_llm_json",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0029",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-ai_apis_tasks._parse_llm_json]",
+   "via": "_parse_llm_json",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0030",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[ai_apis_tasks._parse_llm_json]",
+   "via": "_parse_llm_json",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0031",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-master_plan.stages.parse_json_response]",
+   "via": "parse_json_response",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0032",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-master_plan.stages.parse_json_response]",
+   "via": "parse_json_response",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0033",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-master_plan.stages.parse_json_response]",
+   "via": "parse_json_response",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0034",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-master_plan.stages.parse_json_response]",
+   "via": "parse_json_response",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0035",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-master_plan.stages.parse_json_response]",
+   "via": "parse_json_response",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0036",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[master_plan.stages.parse_json_response]",
+   "via": "parse_json_response",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0037",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-master_plan._json_helpers.decode_json_array]",
+   "via": "decode_json_array (object form, unwraps 'questions')",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0038",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-master_plan._json_helpers.decode_json_array]",
+   "via": "decode_json_array (object form, unwraps 'questions')",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0039",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-master_plan._json_helpers.decode_json_array]",
+   "via": "decode_json_array (object form, unwraps 'questions')",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0040",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-master_plan._json_helpers.decode_json_array]",
+   "via": "decode_json_array (object form, unwraps 'questions')",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0041",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-master_plan._json_helpers.decode_json_array]",
+   "via": "decode_json_array (object form, unwraps 'questions')",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0042",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[master_plan._json_helpers.decode_json_array]",
+   "via": "decode_json_array (object form, unwraps 'questions')",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0043",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[b-f-master_plan._json_helpers.decode_json_array[bare]]",
+   "via": "decode_json_array (bare [...] form: the 'questions' array only)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"If $l_1: \\frac{x-2}{3} = \\frac{y+1}{-2}$ and $\\frac{2y+3}{\\beta}$ are perpendicular\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{x-2}{3}\", \"\\\\frac{2y+3}{\\\\beta}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0044",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[t-n-r-master_plan._json_helpers.decode_json_array[bare]]",
+   "via": "decode_json_array (bare [...] form: the 'questions' array only)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$5\\text{ N} \\times \\theta \\rightarrow \\rho$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\text{ N}\", \"\\\\times\", \"\\\\theta\", \"\\\\rightarrow\", \"\\\\rho\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0045",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[mixed-with-invalid-escape-master_plan._json_helpers.decode_json_array[bare]]",
+   "via": "decode_json_array (bare [...] form: the 'questions' array only)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\alpha + \\frac{1}{2}\\beta \\text{ m}$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\alpha\", \"\\\\frac{1}{2}\", \"\\\\beta\", \"\\\\text{ m}\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0046",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[nu-in-math-master_plan._json_helpers.decode_json_array[bare]]",
+   "via": "decode_json_array (bare [...] form: the 'questions' array only)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Energy $E = h\\nu$ and\\nnext line\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"h\\\\nu$\", \"and\\nnext line\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0047",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_backslash_latex_survives_every_parser[already-escaped-master_plan._json_helpers.decode_json_array[bare]]",
+   "via": "decode_json_array (bare [...] form: the 'questions' array only)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"$\\\\frac{1}{2}\\\\beta$\"}]}",
+   "property": "parsed['questions'][0]['qt'] has no C0 control char, no TAB, no CR, and contains each of: [\"\\\\frac{1}{2}\", \"\\\\beta\"]",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651",
+    "backend#1654"
+   ],
+   "note": "for decode_json_array[bare] the input is the inner [...] array only",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0048",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_real_line_break_in_prose_is_still_a_line_break[master_plan._json_helpers.decode_json_array[bare]]",
+   "via": "decode_json_array (bare [...] form: the 'questions' array only)",
+   "input": "{\"questions\":[{\"qn\":1,\"qt\":\"Statement I: x\\nStatement II: y\"}]}",
+   "property": "parsed['questions'][0]['qt'] contains 'x\\nStatement II' (real newline)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1651"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0072",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_tag_body_that_is_already_right_is_returned_untouched",
+   "via": "_validate_content_body",
+   "input": "{\"title\": \"Half\",  \"story\": \"$\\\\frac{1}{2}$ of it\\nnext\"}",
+   "property": "returned body text is byte-identical to the input",
+   "expected": null,
+   "tags": [
+    "B7",
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0074",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_single_tag_body_that_is_already_right_is_returned_untouched",
+   "via": "_validate_content_body",
+   "input": "[1, 2]",
+   "expected": null,
+   "expected_error": true,
+   "tags": [
+    "B1"
+   ],
+   "note": "a JSON array is not an object body",
+   "python_got": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "backend-llm-json-latex-contract-1651-0075",
+   "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_a_mindmap_carrying_latex_validates_and_the_renderer_can_read_it",
+   "via": "_validate_content_body",
+   "input": "{\"central\":\"Half $\\frac{1}{2}$\",\"branches\":[{\"label\":\"$\\alpha$ decay\",\"children\":[\"$\\beta$\"]}]}",
+   "property": "json.loads(body)['branches'][0] == {'label': '$\\alpha$ decay', 'children': ['$\\beta$']} and is_valid_mindmap_body(body)",
+   "expected": null,
+   "tags": [
+    "B1",
+    "backend#1654"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-control-char-corruption-0001",
+   "source": "Backend/tests/unit/test_latex_control_char_corruption.py::test_latex_never_decodes_to_control_characters[currency then frac]",
+   "via": "_latex_aware_escape then json.loads",
+   "input": "{\"c\": \"A price of $5000 gives $\\frac{1}{4}$ of it.\"}",
+   "property": "parsed['c'] contains no control char below 0x20 other than \\n \\t \\r",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-control-char-corruption-0002",
+   "source": "Backend/tests/unit/test_latex_control_char_corruption.py::test_latex_never_decodes_to_control_characters[board outside math]",
+   "via": "_latex_aware_escape then json.loads",
+   "input": "{\"c\": \"part. \\n\\board: Main Flower Whorls.\"}",
+   "property": "parsed['c'] contains no control char below 0x20 other than \\n \\t \\r",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-control-char-corruption-0003",
+   "source": "Backend/tests/unit/test_latex_control_char_corruption.py::test_latex_never_decodes_to_control_characters[frac and beta bare]",
+   "via": "_latex_aware_escape then json.loads",
+   "input": "{\"c\": \"Compute \\frac{1}{2} then \\beta.\"}",
+   "property": "parsed['c'] contains no control char below 0x20 other than \\n \\t \\r",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-control-char-corruption-0004",
+   "source": "Backend/tests/unit/test_latex_control_char_corruption.py::test_latex_never_decodes_to_control_characters[unbalanced dollar]",
+   "via": "_latex_aware_escape then json.loads",
+   "input": "{\"c\": \"Costs $5 and $10 so $\\frac{1}{2}$ each.\"}",
+   "property": "parsed['c'] contains no control char below 0x20 other than \\n \\t \\r",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-parser-known-failures-10-0072",
+   "source": "Backend/tests/unit/test_latex_parser_known_failures_10.py::test_valid_json_newline_after_currency_is_decoded[latex_aware_escape]",
+   "via": "_latex_aware_escape then json.loads(strict=False)",
+   "input": "{\"question\": \"A pen costs $5.\\nNow solve $\\\\frac{x}{2}=1$.\"}",
+   "property": "parsed['question'] contains LF + 'Now solve'",
+   "expected": null,
+   "expected_failure": true,
+   "tags": [
+    "B1",
+    "B3",
+    "backend#1598"
+   ],
+   "note": "strict xfail in source (N2): valid JSON \\n after an unpaired currency $ is kept as literal backslash-n by the frozen parser",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-parser-known-failures-10-0073",
+   "source": "Backend/tests/unit/test_latex_parser_known_failures_10.py::test_valid_json_newline_without_currency_is_decoded[latex_aware_escape]",
+   "via": "_latex_aware_escape then json.loads(strict=False)",
+   "input": "{\"question\": \"Line one.\\nNow solve $\\\\frac{x}{2}=1$.\"}",
+   "property": "parsed['question'] contains LF + 'Now solve' and '\\frac{x}{2}'",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-parser-known-failures-10-0145",
+   "source": "Backend/tests/unit/test_latex_parser_known_failures_10.py::test_valid_json_newline_after_currency_is_decoded[parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"question\": \"A pen costs $5.\\nNow solve $\\\\frac{x}{2}=1$.\"}",
+   "property": "parsed['question'] contains LF + 'Now solve'",
+   "expected": null,
+   "expected_failure": true,
+   "tags": [
+    "B1",
+    "B3",
+    "backend#1598"
+   ],
+   "note": "strict xfail in source (N2): valid JSON \\n after an unpaired currency $ is kept as literal backslash-n by the frozen parser",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-parser-known-failures-10-0146",
+   "source": "Backend/tests/unit/test_latex_parser_known_failures_10.py::test_valid_json_newline_without_currency_is_decoded[parse_json_with_latex_any]",
+   "via": "parse_json_with_latex_any",
+   "input": "{\"question\": \"Line one.\\nNow solve $\\\\frac{x}{2}=1$.\"}",
+   "property": "parsed['question'] contains LF + 'Now solve' and '\\frac{x}{2}'",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "agents-latex-never-corrupts-0014",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_named_commands_survive_in_math_and_in_prose",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"compute \\nu now\"}",
+   "expected": {
+    "c": "compute \\nu now"
+   },
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": {
+    "c": "compute \nu now"
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-0032",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_b_and_f_never_decode_to_control_characters",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"part. \\n\\board: Main Flower Whorls.\"}",
+   "property": "parsed['c'] contains neither backspace (0x08) nor form feed (0x0C); no forbidden control char anywhere in the parsed value",
+   "expected": null,
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "agents-latex-never-corrupts-0033",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_b_and_f_never_decode_to_control_characters",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"Costs $5 and $10 so $\\frac{1}{2}$ each.\"}",
+   "property": "parsed['c'] contains neither backspace (0x08) nor form feed (0x0C); no forbidden control char anywhere in the parsed value",
+   "expected": null,
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "agents-latex-never-corrupts-0034",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_b_and_f_never_decode_to_control_characters",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"$\\bigcup$ $\\begin{pmatrix}$ $\\forall$ $\\flat$ $\\bf x$\"}",
+   "property": "parsed['c'] contains neither backspace (0x08) nor form feed (0x0C); no forbidden control char anywhere in the parsed value",
+   "expected": null,
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "agents-latex-never-corrupts-0035",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_b_and_f_never_decode_to_control_characters",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"\\fake and \\bogus are not commands but still not control chars\"}",
+   "property": "parsed['c'] contains neither backspace (0x08) nor form feed (0x0C); no forbidden control char anywhere in the parsed value",
+   "expected": null,
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "agents-latex-never-corrupts-0055",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_every_known_collision_command_survives",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"see \\ne{x} here\"}",
+   "expected": {
+    "c": "see \\ne{x} here"
+   },
+   "sweep": "JSON_WHITESPACE_COLLISION_COMMANDS",
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": {
+    "c": "see \ne{x} here"
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-0085",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_every_known_collision_command_survives",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"see \\ni{x} here\"}",
+   "expected": {
+    "c": "see \\ni{x} here"
+   },
+   "sweep": "JSON_WHITESPACE_COLLISION_COMMANDS",
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": {
+    "c": "see \ni{x} here"
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-0117",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_every_known_collision_command_survives",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"see \\not{x} here\"}",
+   "expected": {
+    "c": "see \\not{x} here"
+   },
+   "sweep": "JSON_WHITESPACE_COLLISION_COMMANDS",
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": {
+    "c": "see \not{x} here"
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-0159",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_every_known_collision_command_survives",
+   "via": "escape_latex_for_json then json.loads",
+   "input": "{\"c\": \"see \\nu{x} here\"}",
+   "expected": {
+    "c": "see \\nu{x} here"
+   },
+   "sweep": "JSON_WHITESPACE_COLLISION_COMMANDS",
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "python_got": {
+    "c": "see \nu{x} here"
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-1467",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_ahs_service_parses_single_backslash_latex",
+   "via": "AHSGenerationService._parse_json_object",
+   "input": "Sure:\n{\"questions\": [{\"question\": \"$\\frac{1}{2} \\notin \\theta$\", \"options\": [\"a\\nb\"]}]}",
+   "expected": {
+    "questions": [
+     {
+      "question": "$\\frac{1}{2} \\notin \\theta$",
+      "options": [
+       "a\nb"
+      ]
+     }
+    ]
+   },
+   "tags": [
+    "B1",
+    "agents#516"
+   ],
+   "note": "unmapped agents parse path (extracts the object from surrounding prose); recorded for review",
+   "python_got": {
+    "__error__": true
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-1468",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_ahs_service_parse_returns_none_without_an_object",
+   "via": "AHSGenerationService._parse_json_object",
+   "input": "no json here",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "note": "returns None, not an error",
+   "python_got": {
+    "__error__": true
+   }
+  },
+  {
+   "id": "agents-latex-never-corrupts-1469",
+   "source": "pupiltree-agents/tests/unit/test_latex_never_corrupts.py::test_ahs_service_parse_returns_none_without_an_object",
+   "via": "AHSGenerationService._parse_json_object",
+   "input": "",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "note": "returns None, not an error",
+   "python_got": {
+    "__error__": true
+   }
+  },
+  {
+   "id": "agents-content-integrity-531-0027",
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_crash_course_salvage_keeps_latex",
+   "via": "crash_course_graph._try_salvage_truncated_json",
+   "input": "{\"intro\":\"$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$\",\"tips\":[\"$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$\",\"cut off he",
+   "expected": {
+    "intro": "$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$",
+    "tips": [
+     "$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$"
+    ]
+   },
+   "tags": [
+    "B1",
+    "agents#531"
+   ],
+   "note": "unmapped agents parse path; truncated payload is salvaged",
+   "python_got": {
+    "__error__": true
+   }
+  },
+  {
+   "id": "agents-content-integrity-531-0028",
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_double_encoded_remedy_keeps_latex",
+   "via": "remedy_format_transformer._try_parse_raw({'raw': input})",
+   "input": "\"{\\\"q\\\":\\\"$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$\\\"}\"",
+   "expected": {
+    "q": "$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$"
+   },
+   "tags": [
+    "B1",
+    "agents#531"
+   ],
+   "note": "unmapped agents parse path; the JSON object is itself JSON-string-encoded",
+   "python_got": "{\"q\":\"$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$\"}"
+  },
+  {
+   "id": "agents-content-integrity-531-0029",
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_lesson_plan_parse_keeps_latex",
+   "via": "sequencer_node.parse_lesson_plan",
+   "input": "{\"topic\":\"t\",\"steps\":[{\"index\":0,\"mode\":\"learn_by_reading\",\"focus\":\"$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$\"}]}",
+   "property": "parse_lesson_plan(raw).steps[0].focus == '$\\\\frac{1}{2}\\\\beta \\\\text{ m} \\\\times \\\\theta$'; the same holds with the JSON fenced in ```json and with 'Plan: ' + raw + ' done'",
+   "expected": null,
+   "tags": [
+    "B1",
+    "agents#531"
+   ],
+   "note": "unmapped agents parse path",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "agents-content-integrity-531-0030",
+   "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_question_generator_still_parses_fenced_and_escaped_json",
+   "via": "QuestionGenerator.generate_questions (mocked llm_client returning this text)",
+   "input": "```json\n{\"q\":\"$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$\"}\n```",
+   "expected": {
+    "q": "$\\frac{1}{2}\\beta \\text{ m} \\times \\theta$"
+   },
+   "tags": [
+    "B1",
+    "agents#531"
+   ],
+   "note": "unmapped agents parse path; fenced",
+   "python_got": {
+    "__error__": true
+   }
+  }
+ ]
+}

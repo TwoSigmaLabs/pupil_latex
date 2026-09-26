@@ -1,0 +1,4761 @@
+{
+  "function": "must_not_change",
+  "harvested_on": "2026-09-25",
+  "cases": [
+    {
+      "input": "$x^2$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_preserves_single_char_superscript",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "The formula $\\frac{x^{2}}{y}$ applies.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_preserves_already_braced",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "The price is \\$5",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_preserves_escaped_currency_dollar",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "The price is \\$5 and pi is $\\pi$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_currency_idempotent",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$\\sqrt{2}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_already_wrapped_sqrt_preserves_delimiters",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$\\frac{3q^2}{4\\pi\\epsilon_0 a^2}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_well_formed_option_with_math_is_unchanged",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "The answer is $\\frac{1}{2}$ exactly",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_prose_with_math_span_not_merged",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$$f = \\frac{1}{T}$$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_display_math_frac_is_not_rewrapped",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$$\\int_0^1 \\frac{\\sin x}{x} dx$$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_display_math_multiple_commands_preserved",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "Costs \\$50.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_currency_already_escaped_not_double_escaped",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "Hello world.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_no_false_positive_on_plain_prose",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "Simple text with no math at all.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_wrap_bare_scripts_does_not_fire_without_scripts",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "https://storage.googleapis.com/pupil-suite-podcasts/podcasts/ahs/ahs_69e74f5e84fd_vocabulary_quick_reads_20260425_043531.wav",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_preserves_audio_url",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "https://example.com/x_y_z_2026.png",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_url_regardless_of_key",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "ahs_69e74f5e84fd",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "user_69e74f5e84fda7fe87eca496",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "session_69ce3dfb",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "Aairah_0713",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "teacher_001@school.in",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "10_A",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "10_10_A",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "2026-04-25T03:31:00Z",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "active_user",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_keys",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "ahs_69e7",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_arrays",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "ahs_70a1",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_skips_id_arrays",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "https://storage.googleapis.com/x/podcast_v1.mp3",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "ahs_69e74f5e84fd",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "Aairah_0713",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "10_A",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "ahs_inner_69e7",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "q_001_v2",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_json_strings_nested_response_shape",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "prose ¬ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ° prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ± prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ² prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ³ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose · prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ¹ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ¼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ½ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ¾ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose × prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ÷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ʰ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ʲ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ʳ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ʷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ʸ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ˡ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ˢ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ˣ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Γ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Δ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Θ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Λ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Ξ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Π prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Σ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Υ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Φ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Ψ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose Ω prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose α prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose β prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose γ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose δ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ε prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ζ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose η prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose θ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ι prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose κ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose λ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose μ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ν prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ξ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose π prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ρ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ς prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose σ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose τ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose υ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose φ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose χ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ψ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ω prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ϑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ϕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ϖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ϱ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ϵ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴬ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴮ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴰ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴱ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴳ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴴ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴵ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴶ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴸ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴹ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴺ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴾ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᴿ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵀ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵁ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵇ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵉ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵍ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵏ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵢ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵣ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵤ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵥ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵦ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵧ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵨ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵩ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᵪ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᶜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᶠ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ᶻ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose … prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁰ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁱ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁴ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁵ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁶ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁸ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁹ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁺ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁻ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁽ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁾ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⁿ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₀ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₁ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₄ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₅ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₆ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₇ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₉ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₊ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₋ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₌ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₍ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₎ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₙ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₚ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ₜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℏ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℙ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℚ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℝ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ℤ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅔ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅙ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅚ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅝ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⅞ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ← prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ↑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose → prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ↓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ↔ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ↦ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⇌ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⇐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⇒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⇔ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∀ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∄ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∅ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∇ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∉ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∋ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∏ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose √ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∝ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∞ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∠ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∡ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∣ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∥ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∧ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∨ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∩ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∪ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∫ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∬ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∭ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∮ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∴ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∵ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≅ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≠ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≡ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≤ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≥ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≪ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ≫ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊄ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊅ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊆ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊇ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊉ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊙ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⊥ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⋅ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⋮ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⋯ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⋱ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose □ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose △ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⟨ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⟩ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⱼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ⱽ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ° prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ² prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ³ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ¹ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ¼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ½ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ¾ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ʰ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ʲ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ʳ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ʷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ʸ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ˡ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ˢ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ˣ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴬ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴮ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴰ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴱ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴳ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴴ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴵ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴶ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴸ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴹ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴺ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴾ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᴿ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵀ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵁ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵇ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵉ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵍ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵏ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵢ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵣ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵤ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵥ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵦ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵧ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵨ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵩ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᵪ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᶜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᶠ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ᶻ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁰ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁱ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁴ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁵ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁶ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁷ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁸ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁹ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁺ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁻ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁽ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁾ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⁿ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₀ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₁ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₂ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₃ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₄ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₅ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₆ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₇ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₈ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₉ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₊ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₋ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₌ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₍ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₎ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₙ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₚ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ₜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅐ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅑ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅒ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅓ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅔ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅕ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅖ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅗ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅘ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅙ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅚ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅝ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⅞ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⱼ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "prose ⱽ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_wraps_when_wrappable",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "$√$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose √ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "$∛$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∛ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "$∜$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+      "via": "unicode_math_to_latex",
+      "options": {
+        "inside_math_only": true
+      }
+    },
+    {
+      "input": "prose ∜ prose",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_root_glyphs_convert_only_with_a_radicand",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_unicode_math_to_latex_empty_string",
+      "via": "unicode_math_to_latex"
+    },
+    {
+      "input": "The quick brown fox jumps over the lazy dog.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_unicode_math_to_latex_no_math_chars_unchanged",
+      "via": "unicode_math_to_latex"
+    },
+    {
+      "input": "",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_empty_string",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "No math chars here at all.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_no_target_chars_unchanged",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "$\\pi$ and also $\\nu = 1$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_inside_span_not_double_wrapped",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "$π$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_bare_char_inside_existing_span_untouched",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "fire emoji 🔥 stays put",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_leaves_non_table_chars_alone",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "half is ½ here",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_leaves_fractions_alone",
+      "via": "wrap_bare_unicode_math"
+    },
+    {
+      "input": "Nothing here needs normalization.",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_no_targets_unchanged",
+      "via": "normalize_homoglyphs"
+    },
+    {
+      "input": "",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_homoglyph_empty_and_non_string",
+      "via": "normalize_homoglyphs"
+    },
+    {
+      "input": "plain vector notation",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_combining_vec_no_combiner_unchanged",
+      "via": "convert_combining_vec"
+    },
+    {
+      "input": "",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_unicode_to_latex.py::test_combining_vec_empty_and_non_string",
+      "via": "convert_combining_vec"
+    },
+    {
+      "input": "$\\sqrt{2}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$2\\sqrt{3}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$\\sqrt[3]{8}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "x = $\\sqrt{a+b}$ and $\\frac{1}{\\sqrt{2}}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_latex_that_is_already_right_is_unchanged",
+      "via": "sanitize_latex_text"
+    },
+    {
+      "input": "$x = √$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_inside_a_math_span",
+      "via": "unicode_math_to_latex"
+    },
+    {
+      "input": "$∛$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_inside_a_math_span",
+      "via": "unicode_math_to_latex"
+    },
+    {
+      "input": "$\\frac{√}{2}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_sqrt_keeps_its_argument_1654.py::test_inside_a_math_span",
+      "via": "unicode_math_to_latex"
+    },
+    {
+      "input": "The side is √2 cm",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[sqrt]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Visit https://www.youtube.com/watch?v=l_CySKUI5W4 and use √2.",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_in_prose]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_whole_content_key]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[url_whole_url_key]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "$\\frac{1}{2}$",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[frac]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "H_2O and x_1",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[subscripts]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "see \\(x\\) and \\[y\\]",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[paren_bracket_delims]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Cost $50 only.",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[currency]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "µ = 3 and Ângelo",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[micro]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "$\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}$",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[matrix_row_break]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "ai_recreate",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[enum_under_unlisted_key]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "3×10^8",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[times_power]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Water H₂O boils",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[unicode_chem]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Frequency Î½",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[mojibake_left_alone]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Rate\tan 5",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[tab_an_not_guessed]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Line one\nLine two\r\nitem\tcol",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[tab_lf_cr]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Pay \\$5; solve $5x+1=0$.",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[escaped_currency]",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "Rate\tan 5",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[tab_untouched]",
+      "via": "repair_hard_control_bytes",
+      "variant": "hard"
+    },
+    {
+      "input": "x\ny\rz",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[lf_cr_untouched]",
+      "via": "repair_hard_control_bytes",
+      "variant": "hard"
+    },
+    {
+      "input": "",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[empty]",
+      "via": "repair_hard_control_bytes",
+      "variant": "hard"
+    },
+    {
+      "input": "x^2",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "H_2O",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_non_dict_inputs",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "H_2O",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_other_mode_values_keep_byte_identity",
+      "via": "sanitize_db_response",
+      "variant": "hard"
+    },
+    {
+      "input": "https://www.youtube.com/watch?v=l_CySKUI5W4",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[url_whole]",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "ai_recreate",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[unlisted_enum]",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "Matrix $\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[matrix]",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "22/7",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_write_path_output_unchanged[nested]",
+      "via": "sanitize_json_strings"
+    },
+    {
+      "input": "2.5 m/s²",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "line one\nline two",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_sync_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_in_class_put_and_after_hour_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "Cost is $5; √2 ≤ 3 & x < y\nnext line\tcol",
+      "functions": [
+        "repair"
+      ],
+      "source": "Backend/tests/unit/test_llm_json_latex_contract_1651.py::test_master_plan_writers_never_store_a_control_character",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "A shirt costs \\$50",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+      "via": "fix_common_latex_errors"
+    },
+    {
+      "input": "\\$50 and \\$60",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+      "via": "fix_common_latex_errors"
+    },
+    {
+      "input": "$\\frac{1}{2}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+      "via": "fix_common_latex_errors"
+    },
+    {
+      "input": "plain text",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+      "via": "fix_common_latex_errors"
+    },
+    {
+      "input": "A shirt costs \\$50",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_escape_fix.py::test_sanitize_latex_option_ignores_escaped_dollars",
+      "via": "sanitize_latex_option"
+    },
+    {
+      "input": "Price \\$5 and $x^2$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "Backend/tests/unit/test_latex_escape_fix.py::test_sanitize_latex_option_ignores_escaped_dollars",
+      "via": "sanitize_latex_option"
+    },
+    {
+      "input": "plain ascii answer",
+      "functions": [
+        "to_plain"
+      ],
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "style": "text"
+    },
+    {
+      "input": "(b) Balmer series",
+      "functions": [
+        "to_plain"
+      ],
+      "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
+      "via": "latex_to_plain",
+      "style": "text"
+    },
+    {
+      "input": "$\\frac{1}{2}\\beta$",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "5\\text{ N} \\times 2",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "$\\theta \\rightarrow \\rho$",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "$x \\neq y$",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "abc",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_restores_the_backslash",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "line one\nline two",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "Statement I: x\nStatement II: y",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "i) first\nii) second\ne) none",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "Mirror formula:\nu = -25 cm",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "not this\nnot that",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "col a\tcol b",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "windows\r\nline",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "2.5 m/s²",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_leaves_real_whitespace_alone",
+      "via": "repair_control_char_corruption"
+    },
+    {
+      "input": "2.5 m/s²",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "line one\nline two",
+      "functions": [
+        "repair"
+      ],
+      "source": "pupiltree-agents/tests/unit/test_content_integrity_531.py::test_repair_deep_only_touches_corrupted_strings",
+      "via": "repair_control_chars_deep"
+    },
+    {
+      "input": "Erythrocytes ($\\text{RBCs}$) have a unique biconcave disc shape",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "carboxyhemoglobin ($\\text{HbCO}$)",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$\\text{CO}_{2} + \\text{H}_{2}\\text{O} \\rightleftharpoons \\text{H}_{2}\\text{CO}_{3}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "travels at $3 \\times 10^{8}$ metres per second",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "the fraction $\\frac{1}{2}$ of the total",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "about $5 \\textmu m$ across",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_real_maths_from_the_same_document_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$\\textmu m$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$5 \\ldots 10$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$\\ldots x$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$x, \\ldots, y$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$\\text{CO}_{2}$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$\\ldots",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "\\ldots",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "plain prose with no maths at all",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$x, \\ldots, y$",
+      "functions": [
+        "canonicalize"
+      ],
+      "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_mutation_blunt_delete_would_corrupt_real_maths",
+      "via": "strip_typographic_latex"
+    },
+    {
+      "input": "$$a \\\\[2pt] b$$",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/a LaTeX line break \\\\[2pt] inside display maths is not a delimiter",
+      "via": "normalizeMathDelimiters"
+    },
+    {
+      "input": "$\\theta$",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::ORDERING/\\theta inside $…$ was already safe and still is",
+      "via": "preprocessLatexText"
+    },
+    {
+      "input": "the angle \\theta grows",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+      "via": "decodeEscapesOutsideMath"
+    },
+    {
+      "input": "so \\neq holds",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+      "via": "decodeEscapesOutsideMath"
+    },
+    {
+      "input": "\\rho is density",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::prose escapes/a bare known command in prose is not mangled",
+      "via": "decodeEscapesOutsideMath"
+    },
+    {
+      "input": "Solve $2x + 3$.",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$2x + 3$ is maths, not a price",
+      "via": "escapeCurrencyDollars"
+    },
+    {
+      "input": "$$2x$$",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/$$…$$ starting with a digit is untouched",
+      "via": "escapeCurrencyDollars"
+    },
+    {
+      "input": "Cost \\$5000 and $\\frac{1}{4}$ off",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::currency/already-escaped currency is stable (idempotent)",
+      "via": "escapeCurrencyDollars"
+    },
+    {
+      "input": "",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::empty / clean input/empty string is returned unchanged",
+      "via": "mojibake"
+    },
+    {
+      "input": "The velocity is 5 m/s and the angle is 30 degrees.",
+      "functions": [
+        "normalize"
+      ],
+      "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::empty / clean input/already-clean ASCII text is untouched",
+      "via": "mojibake"
+    },
+    {
+      "input": "plain $x$ stays",
+      "functions": [
+        "normalize"
+      ],
+      "source": "Fillers/tests/js/test_period_content_math.mjs::normalizeMathDelimiters converts \\(..\\) and \\[..\\] to dollar delimiters",
+      "via": "normalizeMathDelimiters"
+    },
+    {
+      "input": "a\tb\nc\r\nd",
+      "functions": [
+        "repair"
+      ],
+      "source": "Fillers/tests/js/test_period_content_math.mjs::stripControlChars removes C0 controls and DEL but keeps tab / newline / CR",
+      "via": "stripControlChars"
+    },
+    {
+      "input": "open $x and \\$5",
+      "functions": [
+        "segment"
+      ],
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars"
+    },
+    {
+      "input": "no dollars here",
+      "functions": [
+        "segment"
+      ],
+      "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+      "via": "maskEscapedDollars"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+5acfb0dd768822b60dd8498e82e258dd *../../python/pupiltree_latex/__init__.py
+46cff36909eda455f6914dcd3942ad99 *../../python/pupiltree_latex/audit.py
+49ea77779ccb72f3b5fc3e3f3063437e *../../python/pupiltree_latex/canonicalize.py
+bb606f29171135bee5a31cf9cf3b504e *../../python/pupiltree_latex/commands.py
+896a367cb6f815de43c8397a48a01464 *../../python/pupiltree_latex/corpus.py
+b165622bf356b8068d962dc4273a9dfa *../../python/pupiltree_latex/export_tables.py
+bd02aa48cb5794f01473fced8c87af4b *../../python/pupiltree_latex/fix.py
+d40298dceb330f0005359cef3f00620c *../../python/pupiltree_latex/json_transport.py
+870af4caa162db35c545a0e4f7b02383 *../../python/pupiltree_latex/katex_commands.py
+18d435a5b4358135bd6b7259004551c3 *../../python/pupiltree_latex/mojibake.py
+58ce6aa65d05edc23a7ced650e88acef *../../python/pupiltree_latex/normalize.py
+8692421a45dd535fcdc97ad3680a7834 *../../python/pupiltree_latex/prompt_rules.py
+4d53e74217f536d762c01bdcfb9a04dd *../../python/pupiltree_latex/repair.py
+dbf00b9c48ebe383b670a4ab8513a3de *../../python/pupiltree_latex/segment.py
+ebba9bd2e0523ca07554086e578a4aab *../../python/pupiltree_latex/to_plain.py
+00ec9e8d7a3f8bae5d80230b794c7820 *../../python/pupiltree_latex/unicode_math.py
+031ec9e5bb6f6e354d5590efde6dd446 *../../python/pupiltree_latex/walk.py

@@ -1,0 +1,1211 @@
+{
+ "function": "audit",
+ "version": "1.1.0",
+ "cases": [
+  {
+   "id": "curated-control-char",
+   "input": "Area \frac{1}{2}",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-tab-times",
+   "input": "3 \times 10^8",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-legacy-delims",
+   "input": "\\(x\\) and \\[y\\]",
+   "expected": [
+    "legacy_delimiter",
+    "legacy_delimiter",
+    "legacy_delimiter",
+    "legacy_delimiter"
+   ],
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-line-break-not-legacy",
+   "input": "$$a \\\\[2pt] b$$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-unbalanced",
+   "input": "costs $5",
+   "expected": [
+    "unbalanced_dollar"
+   ],
+   "tags": [
+    "B3"
+   ]
+  },
+  {
+   "id": "curated-escaped-dollar-balanced",
+   "input": "costs \\$5",
+   "expected": [],
+   "tags": [
+    "B3",
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-sqrt-missing-arg",
+   "input": "$\\sqrt$2",
+   "expected": [
+    "command_missing_argument"
+   ],
+   "tags": [
+    "B7",
+    "backend#1654"
+   ]
+  },
+  {
+   "id": "curated-frac-one-arg",
+   "input": "$\\frac{1}$",
+   "expected": [
+    "frac_missing_args"
+   ],
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-frac-ok",
+   "input": "$\\frac12$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-script-no-braces",
+   "input": "$x^10$",
+   "expected": [
+    "script_missing_braces"
+   ],
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-script-ok",
+   "input": "$x^2y$ and $x_1$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-mojibake",
+   "input": "Ï€ r",
+   "expected": [
+    "mojibake"
+   ],
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-double-escaped",
+   "input": "\\\\frac{1}{2}",
+   "expected": [
+    "double_escaped_command"
+   ],
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "curated-json-embedded-not-double-escaped",
+   "input": "{\"q\": \"\\\\frac{1}{2}\"}",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-unsupported-mathscr",
+   "input": "$\\mathscr{L}$",
+   "expected": [
+    "unsupported_command"
+   ],
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-unknown-command-in-math",
+   "input": "$\\notacommand{x}$",
+   "expected": [
+    "unsupported_command"
+   ],
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-mhchem-allowed",
+   "input": "$\\ce{H2O}$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-bare-unicode",
+   "input": "3 × 10^8 and π",
+   "expected": [
+    "bare_unicode_math",
+    "bare_unicode_math"
+   ],
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-unicode-inside-math-ok",
+   "input": "$3 × 10^8$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-unicode-chemistry",
+   "input": "H₂O",
+   "expected": [
+    "unicode_chemistry"
+   ],
+   "tags": [
+    "B6"
+   ]
+  },
+  {
+   "id": "curated-bare-left-brace",
+   "input": "$\\left{x\\right}$",
+   "expected": [
+    "bare_left_brace",
+    "bare_left_brace"
+   ],
+   "tags": [
+    "B4"
+   ]
+  },
+  {
+   "id": "curated-clean",
+   "input": "The formula is $x^{2} + y^{2} = r^{2}$.",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-newline-inside-span-flagged",
+   "input": "$x \nightarrow y$",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1",
+    "real-data-D11"
+   ]
+  },
+  {
+   "id": "curated-script-label-clean",
+   "input": "\\teacher: Hello class",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "curated-textmu-unsupported",
+   "input": "$\\textmu m$",
+   "expected": [
+    "unsupported_command"
+   ],
+   "tags": [
+    "B4",
+    "review-S8"
+   ]
+  },
+  {
+   "id": "curated-display-unicode-not-bare",
+   "input": "$$α$$",
+   "expected": [],
+   "tags": [
+    "B7",
+    "review-F3"
+   ]
+  },
+  {
+   "id": "curated-matrix-row-not-double-escaped",
+   "input": "$\\begin{bmatrix}x&y\\\\cos x&d\\end{bmatrix}$",
+   "expected": [],
+   "tags": [
+    "B7",
+    "final-R1"
+   ]
+  },
+  {
+   "id": "backend-latex-rules-0023",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validate_returns_empty_for_clean_input",
+   "via": "validate_latex_text",
+   "input": "$\\frac{1}{2}$ is a half",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-rules-0024",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validate_no_false_positive_on_correct_left_right_braces",
+   "via": "validate_latex_text",
+   "input": "$\\left\\{ x + y \\right\\}$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-rules-0026",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validate_balanced_dollar_with_escaped_currency",
+   "via": "validate_latex_text",
+   "input": "Cost \\$5 for $x^2$ and \\$10 for $y^2$",
+   "expected": [],
+   "tags": [
+    "B3",
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0001",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_flags_control_characters[form feed + rac]",
+   "via": "audit_latex_text",
+   "input": "Area is $\frac{4}{3} \\pi r^3$.",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ],
+   "note": "snippet must show '<0x..>' and contain no raw control char"
+  },
+  {
+   "id": "backend-latex-audit-0002",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_flags_control_characters[backspace + oard]",
+   "via": "audit_latex_text",
+   "input": "Main whorls. \board: draw the flower.",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ],
+   "note": "snippet must show '<0x..>' and contain no raw control char"
+  },
+  {
+   "id": "backend-latex-audit-0003",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_flags_control_characters[tab + imes]",
+   "via": "audit_latex_text",
+   "input": "$1.25 \times 10^{-2}$ J",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ],
+   "note": "snippet must show '<0x..>' and contain no raw control char"
+  },
+  {
+   "id": "backend-latex-audit-0004",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_flags_control_characters[tab + ext]",
+   "via": "audit_latex_text",
+   "input": "$5 \text{ m/s}$",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ],
+   "note": "snippet must show '<0x..>' and contain no raw control char"
+  },
+  {
+   "id": "backend-latex-audit-0005",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_flags_control_characters[NUL]",
+   "via": "audit_latex_text",
+   "input": "Speed\u0000 of light",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ],
+   "note": "snippet must show '<0x..>' and contain no raw control char"
+  },
+  {
+   "id": "backend-latex-audit-0006",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_flags_control_characters[ESC]",
+   "via": "audit_latex_text",
+   "input": "Value \u001b[0m here",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ],
+   "note": "snippet must show '<0x..>' and contain no raw control char"
+  },
+  {
+   "id": "backend-latex-audit-0007",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_position_is_the_control_char",
+   "via": "audit_latex_text",
+   "input": "abc \frac",
+   "expected": [
+    "control_char"
+   ],
+   "position": 4,
+   "tags": [
+    "B1"
+   ],
+   "note": "finding.position == index of the form feed"
+  },
+  {
+   "id": "backend-latex-audit-0008",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestControlChars::test_carriage_return_before_rho_is_flagged",
+   "via": "audit_latex_text",
+   "input": "density \rho = m/V",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0009",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestLegacyDelimiters::test_flags_paren_and_bracket_delimiters",
+   "via": "audit_latex_text",
+   "input": "Solve \\(x^2 = 4\\) for x.",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'legacy_delimiter'",
+   "kinds_include": [
+    "legacy_delimiter"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0010",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestLegacyDelimiters::test_flags_paren_and_bracket_delimiters",
+   "via": "audit_latex_text",
+   "input": "Then \\[ E = mc^2 \\] follows.",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'legacy_delimiter'",
+   "kinds_include": [
+    "legacy_delimiter"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0011",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestLegacyDelimiters::test_flags_paren_and_bracket_delimiters",
+   "via": "audit_latex_text",
+   "input": "Mixed: \\( a \\) and $b$",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'legacy_delimiter'",
+   "kinds_include": [
+    "legacy_delimiter"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0013",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestLegacyDelimiters::test_line_break_with_spacing_is_not_a_delimiter",
+   "via": "audit_latex_text",
+   "input": "$$a \\\\[4pt] b$$",
+   "expected": null,
+   "tags": [
+    "B4",
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'legacy_delimiter'",
+   "kinds_exclude": [
+    "legacy_delimiter"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0014",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestUnbalancedDollars::test_odd_dollar_count",
+   "via": "audit_latex_text",
+   "input": "Solve $x^2 + 1 = 0 for x.",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "exactly one finding of kind 'unbalanced_dollar'",
+   "kinds_include": [
+    "unbalanced_dollar"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0015",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestUnbalancedDollars::test_odd_dollar_count",
+   "via": "audit_latex_text",
+   "input": "The value is $\\frac{1}{2}$ and then $y",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "exactly one finding of kind 'unbalanced_dollar'",
+   "kinds_include": [
+    "unbalanced_dollar"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0016",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestUnbalancedDollars::test_odd_dollar_count",
+   "via": "audit_latex_text",
+   "input": "$$E = mc^2$",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "exactly one finding of kind 'unbalanced_dollar'",
+   "kinds_include": [
+    "unbalanced_dollar"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0017",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestUnbalancedDollars::test_escaped_currency_does_not_count",
+   "via": "audit_latex_text",
+   "input": "It costs \\$45 and $x$ more.",
+   "expected": null,
+   "tags": [
+    "B3",
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'unbalanced_dollar'",
+   "kinds_exclude": [
+    "unbalanced_dollar"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0019",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_command_closed_before_its_argument",
+   "via": "audit_latex_text",
+   "input": "Root: $\\sqrt$2",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "property_source": "kinds contain 'command_missing_argument'",
+   "kinds_include": [
+    "command_missing_argument"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0020",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_command_closed_before_its_argument",
+   "via": "audit_latex_text",
+   "input": "Half: $\\frac$",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "property_source": "kinds contain 'command_missing_argument'",
+   "kinds_include": [
+    "command_missing_argument"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0021",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_command_closed_before_its_argument",
+   "via": "audit_latex_text",
+   "input": "Unit: $5 \\text $ m",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "property_source": "kinds contain 'command_missing_argument'",
+   "kinds_include": [
+    "command_missing_argument"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0022",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_command_closed_before_its_argument",
+   "via": "audit_latex_text",
+   "input": "Vector \\vec",
+   "expected": null,
+   "tags": [
+    "backend#1654"
+   ],
+   "property_source": "kinds contain 'command_missing_argument'",
+   "kinds_include": [
+    "command_missing_argument"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0023",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_frac_with_fewer_than_two_arguments",
+   "via": "audit_latex_text",
+   "input": "$\\frac{1}$ of it",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'frac_missing_args'",
+   "kinds_include": [
+    "frac_missing_args"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0024",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_frac_with_fewer_than_two_arguments",
+   "via": "audit_latex_text",
+   "input": "$\\frac{a}{$",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'frac_missing_args'",
+   "kinds_include": [
+    "frac_missing_args"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0025",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_frac_with_fewer_than_two_arguments",
+   "via": "audit_latex_text",
+   "input": "$\\frac 1/2$",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'frac_missing_args'",
+   "kinds_include": [
+    "frac_missing_args"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0026",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_frac_with_fewer_than_two_arguments",
+   "via": "audit_latex_text",
+   "input": "$\\dfrac{x}$",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'frac_missing_args'",
+   "kinds_include": [
+    "frac_missing_args"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0027",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_frac_missing_everything_is_reported_once",
+   "via": "audit_latex_text",
+   "input": "$\\frac$",
+   "expected": [
+    "command_missing_argument"
+   ],
+   "tags": []
+  },
+  {
+   "id": "backend-latex-audit-0028",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_script_with_multiple_chars_and_no_braces",
+   "via": "audit_latex_text",
+   "input": "$10^23$ atoms",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'script_missing_braces'",
+   "kinds_include": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0029",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_script_with_multiple_chars_and_no_braces",
+   "via": "audit_latex_text",
+   "input": "$e^-x$ decay",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'script_missing_braces'",
+   "kinds_include": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0030",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_script_with_multiple_chars_and_no_braces",
+   "via": "audit_latex_text",
+   "input": "$v_avg = d/t$",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'script_missing_braces'",
+   "kinds_include": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0031",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_script_with_multiple_chars_and_no_braces",
+   "via": "audit_latex_text",
+   "input": "$\\log_10 x$",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'script_missing_braces'",
+   "kinds_include": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0032",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_script_with_multiple_chars_and_no_braces",
+   "via": "audit_latex_text",
+   "input": "$F_net = ma$",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds contain 'script_missing_braces'",
+   "kinds_include": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0033",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_script_check_only_looks_inside_math",
+   "via": "audit_latex_text",
+   "input": "see student_id and file_name",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0035",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_unclosed_short_span_is_not_scanned_for_scripts",
+   "via": "audit_latex_text",
+   "input": "Solve $x_ab now",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0036",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$x^2y$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0037",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$x_1 + x_2$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0038",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$H_2O$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0039",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$10^{23}$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0040",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$e^{-x}$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0041",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$\\sum_{i=1}^n a_i$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0042",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$x^\\prime$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0043",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_valid_scripts_are_not_flagged",
+   "via": "audit_latex_text",
+   "input": "$a\\_b$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'script_missing_braces'",
+   "kinds_exclude": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0044",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMojibake::test_flags_residue",
+   "via": "audit_latex_text",
+   "input": "The studentâ€™s answer",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "kinds contain 'mojibake'",
+   "kinds_include": [
+    "mojibake"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0045",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMojibake::test_flags_residue",
+   "via": "audit_latex_text",
+   "input": "Angle Î¸ = 30Â°",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "kinds contain 'mojibake'",
+   "kinds_include": [
+    "mojibake"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0046",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMojibake::test_flags_residue",
+   "via": "audit_latex_text",
+   "input": "cafÃ© au lait",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "kinds contain 'mojibake'",
+   "kinds_include": [
+    "mojibake"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0047",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMojibake::test_flags_residue",
+   "via": "audit_latex_text",
+   "input": "broken � char",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "kinds contain 'mojibake'",
+   "kinds_include": [
+    "mojibake"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0048",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMojibake::test_unit_vector_hat_and_names_are_fine",
+   "via": "audit_latex_text",
+   "input": "unit vector â along x; Ângelo; São Paulo",
+   "expected": null,
+   "tags": [
+    "B6",
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'mojibake'",
+   "kinds_exclude": [
+    "mojibake"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0049",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_flags_even_backslash_runs_before_a_command",
+   "via": "audit_latex_text",
+   "input": "$\\\\frac{1}{2}$",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "property_source": "kinds contain 'double_escaped_command'",
+   "kinds_include": [
+    "double_escaped_command"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0050",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_flags_even_backslash_runs_before_a_command",
+   "via": "audit_latex_text",
+   "input": "then \\\\times 3",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "property_source": "kinds contain 'double_escaped_command'",
+   "kinds_include": [
+    "double_escaped_command"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0051",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_flags_even_backslash_runs_before_a_command",
+   "via": "audit_latex_text",
+   "input": "$\\\\\\\\sqrt{2}$",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "property_source": "kinds contain 'double_escaped_command'",
+   "kinds_include": [
+    "double_escaped_command"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0052",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_line_break_then_command_is_fine",
+   "via": "audit_latex_text",
+   "input": "$$a \\\\\\frac{1}{2}$$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'double_escaped_command'",
+   "kinds_exclude": [
+    "double_escaped_command"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0053",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_bare_line_break_is_fine",
+   "via": "audit_latex_text",
+   "input": "$$a \\\\ b$$",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'double_escaped_command'",
+   "kinds_exclude": [
+    "double_escaped_command"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0054",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_json_embedded_in_prose_is_not_double_escaped",
+   "via": "audit_latex_text",
+   "input": "Work individually first.\n\\class_practice: {\"questions\": [{\"question\": \"Given $V = 200 \\\\sin(100 \\\\pi t)$\"}]}",
+   "expected": null,
+   "tags": [
+    "B1",
+    "B7"
+   ],
+   "property_source": "kinds do not contain 'double_escaped_command'",
+   "kinds_exclude": [
+    "double_escaped_command"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0055",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestDoubleEscapedCommands::test_json_embedded_in_prose_is_not_double_escaped",
+   "via": "audit_latex_text",
+   "input": "Work individually first.\n\\class_practice: {\"questions\": [{\"question\": \"Given $V = 200 \\\\sin(100 \\\\pi t)$\"}]} and $x",
+   "expected": [
+    "unbalanced_dollar"
+   ],
+   "tags": [
+    "B1",
+    "B4"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0056",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[newline before list item]",
+   "via": "audit_latex_text",
+   "input": "Reasons:\ni) Presence of chlorophyll\nii) Sunlight",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0057",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[newline before 'eq.']",
+   "via": "audit_latex_text",
+   "input": "See below.\neq. (1) gives the answer.",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0058",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[real tab column]",
+   "via": "audit_latex_text",
+   "input": "Name\tMass\tCharge",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0059",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[escaped currency]",
+   "via": "audit_latex_text",
+   "input": "The book costs \\$45 and the pen \\$5.",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0060",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[correct fraction]",
+   "via": "audit_latex_text",
+   "input": "Half is $\\frac{1}{2}$ of the whole.",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0061",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[markdown list]",
+   "via": "audit_latex_text",
+   "input": "- first point\n- second point\n- third point",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0062",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[balanced display]",
+   "via": "audit_latex_text",
+   "input": "$$\\int_0^1 x^2\\,dx = \\frac{1}{3}$$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0063",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[prose with underscores]",
+   "via": "audit_latex_text",
+   "input": "Set student_id and class_name in the form.",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0064",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[chemistry]",
+   "via": "audit_latex_text",
+   "input": "$H_2SO_4$ and $CO_2$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0065",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[units]",
+   "via": "audit_latex_text",
+   "input": "$9.8 \\text{ m/s}^2$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0066",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[frac shorthand]",
+   "via": "audit_latex_text",
+   "input": "$\\frac12 + \\frac{a}b$",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0067",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_clean_content_yields_no_findings[empty]",
+   "via": "audit_latex_text",
+   "input": "",
+   "expected": [],
+   "tags": [
+    "B7"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0069",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "\frac",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'control_char'",
+   "kinds_include": [
+    "control_char"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0070",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "\\(x\\)",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'legacy_delimiter'",
+   "kinds_include": [
+    "legacy_delimiter"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0071",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "$x",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'unbalanced_dollar'",
+   "kinds_include": [
+    "unbalanced_dollar"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0072",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "$\\sqrt$",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'command_missing_argument'",
+   "kinds_include": [
+    "command_missing_argument"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0074",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "$10^23$",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'script_missing_braces'",
+   "kinds_include": [
+    "script_missing_braces"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0075",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "â€™",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'mojibake'",
+   "kinds_include": [
+    "mojibake"
+   ]
+  },
+  {
+   "id": "backend-latex-audit-0076",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_every_kind_has_a_detector",
+   "via": "audit_latex_text",
+   "input": "\\\\frac",
+   "expected": null,
+   "tags": [],
+   "property_source": "kinds contain 'double_escaped_command'",
+   "kinds_include": [
+    "double_escaped_command"
+   ]
+  }
+ ]
+}

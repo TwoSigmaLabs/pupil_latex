@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pupiltree-latex"
+version = "1.1.0"
+description = "One contract, one corpus, one API for LaTeX math text across Pupiltree apps."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+dependencies = []
+
+[project.optional-dependencies]
+# ftfy repairs mojibake patterns the built-in table does not know. Used by
+# `canonicalize` when present; `normalize` never needs it.
+ftfy = ["ftfy>=6.1"]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pupiltree_latex*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,32 @@
+{
+ "version": "1.1.0",
+ "name": "script_labels",
+ "value": [
+  "activity",
+  "answer",
+  "board",
+  "content",
+  "discussion",
+  "example",
+  "flashcard",
+  "heading",
+  "image",
+  "instruction",
+  "note",
+  "ppt",
+  "question",
+  "read",
+  "recap",
+  "reflection",
+  "simulation",
+  "summary",
+  "task",
+  "teacher",
+  "thinkingroutine",
+  "timer",
+  "tool",
+  "type",
+  "video",
+  "write"
+ ]
+}

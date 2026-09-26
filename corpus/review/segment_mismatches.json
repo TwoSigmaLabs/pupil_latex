@@ -1,0 +1,562 @@
+{
+ "function": "segment",
+ "cases": [
+  {
+   "id": "script-editor-latex-e2e-reality-0001",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::clean physics: centripetal accel",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "Centripetal acceleration is $a_c = \\frac{v^{2}}{r}$.",
+   "property": ">=1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": ">=1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0002",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::chemistry reaction",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "$\\text{2H}_{2} + \\text{O}_{2} \\rightarrow \\text{2H}_{2}\\text{O}$",
+   "property": "1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0003",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::quadratic formula",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$",
+   "property": "1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0004",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::covered greek (theta, phi, pi)",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "Angle $\\theta$ and $\\phi$ sum to $\\pi$.",
+   "property": "3 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "3",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0005",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::wavefunction psi — when model emits \\psi correctly",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "The wavefunction $\\psi(x)$ describes a particle.",
+   "property": "1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0006",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::backend fixed bare x^10 → $x^{10}$",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "Value is $x^{10}$ here.",
+   "property": "1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0007",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::backend fixed pi mojibake → $\\pi$",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "The value of $\\pi$ is 3.14.",
+   "property": "1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0008",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::FIX 6: mathbb renders as math (no grey-italic fallback)",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "Set $\\mathbb{R}$.",
+   "property": ">=1 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": ">=1",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0009",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::MIXED/physics paragraph mixing covered + gap greek",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "At angle $\\theta$ with frequency $\\nu$ and density $\\rho$, the wavefunction is $\\psi = A\\sin(2\\pi\\nu t)$.",
+   "property": "4 math span(s) are produced and none falls back to grey-italic source",
+   "expected": null,
+   "must_render": true,
+   "math_spans": "4",
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0010",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::MIXED/physics paragraph with ψ MOJIBAKE → sentence reads as broken",
+   "via": "ScriptEditorTex (flutter_math_fork)",
+   "input": "At angle $\\theta$ the wavefunction Ï(x) collapses when $|\\psi|^2$ is measured.",
+   "property": "exactly 2 math spans; the literal 'Ï(x)' is still visible in the rendered text (documented leak, not desired)",
+   "expected": null,
+   "math_spans": "2",
+   "tags": [
+    "B4",
+    "B6"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "fillers-period-content-math-0006",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "input": "Cost \\$60 and \\$15 then $x^2$ end",
+   "expected": "Cost 60 and 15 then $x^2$ end",
+   "sentinel": "U+E000",
+   "tags": [
+    "B3",
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ],
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Cost $60 and $15 then ",
+     "raw": "Cost \\$60 and \\$15 then "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "x^2",
+     "raw": "$x^2$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " end",
+     "raw": " end"
+    }
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0007",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "input": "$\\$5 + x$ costs \\$5",
+   "expected": "$\\$5 + x$ costs 5",
+   "sentinel": "U+E000",
+   "tags": [
+    "B3",
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ],
+   "note": "a \\$ inside maths is a KaTeX command, not a currency sign",
+   "python_got": [
+    {
+     "kind": "math",
+     "display": false,
+     "value": "\\$5 + x",
+     "raw": "$\\$5 + x$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " costs $5",
+     "raw": " costs \\$5"
+    }
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0008",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "input": "$$\\$a$$ \\$b",
+   "expected": "$$\\$a$$ b",
+   "sentinel": "U+E000",
+   "tags": [
+    "B3",
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ],
+   "note": "display maths",
+   "python_got": [
+    {
+     "kind": "math",
+     "display": true,
+     "value": "\\$a",
+     "raw": "$$\\$a$$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " $b",
+     "raw": " \\$b"
+    }
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0009",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "input": "\\\\$x$ \\$y",
+   "expected": "\\\\$x$ y",
+   "sentinel": "U+E000",
+   "tags": [
+    "B3",
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ],
+   "note": "an escaped backslash does not escape the dollar",
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "\\\\",
+     "raw": "\\\\"
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "x",
+     "raw": "$x$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " $y",
+     "raw": " \\$y"
+    }
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0010",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "input": "open $x and \\$5",
+   "expected": "open $x and \\$5",
+   "sentinel": "U+E000",
+   "tags": [
+    "B3",
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ],
+   "note": "after an unterminated opener auto-render leaves the rest as text",
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "open $x and $5",
+     "raw": "open $x and \\$5"
+    }
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0011",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "input": "no dollars here",
+   "expected": "no dollars here",
+   "sentinel": "U+E000",
+   "tags": [
+    "B3",
+    "B4",
+    "fillers#267",
+    "fillers#273"
+   ],
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "no dollars here",
+     "raw": "no dollars here"
+    }
+   ]
+  },
+  {
+   "id": "fillers-period-content-math-0012",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::a literal \\$ (currency) never opens a maths span, and the real formula still renders — idempotently",
+   "via": "PeriodContentRenderer.typesetMath (KaTeX auto-render in jsdom)",
+   "input": "Cost \\$60 and \\$15 then $x^2$ end",
+   "property": "exactly one KaTeX span whose annotation is 'x^2'; no katex-error; rendered text contains '$60' and '$15', no '\\$' and no U+E000; stable across two re-typesets",
+   "expected": null,
+   "must_render": true,
+   "tags": [
+    "B3",
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "fillers-period-content-math-0013",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::a literal \\$ (currency) never opens a maths span, and the real formula still renders — idempotently",
+   "via": "PeriodContentRenderer.typesetMath (KaTeX auto-render in jsdom)",
+   "input": "Profit $\\$5 + x$ on \\$20",
+   "property": "exactly one KaTeX span, no katex-error; rendered text contains '$5' and '$20'",
+   "expected": null,
+   "must_render": true,
+   "tags": [
+    "B3",
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "fillers-period-content-math-0014",
+   "source": "Fillers/tests/js/test_period_content_math.mjs::control characters inside an expression degrade to plain maths, never to a red katex-error",
+   "via": "PeriodContentRenderer.typesetMath (KaTeX auto-render in jsdom)",
+   "input": "$x^\f2$ and $\\frac{\b1}{2}$ plus \u0001text",
+   "property": "at least 2 KaTeX spans, no katex-error, no raw maths text left, and no control char [\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F] in the rendered text",
+   "expected": null,
+   "must_render": true,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "worksheet-MathText-test-0048",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::splits inline, display and bracket delimiters",
+   "via": "splitMath",
+   "input": "Find $x$ and $$y$$, \\(a\\) or \\[b\\].",
+   "expected": [
+    {
+     "text": "Find "
+    },
+    {
+     "math": "x",
+     "display": false
+    },
+    {
+     "text": " and "
+    },
+    {
+     "math": "y",
+     "display": true
+    },
+    {
+     "text": ", "
+    },
+    {
+     "math": "a",
+     "display": false
+    },
+    {
+     "text": " or "
+    },
+    {
+     "math": "b",
+     "display": true
+    },
+    {
+     "text": "."
+    }
+   ],
+   "tags": [
+    "B4"
+   ],
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Find ",
+     "raw": "Find "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "x",
+     "raw": "$x$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " and ",
+     "raw": " and "
+    },
+    {
+     "kind": "math",
+     "display": true,
+     "value": "y",
+     "raw": "$$y$$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": ", ",
+     "raw": ", "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "a",
+     "raw": "\\(a\\)"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " or ",
+     "raw": " or "
+    },
+    {
+     "kind": "math",
+     "display": true,
+     "value": "b",
+     "raw": "\\[b\\]"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": ".",
+     "raw": "."
+    }
+   ]
+  },
+  {
+   "id": "worksheet-MathText-test-0049",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::leaves prices and escaped dollars as text",
+   "via": "splitMath",
+   "input": "It costs $5 and $10.",
+   "expected": [
+    {
+     "text": "It costs $5 and $10."
+    }
+   ],
+   "tags": [
+    "B3",
+    "B4"
+   ],
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "It costs $5 and $10.",
+     "raw": "It costs $5 and $10."
+    }
+   ]
+  },
+  {
+   "id": "worksheet-MathText-test-0050",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::leaves prices and escaped dollars as text",
+   "via": "splitMath",
+   "input": "Pay \\$5 for $x$",
+   "expected": [
+    {
+     "text": "Pay \\$5 for "
+    },
+    {
+     "math": "x",
+     "display": false
+    }
+   ],
+   "tags": [
+    "B3",
+    "B4"
+   ],
+   "python_got": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Pay $5 for ",
+     "raw": "Pay \\$5 for "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "x",
+     "raw": "$x$"
+    }
+   ]
+  },
+  {
+   "id": "worksheet-MathText-test-0051",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::renders maths, not LaTeX source, in the DOM",
+   "via": "MathText (DOM)",
+   "input": "What is $18 \\div 1$? Half is $\\frac{1}{2}$.",
+   "property": "exactly 2 .katex elements; rendered text contains no '$' and no '\\frac' and contains 'What is '",
+   "expected": null,
+   "must_render": true,
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "worksheet-MathText-test-0052",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::an escaped dollar reads as a dollar",
+   "via": "MathText (DOM)",
+   "input": "costs \\$5",
+   "property": "rendered text == 'costs $5'",
+   "expected": null,
+   "tags": [
+    "B3"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "worksheet-MathText-test-0053",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::a span KaTeX cannot parse shows its source, not an error",
+   "via": "MathText (DOM)",
+   "input": "Broken $\\frac{1}{$ here",
+   "property": "an .ics-math-source element with text '\\frac{1}{' is shown; no .katex-error; rendered text contains 'Broken '",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "worksheet-MathText-test-0054",
+   "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::an option answer with LaTeX renders after its letter",
+   "via": "MathText (DOM)",
+   "input": "A - $\\frac{1}{2}$",
+   "property": "rendered text starts with 'A - ' and a .katex element exists",
+   "expected": null,
+   "must_render": true,
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "version": "1.1.0",
+ "name": "non_content_key_suffixes",
+ "value": [
+  "_id",
+  "_url",
+  "_uri",
+  "_path",
+  "_filename",
+  "_email",
+  "_phone",
+  "_at",
+  "_date",
+  "_time",
+  "_token",
+  "_secret",
+  "_key",
+  "_hash",
+  "_sha",
+  "_level"
+ ]
+}

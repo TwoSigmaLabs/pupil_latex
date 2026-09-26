@@ -1,0 +1,525 @@
+{
+ "1 normalize(canonicalize(x)) == canonicalize(x)": {
+  "count": 291,
+  "examples": [
+   {
+    "input": "$5x",
+    "result": [
+     "$5x",
+     "\\$5x"
+    ]
+   },
+   {
+    "input": "\\n\\",
+    "result": [
+     "$\\n\\$",
+     "$\n\\$"
+    ]
+   },
+   {
+    "input": "A\\n",
+    "result": [
+     "A\\n",
+     "A\n"
+    ]
+   },
+   {
+    "input": "a\\n",
+    "result": [
+     "a\\n",
+     "a\n"
+    ]
+   },
+   {
+    "input": "$1e",
+    "result": [
+     "$1e",
+     "\\$1e"
+    ]
+   },
+   {
+    "input": "$5}",
+    "result": [
+     "$5}",
+     "\\$5}"
+    ]
+   },
+   {
+    "input": "$0}",
+    "result": [
+     "$0}",
+     "\\$0}"
+    ]
+   },
+   {
+    "input": "$1}",
+    "result": [
+     "$1}",
+     "\\$1}"
+    ]
+   },
+   {
+    "input": "$5$$",
+    "result": [
+     "$5$$",
+     "\\$5$$"
+    ]
+   },
+   {
+    "input": "$5$1",
+    "result": [
+     "$5$1",
+     "\\$5\\$1"
+    ]
+   },
+   {
+    "input": "heri\\n",
+    "result": [
+     "heri\\n",
+     "heri\n"
+    ]
+   },
+   {
+    "input": "line\\n",
+    "result": [
+     "line\\n",
+     "line\n"
+    ]
+   },
+   {
+    "input": "lino\\t",
+    "result": [
+     "lino\\t",
+     "lino\t"
+    ]
+   },
+   {
+    "input": "$u$$5\"",
+    "result": [
+     "$u$$5\"",
+     "$u$\\$5\""
+    ]
+   },
+   {
+    "input": "$e$$5\"",
+    "result": [
+     "$e$$5\"",
+     "$e$\\$5\""
+    ]
+   },
+   {
+    "input": "$i$$5\"",
+    "result": [
+     "$i$$5\"",
+     "$i$\\$5\""
+    ]
+   },
+   {
+    "input": "$t$$5}",
+    "result": [
+     "$t$$5}",
+     "$t$\\$5}"
+    ]
+   }
+  ]
+ },
+ "2 fix(normalize(x)) == fix(x)": {
+  "count": 2,
+  "examples": [
+   {
+    "input": "Î ",
+    "result": [
+     "Î ",
+     "$\\Pi$"
+    ]
+   },
+   {
+    "input": "Î  ",
+    "result": [
+     "Î ",
+     "$\\Pi$"
+    ]
+   }
+  ]
+ },
+ "3 normalize idempotent": {
+  "count": 3,
+  "examples": [
+   {
+    "input": "Î ",
+    "result": [
+     "Î ",
+     "Π"
+    ]
+   },
+   {
+    "input": "Î  ",
+    "result": [
+     "Î ",
+     "Π"
+    ]
+   },
+   {
+    "input": "$\\no",
+    "result": [
+     "$\no",
+     "$\\to"
+    ]
+   }
+  ]
+ },
+ "4 canonicalize idempotent": {
+  "count": 7,
+  "examples": [
+   {
+    "input": "\\S\nu",
+    "result": [
+     "$\\S\nu$",
+     "$\\S\\nu$"
+    ]
+   },
+   {
+    "input": "\\c\nu",
+    "result": [
+     "$\\c\nu$",
+     "$\\c\\nu$"
+    ]
+   },
+   {
+    "input": "}\ni\\e",
+    "result": [
+     "$}\ni\\e$",
+     "$}\\ni\\e$"
+    ]
+   },
+   {
+    "input": "\\(\nu\\)",
+    "result": [
+     "$\nu$",
+     "$\\nu$"
+    ]
+   },
+   {
+    "input": "$3 $\re$",
+    "result": [
+     "\\$3 $\re$",
+     "\\$3 $\\ne$"
+    ]
+   },
+   {
+    "input": "x^0∋$\\(\num_L\\)",
+    "result": [
+     "$x^0$$\\ni$$$\num_L$",
+     "$x^0$$\\ni$$$\n$um_L$$"
+    ]
+   }
+  ]
+ },
+ "5 repair idempotent": {
+  "count": 0,
+  "examples": []
+ },
+ "6 segment raw slices reassemble the input": {
+  "count": 0,
+  "examples": []
+ },
+ "7 fix output is a fixed point of normalize and canonicalize": {
+  "count": 17,
+  "examples": [
+   {
+    "input": "Â",
+    "result": [
+     "normalize",
+     " yyy def",
+     "yyy def"
+    ]
+   },
+   {
+    "input": "Î ",
+    "result": [
+     "normalize",
+     "Î ",
+     "Π"
+    ]
+   },
+   {
+    "input": "Î  ",
+    "result": [
+     "normalize",
+     "Î ",
+     "Π"
+    ]
+   },
+   {
+    "input": "0_A$",
+    "result": [
+     "normalize",
+     "$0_A$$",
+     "\\$0_A$$"
+    ]
+   },
+   {
+    "input": "$ H⁺",
+    "result": [
+     "canonicalize",
+     "$ $\\text{H}^{+}$",
+     "$ \\text{H}^{+}$"
+    ]
+   },
+   {
+    "input": "0\\x\\",
+    "result": [
+     "normalize",
+     "$0\\x\\$",
+     "\\$0\\x\\$"
+    ]
+   },
+   {
+    "input": "\\H\\te",
+    "result": [
+     "normalize",
+     "$\\H\te$",
+     "$\\H\\ne$"
+    ]
+   },
+   {
+    "input": "SO₄\bm",
+    "result": [
+     "canonicalize",
+     "$\\text{SO}_{4}$\\bm",
+     "$\\text{SO}_{4}\\bm$"
+    ]
+   },
+   {
+    "input": "\\c\\nt",
+    "result": [
+     "normalize",
+     "$\\c\nt$",
+     "$\\c\\tt$"
+    ]
+   },
+   {
+    "input": "Ïƒâ€�",
+    "result": [
+     "canonicalize",
+     "$\\sigma$â€�",
+     "$\\sigma$�"
+    ]
+   },
+   {
+    "input": "$ \\in",
+    "result": [
+     "canonicalize",
+     "$ $\\in$",
+     "$ \\in$"
+    ]
+   },
+   {
+    "input": "\\to:\\f",
+    "result": [
+     "canonicalize",
+     "$\\to$:\\f",
+     "$\\to:\\f$"
+    ]
+   },
+   {
+    "input": "${\\int",
+    "result": [
+     "canonicalize",
+     "${$\\int$",
+     "${$$\\int$$"
+    ]
+   },
+   {
+    "input": "$\\ni≠ $$",
+    "result": [
+     "canonicalize",
+     "$$\\ni$≠ $$",
+     "$$\\ni$\\neq $$"
+    ]
+   },
+   {
+    "input": "x^0∋\\sum{",
+    "result": [
+     "canonicalize",
+     "$x^0$$\\ni$$$\\sum${$",
+     "$x^0$$\\ni$$$$\\sum$${$"
+    ]
+   },
+   {
+    "input": "$$$$\t0_AÎ¼",
+    "result": [
+     "normalize",
+     "$$$$\t$0_A$$$\\mu$$",
+     "$$$$\t\\$0_A$$$\\mu$$"
+    ]
+   }
+  ]
+ },
+ "8 audit(fix(x)) has no control_char / legacy_delimiter / bare_left_brace": {
+  "count": 0,
+  "examples": []
+ },
+ "9 to_plain(fix(x)) == to_plain(x) when x is already canonical": {
+  "count": 0,
+  "examples": []
+ },
+ "9b to_plain(fix(x)) == to_plain(x) when audit(x) is empty": {
+  "count": 449,
+  "examples": [
+   {
+    "input": "µ",
+    "result": [
+     "µ",
+     "μ",
+     "$\\mu$"
+    ]
+   },
+   {
+    "input": "∆",
+    "result": [
+     "∆",
+     "Δ",
+     "$\\Delta$"
+    ]
+   },
+   {
+    "input": "−",
+    "result": [
+     "−",
+     "-",
+     "-"
+    ]
+   },
+   {
+    "input": "a⃗",
+    "result": [
+     "a⃗",
+     "a",
+     "$\\vec{a}$"
+    ]
+   },
+   {
+    "input": "\neq",
+    "result": [
+     "\neq",
+     "≠",
+     "$\\neq$"
+    ]
+   },
+   {
+    "input": "c^2",
+    "result": [
+     "c^2",
+     "c²",
+     "$c^2$"
+    ]
+   },
+   {
+    "input": "$µ$",
+    "result": [
+     "µ",
+     "μ",
+     "$\\mu$"
+    ]
+   },
+   {
+    "input": "H_2",
+    "result": [
+     "H_2",
+     "H₂",
+     "$H_2$"
+    ]
+   },
+   {
+    "input": "∑$$",
+    "result": [
+     "∑$$",
+     "Σ$$",
+     "$\\sum$$$"
+    ]
+   },
+   {
+    "input": "$⋅$",
+    "result": [
+     "⋅",
+     "·",
+     "$\\cdot$"
+    ]
+   },
+   {
+    "input": "$ᵀ$",
+    "result": [
+     "ᵀ",
+     "^T",
+     "$^{T}$"
+    ]
+   },
+   {
+    "input": "0^2",
+    "result": [
+     "0^2",
+     "0²",
+     "$0^2$"
+    ]
+   },
+   {
+    "input": "E_n",
+    "result": [
+     "E_n",
+     "Eₙ",
+     "$E_n$"
+    ]
+   },
+   {
+    "input": "v_x",
+    "result": [
+     "v_x",
+     "vₓ",
+     "$v_x$"
+    ]
+   },
+   {
+    "input": "x_0",
+    "result": [
+     "x_0",
+     "x₀",
+     "$x_0$"
+    ]
+   },
+   {
+    "input": "x_1",
+    "result": [
+     "x_1",
+     "x₁",
+     "$x_1$"
+    ]
+   },
+   {
+    "input": "$F⃗$",
+    "result": [
+     "F⃗",
+     "F",
+     "$\\vec{F}$"
+    ]
+   },
+   {
+    "input": "$∛8$",
+    "result": [
+     "∛8",
+     "³√8",
+     "$\\sqrt[3]{8}$"
+    ]
+   }
+  ]
+ },
+ "11 JSON round trip of control-free strings": {
+  "count": 0,
+  "examples": []
+ },
+ "12 residual audit kinds after fix": {
+  "mojibake": {
+   "count": 91,
+   "examples": [
+    {
+     "input": 

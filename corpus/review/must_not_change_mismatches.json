@@ -1,0 +1,1540 @@
+{
+ "function": "must_not_change",
+ "cases": [
+  {
+   "input": "prose ¬ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0031"
+  },
+  {
+   "input": "prose ± prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0033"
+  },
+  {
+   "input": "prose · prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0036"
+  },
+  {
+   "input": "prose × prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0041"
+  },
+  {
+   "input": "prose ÷ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0042"
+  },
+  {
+   "input": "prose Γ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0051"
+  },
+  {
+   "input": "prose Δ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0052"
+  },
+  {
+   "input": "prose Θ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0053"
+  },
+  {
+   "input": "prose Λ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0054"
+  },
+  {
+   "input": "prose Ξ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0055"
+  },
+  {
+   "input": "prose Π prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0056"
+  },
+  {
+   "input": "prose Σ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0057"
+  },
+  {
+   "input": "prose Υ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0058"
+  },
+  {
+   "input": "prose Φ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0059"
+  },
+  {
+   "input": "prose Ψ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0060"
+  },
+  {
+   "input": "prose Ω prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0061"
+  },
+  {
+   "input": "prose α prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0062"
+  },
+  {
+   "input": "prose β prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0063"
+  },
+  {
+   "input": "prose γ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0064"
+  },
+  {
+   "input": "prose δ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0065"
+  },
+  {
+   "input": "prose ε prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0066"
+  },
+  {
+   "input": "prose ζ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0067"
+  },
+  {
+   "input": "prose η prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0068"
+  },
+  {
+   "input": "prose θ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0069"
+  },
+  {
+   "input": "prose ι prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0070"
+  },
+  {
+   "input": "prose κ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0071"
+  },
+  {
+   "input": "prose λ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0072"
+  },
+  {
+   "input": "prose μ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0073"
+  },
+  {
+   "input": "prose ν prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0074"
+  },
+  {
+   "input": "prose ξ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0075"
+  },
+  {
+   "input": "prose π prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0076"
+  },
+  {
+   "input": "prose ρ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0077"
+  },
+  {
+   "input": "prose ς prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0078"
+  },
+  {
+   "input": "prose σ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0079"
+  },
+  {
+   "input": "prose τ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0080"
+  },
+  {
+   "input": "prose υ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0081"
+  },
+  {
+   "input": "prose φ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0082"
+  },
+  {
+   "input": "prose χ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0083"
+  },
+  {
+   "input": "prose ψ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0084"
+  },
+  {
+   "input": "prose ω prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0085"
+  },
+  {
+   "input": "prose ϑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0086"
+  },
+  {
+   "input": "prose ϕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0087"
+  },
+  {
+   "input": "prose ϖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0088"
+  },
+  {
+   "input": "prose ϱ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0089"
+  },
+  {
+   "input": "prose ϵ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0090"
+  },
+  {
+   "input": "prose ℂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0175"
+  },
+  {
+   "input": "prose ℏ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0176"
+  },
+  {
+   "input": "prose ℓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0177"
+  },
+  {
+   "input": "prose ℕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0178"
+  },
+  {
+   "input": "prose ℙ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0179"
+  },
+  {
+   "input": "prose ℚ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0180"
+  },
+  {
+   "input": "prose ℝ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0181"
+  },
+  {
+   "input": "prose ℤ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0182"
+  },
+  {
+   "input": "prose ← prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0198"
+  },
+  {
+   "input": "prose ↑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0199"
+  },
+  {
+   "input": "prose → prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0200"
+  },
+  {
+   "input": "prose ↓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0201"
+  },
+  {
+   "input": "prose ↔ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0202"
+  },
+  {
+   "input": "prose ↦ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0203"
+  },
+  {
+   "input": "prose ⇌ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0204"
+  },
+  {
+   "input": "prose ⇐ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0205"
+  },
+  {
+   "input": "prose ⇒ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0206"
+  },
+  {
+   "input": "prose ⇔ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0207"
+  },
+  {
+   "input": "prose ∀ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0208"
+  },
+  {
+   "input": "prose ∂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0209"
+  },
+  {
+   "input": "prose ∃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0210"
+  },
+  {
+   "input": "prose ∄ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0211"
+  },
+  {
+   "input": "prose ∅ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0212"
+  },
+  {
+   "input": "prose ∇ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0213"
+  },
+  {
+   "input": "prose ∈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0214"
+  },
+  {
+   "input": "prose ∉ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0215"
+  },
+  {
+   "input": "prose ∋ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0216"
+  },
+  {
+   "input": "prose ∏ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0217"
+  },
+  {
+   "input": "prose ∑ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0218"
+  },
+  {
+   "input": "prose ∓ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0219"
+  },
+  {
+   "input": "prose ∗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0220"
+  },
+  {
+   "input": "prose ∘ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0221"
+  },
+  {
+   "input": "prose ∝ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0225"
+  },
+  {
+   "input": "prose ∞ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0226"
+  },
+  {
+   "input": "prose ∠ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0227"
+  },
+  {
+   "input": "prose ∡ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0228"
+  },
+  {
+   "input": "prose ∣ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0229"
+  },
+  {
+   "input": "prose ∥ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0230"
+  },
+  {
+   "input": "prose ∧ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0231"
+  },
+  {
+   "input": "prose ∨ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0232"
+  },
+  {
+   "input": "prose ∩ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0233"
+  },
+  {
+   "input": "prose ∪ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0234"
+  },
+  {
+   "input": "prose ∫ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0235"
+  },
+  {
+   "input": "prose ∬ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0236"
+  },
+  {
+   "input": "prose ∭ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0237"
+  },
+  {
+   "input": "prose ∮ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0238"
+  },
+  {
+   "input": "prose ∴ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0239"
+  },
+  {
+   "input": "prose ∵ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0240"
+  },
+  {
+   "input": "prose ∼ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0241"
+  },
+  {
+   "input": "prose ≃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0242"
+  },
+  {
+   "input": "prose ≅ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0243"
+  },
+  {
+   "input": "prose ≈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0244"
+  },
+  {
+   "input": "prose ≠ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0245"
+  },
+  {
+   "input": "prose ≡ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0246"
+  },
+  {
+   "input": "prose ≤ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0247"
+  },
+  {
+   "input": "prose ≥ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0248"
+  },
+  {
+   "input": "prose ≪ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0249"
+  },
+  {
+   "input": "prose ≫ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0250"
+  },
+  {
+   "input": "prose ⊂ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0251"
+  },
+  {
+   "input": "prose ⊃ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0252"
+  },
+  {
+   "input": "prose ⊄ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0253"
+  },
+  {
+   "input": "prose ⊅ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0254"
+  },
+  {
+   "input": "prose ⊆ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0255"
+  },
+  {
+   "input": "prose ⊇ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0256"
+  },
+  {
+   "input": "prose ⊈ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0257"
+  },
+  {
+   "input": "prose ⊉ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0258"
+  },
+  {
+   "input": "prose ⊕ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0259"
+  },
+  {
+   "input": "prose ⊖ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0260"
+  },
+  {
+   "input": "prose ⊗ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0261"
+  },
+  {
+   "input": "prose ⊙ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0262"
+  },
+  {
+   "input": "prose ⊥ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0263"
+  },
+  {
+   "input": "prose ⋅ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0264"
+  },
+  {
+   "input": "prose ⋮ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0265"
+  },
+  {
+   "input": "prose ⋯ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0266"
+  },
+  {
+   "input": "prose ⋱ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0267"
+  },
+  {
+   "input": "prose □ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0268"
+  },
+  {
+   "input": "prose △ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0269"
+  },
+  {
+   "input": "prose ⟨ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0270"
+  },
+  {
+   "input": "prose ⟩ prose",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_entry_in_prose_is_left_alone_by_unicode_math_to_latex",
+   "via": "unicode_math_to_latex",
+   "options": {
+    "inside_math_only": true
+   },
+   "id": "harvested-must_not_change-0271"
+  },
+  {
+   "input": "$π$",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "Backend/tests/unit/test_unicode_to_latex.py::test_wrap_bare_unicode_math_bare_char_inside_existing_span_untouched",
+   "via": "wrap_bare_unicode_math",
+   "id": "harvested-must_not_change-0400"
+  },
+  {
+   "input": "Rate\tan 5",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[tab_an_not_guessed]",
+   "via": "sanitize_db_response",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0428"
+  },
+  {
+   "input": "Rate\tan 5",
+   "functions": [
+    "repair"
+   ],
+   "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_repair_hard_control_bytes[tab_untouched]",
+   "via": "repair_hard_control_bytes",
+   "variant": "hard",
+   "id": "harvested-must_not_change-0431"
+  },
+  {
+   "input": "\\ldots",
+   "functions": [
+    "canonicalize"
+   ],
+   "source": "pupiltree-agents/tests/test_narrative_prose_latex.py::test_anything_that_is_not_a_typographic_only_span_is_untouched",
+   "via": "strip_typographic_latex",
+   "id": "harvested-must_not_change-0481"
+  },
+  {
+   "input": "open $x and \\$5",
+   "functions": [
+    "segment"
+   ],
+   "source": "Fillers/tests/js/test_period_content_math.mjs::maskEscapedDollars masks \\$ outside maths only, and agrees with auto-render on where maths starts",
+   "via": "maskEscapedDollars",
+   "id": "harvested-must_not_change-0497"
+  }
+ ]
+}

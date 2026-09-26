@@ -1,0 +1,16 @@
+{
+ "version": "1.1.0",
+ "name": "not_rendered_keys",
+ "value": [
+  "error",
+  "prompt",
+  "raw",
+  "raw_content",
+  "raw_output",
+  "raw_response",
+  "raw_text",
+  "system_instruction",
+  "system_prompt",
+  "traceback"
+ ]
+}

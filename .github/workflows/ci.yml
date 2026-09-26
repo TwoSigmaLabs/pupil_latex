@@ -1,0 +1,86 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+        ftfy: ["with-ftfy", "without-ftfy"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pytest
+      - if: matrix.ftfy == 'with-ftfy'
+        run: pip install ftfy
+      - run: python -m pytest -q
+        working-directory: python
+      - name: tables are up to date
+        run: |
+          python -m pupiltree_latex.export_tables /tmp/tables
+          diff -r /tmp/tables ../corpus/tables
+        working-directory: python
+      - name: corpus is up to date
+        run: python tools/build_corpus.py --check
+      - name: every table is emitted by the JS and Dart generators
+        run: python tools/check_generated_tables.py
+
+  dart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+        working-directory: dart/pupiltree_latex
+      - name: generated tables are up to date
+        run: |
+          dart run tool/gen_tables.dart
+          git diff --exit-code -- lib/src/tables.g.dart
+        working-directory: dart/pupiltree_latex
+      - run: dart analyze --fatal-infos
+        working-directory: dart/pupiltree_latex
+      - run: dart test
+        working-directory: dart/pupiltree_latex
+
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+        working-directory: dart/pupiltree_latex_flutter
+      - run: flutter analyze
+        working-directory: dart/pupiltree_latex_flutter
+      - run: flutter test
+        working-directory: dart/pupiltree_latex_flutter
+
+  js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+        working-directory: js
+      - name: generated tables are up to date
+        run: |
+          npm run gen-tables
+          git diff --exit-code -- src/tables.g.ts
+        working-directory: js
+      - run: npm run typecheck
+        working-directory: js
+      - run: npm run build
+        working-directory: js
+      - run: npm test
+        working-directory: js

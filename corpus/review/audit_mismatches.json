@@ -1,0 +1,120 @@
+{
+ "function": "audit",
+ "cases": [
+  {
+   "id": "backend-latex-rules-0021",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validate_warns_on_unbalanced_dollar",
+   "via": "validate_latex_text",
+   "input": "Cost $5 and $x = $y",
+   "property": "some warning contains 'unbalanced' (case-insensitive)",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-rules-0022",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validate_warns_on_unsupported_mathscr",
+   "via": "validate_latex_text",
+   "input": "$\\mathscr{L}$",
+   "property": "some warning contains '\\mathscr'",
+   "expected": null,
+   "tags": [],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-rules-0025",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validate_warns_on_bare_left_brace",
+   "via": "validate_latex_text",
+   "input": "$\\left{ x \\right}$",
+   "property": "some warning contains 'unescaped brace' (case-insensitive) or '\\left'",
+   "expected": null,
+   "tags": [],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-rules-0027",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validator_warns_on_bare_unicode_math_outside_span",
+   "via": "validate_latex_text",
+   "input": "The value ν is 1",
+   "property": "some warning contains 'bare unicode greek' (case-insensitive)",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-rules-0028",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validator_warns_on_unicode_chem",
+   "via": "validate_latex_text",
+   "input": "Water H₂O boils",
+   "property": "some warning contains 'Unicode subscript chemistry'",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-rules-0029",
+   "source": "Backend/tests/unit/test_latex_rules.py::test_validator_no_longer_flags_mathbb",
+   "via": "validate_latex_text",
+   "input": "$\\mathbb{R}$",
+   "property": "no warning contains 'mathbb'",
+   "expected": null,
+   "tags": [
+    "B7"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-audit-0012",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestLegacyDelimiters::test_counts_every_delimiter",
+   "via": "audit_latex_text",
+   "input": "\\(a\\) and \\[b\\]",
+   "property": "exactly 4 findings of kind 'legacy_delimiter'",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-audit-0018",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestUnbalancedDollars::test_position_is_the_last_dollar",
+   "via": "audit_latex_text",
+   "input": "a $b$ c $d",
+   "property": "the 'unbalanced_dollar' finding's position == index of the last '$' (8)",
+   "expected": null,
+   "tags": [
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-audit-0034",
+   "source": "Backend/tests/unit/test_latex_audit.py::TestMalformedCommands::test_stray_dollar_does_not_turn_the_rest_of_a_script_into_math",
+   "via": "audit_latex_text",
+   "input": "Area is $50 cm. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. Discuss with a partner. \\tool: student_selector",
+   "property": "exactly one 'unbalanced_dollar' and no 'script_missing_braces'",
+   "expected": null,
+   "tags": [
+    "B3",
+    "B4"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "backend-latex-audit-0068",
+   "source": "Backend/tests/unit/test_latex_audit.py::test_findings_are_sorted_by_position",
+   "via": "audit_latex_text",
+   "input": "$x  Î¸ \frac",
+   "property": "finding positions are non-decreasing",
+   "expected": null,
+   "tags": [],
+   "python_got": "<property not expressible>"
+  }
+ ]
+}

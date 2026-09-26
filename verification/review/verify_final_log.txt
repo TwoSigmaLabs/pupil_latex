@@ -1,0 +1,92 @@
+display vec parity                 in='$$x⃗$$'
+                                   out='$$$\\vec{x}$$$'   KATEX FAIL [('$\\vec{x}', "KaTeX parse error: Can't use function '$' in math ")]
+display vec parity 2               in='$$a⃗ + b⃗$$'
+                                   out='$$$\\vec{a}$ + $\\vec{b}$$$'   KATEX FAIL [('$\\vec{a}$ + $\\vec{b}', "KaTeX parse error: Can't use function '$' in math ")]
+unicode super run in math          in='$10⁻³$'
+                                   out='$10^{-}^{3}$'   KATEX FAIL [('10^{-}^{3}', 'KaTeX parse error: Double superscript at position ')]
+unicode sub run in math            in='$C₆H₁₂O₆$'
+                                   out='$C_{6}H_{1}_{2}O_{6}$'   KATEX FAIL [('C_{6}H_{1}_{2}O_{6}', 'KaTeX parse error: Double subscript at position 11')]
+unicode super run prose            in='3 × 10⁻³'
+                                   out='3 $\\times$ 10⁻³'
+text{} unicode sub                 in='$\\text{H₂O}$'
+                                   out='$\\text{H_{2}O}$'   KATEX FAIL [('\\text{H_{2}O}', "KaTeX parse error: Expected 'EOF', got '_' at posi")]
+text{} unicode times               in='$\\text{5 × 3}$'
+                                   out='$\\text{5 \\times 3}$'   KATEX FAIL [('\\text{5 \\times 3}', 'KaTeX parse error: Undefined control sequence: \\ti')]
+text{} degree                      in='$\\text{25°C}$'
+                                   out='$\\text{25^{\\circ}C}$'   KATEX FAIL [('\\text{25^{\\circ}C}', "KaTeX parse error: Expected 'EOF', got '^' at posi")]
+text{} pi                          in='$\\text{π r}$'
+                                   out='$\\text{\\pi r}$'   KATEX FAIL [('\\text{\\pi r}', 'KaTeX parse error: Undefined control sequence: \\pi')]
+dollar in text                     in='$\\text{costs $5}$'
+                                   out='$\\text{costs $5}$'   KATEX FAIL [('\\text{costs $5}', "KaTeX parse error: Expected '$', got 'EOF' at posi")]   audit=['unbalanced_dollar']
+adjacent spans $1$γ                in='$1$γ'
+                                   out='$1$$\\gamma$'   NOT IDEMPOTENT -> '\\$1$$\\gamma$'
+orphan then chem                   in='$ H₂'
+                                   out='$ $\\text{H}_{2}$'   NOT IDEMPOTENT -> '$ \\text{H}_{2}$'   audit=['unbalanced_dollar']
+Hindi prose                        in='यह \\alpha कण है'
+                                   out='यह $\\alpha$ कण है'
+Hebrew prose                       in='שלום \\alpha'
+                                   out='שלום $\\alpha$'
+row break then frac                in='$$a \\\\\\frac{1}{2}$$'
+                                   out='$$a \\frac{1}{2}$$'
+row break then end                 in='$\\begin{aligned} a &= b \\\\\\end{aligned}$'
+                                   out='$\\begin{aligned} a &= b \\end{aligned}$'
+11 markers one in math             in='{{IMAGE:i0}} {{IMAGE:i1}} {{IMAGE:i2}} {{IMAGE:i3}} {{IMAGE:i4}} {{IMAGE:i5}} {{IMAGE:i6}} {{IMAGE:i7}} {{IMAGE:i8}} {{IMAGE:i9}} $a {{IMAGE:last}}$'
+                                   out='{{IMAGE:i0}} {{IMAGE:i1}} {{IMAGE:i2}} {{IMAGE:i3}} {{IMAGE:i4}} {{IMAGE:i5}} {{IMAGE:i6}} {{IMAGE:i7}} {{IMAGE:i8}} {{IMAGE:i9}} $a {{IMAGE:last}}$'
+url swallows marker                in='http://host/{{IMAGE:x_1}}\ta'
+                                   out='http://host/{{IMAGE:x_1}}\ta'
+nbsp                               in='5\xa0km'
+                                   out='5km'
+em dash superscript                in='10—¹ range'
+                                   out='10 range'
+entities twice                     in='&amp;amp;'
+                                   out='&'
+mojibake C1 space                  in='Î\x9e '
+                                   out='Î '   NOT IDEMPOTENT -> 'Π'   audit=['mojibake']
+$\no normalize                     in='$\\no'
+                                   out='$\no'   NOT IDEMPOTENT -> '$\\to'   audit=['unbalanced_dollar']
+\x0crac                            in='\x0crac'
+                                   out='$\\frac$'   KATEX FAIL [('\\frac', 'KaTeX parse error: Unexpected end of input in a ma')]   audit=['command_missing_argument']
+double esc cdots                   in='\\\\cdots'
+                                   out='$\\\\cdots$'   audit=['double_escaped_command']
+double esc ce                      in='\\\\ce{H2O}'
+                                   out='$\\\\ce{H2O}$'   audit=['double_escaped_command']
+lone surrogate                     in='\ud83d x'
+                                   out='� x'   audit=['mojibake']
+q id in math                       in='$q_001_easy_2026$'
+                                   out='$q_{001}_easy_{2026}$'   KATEX FAIL [('q_{001}_easy_{2026}', 'KaTeX parse error: Double subscript at position 8:')]   audit=['script_missing_braces']
+literal \n in math                 in='$a\\nb$'
+                                   out='$a\\nb$'   KATEX FAIL [('a\\nb', 'KaTeX parse error: Undefined control sequence: \\nb')]   audit=['unsupported_command']
+tab an                             in='Draw\tan angle'
+                                   out='Draw\\tan angle'
+newline eq                         in='Values:\neq 5'
+                                   out='Values:\\neq 5'
+literal newline before nu          in='Given\\nu = 5 cm'
+                                   out='Given$\\nu$ = 5 cm'
+sqrt no arg                        in='use \\sqrt here'
+                                   out='use \\sqrt here'
+sqrt2                              in='\\sqrt2 is irrational'
+                                   out='\\sqrt2 is irrational'
+frac12                             in='half is \\frac12'
+                                   out='half is \\frac12'
+percent in math                    in='$50%$'
+                                   out='$50%$'
+mathscr                            in='$\\mathscr{L}$'
+                                   out='$\\mathscr{L}$'   audit=['unsupported_command']
+cbrt                               in='$\\cbrt{8}$'
+                                   out='$\\cbrt{8}$'   KATEX FAIL [('\\cbrt{8}', 'KaTeX parse error: Undefined control sequence: \\cb')]   audit=['unsupported_command']
+
+to_plain: {'$\\neg p$': '≠g p', '$\\top$': '→p', '$\\inf$': '∈f', '$a \\pmod{n}$': 'a ±odn', '$a \\leqslant b$': 'a ≤slant b', '$\\newline$': '≠wline', '$\\intercal$': '∫ercal', '{{IMAGE:169_optA}}': '{{IMAGE:169_optA}}', '$1{,}000$': '1,000'}
+tts     : {'$x^{20}$': 'x squared0', '$\\frac{\\frac{1}{2}}{3}$': 'frac1 over 23', '$\\pmatrix$': 'plus or minusatrix'}
+to_plain 1000 nested braces: RecursionError
+json '{"q": "5\\ \\text{m}"}' -> RAISES JSONDecodeError Invalid \escape: line 1 column 9 (char 8)
+json '{"q": "a\\1"}' -> RAISES JSONDecodeError Invalid \escape: line 1 column 9 (char 8)
+json '{"q": "\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}"}' -> {'q': '\\begin{pmatrix}1&2\\3&4\\end{pmatrix}'}
+json '{"q": "\\udeaf"}' -> {'q': '\udeaf'}
+SLOW fix(greek 10k): 3217 ms
+SLOW audit(greek 10k): 747 ms
+SLOW fix(newline words 10k): 231 ms
+SLOW audit(newline words 10k): 100 ms
+SLOW repair(newline words 10k): 101 ms
+SLOW fix(open-brace dollars 10k): 903 ms
+SLOW segment(open-brace dollars 10k): 919 ms
+SLOW fix(vec arrows 10k): 1749 ms

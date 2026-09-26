@@ -1,0 +1,125 @@
+{
+ "function": "normalize",
+ "cases": [
+  {
+   "id": "script-editor-latex-preprocess-0020",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::orphan delimiters/an unmatched \\( is stripped so siblings still render",
+   "via": "stripOrphanMathDelimiters",
+   "input": "Broken \\(x^2 and fine $y^2$.",
+   "expected": null,
+   "tags": [
+    "B4",
+    "script_editor#420"
+   ],
+   "note": "asserted through preprocessLatexText",
+   "property_source": "output contains no '\\(' and contains '$y^2$'",
+   "not_contains": [
+    "\\(",
+    "$y^2$"
+   ],
+   "python_got": "Broken x^2 and fine $y^2$."
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0012",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::context-aware cleanup/collapses doubled symbols produced by over-eager replacement",
+   "via": "mojibake",
+   "input": "Ï€Ï€",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "property_source": "output contains 'π' and not 'ππ'",
+   "contains": [
+    "π"
+   ],
+   "not_contains": [
+    "ππ"
+   ],
+   "python_got": "ππ"
+  },
+  {
+   "id": "script-editor-mojibake-fixer-0013",
+   "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/mojibake_fixer_test.dart::context-aware cleanup/strips stray C1 control / no-break-space garbage",
+   "via": "mojibake",
+   "input": "a b",
+   "property": "output does not contain U+00A0 (NBSP)",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-pipeline-audit-0001",
+   "source": "script_editor/test/widgets/latex_pipeline_audit_test.dart::G/literal \\n in prose is decoded to a real newline",
+   "via": "ScriptEditorTex (preprocessLatexText)",
+   "input": "So, this statement is true.\\nC) The next part.",
+   "property": "rendered text does not contain the literal two characters backslash-n followed by 'C)'",
+   "expected": null,
+   "tags": [
+    "B1"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "script-editor-latex-e2e-reality-0011",
+   "source": "script_editor/test/widgets/latex_e2e_reality_test.dart::FIX 2: times mojibake Ã— is repaired to × before render",
+   "via": "ScriptEditorTex (MojibakeFixer)",
+   "input": "Speed of light is 3 Ã— 10^8 m/s.",
+   "property": "rendered text contains '×' and not 'Ã—'; no math span is produced",
+   "expected": null,
+   "tags": [
+    "B6"
+   ],
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "tutor-student-valid-math-0001",
+   "source": "pupiltree.ai_tutor-frontend/test/common/widgets/student_valid_math_test.dart::preserve valid math: Compute $2x + 3 $.",
+   "via": "LatexMarkdownText (flutter_math_fork)",
+   "input": "Compute $2x + 3 $.",
+   "property": "exactly one Math widget whose TeX re-encodes equal to Math.tex('2x + 3') re-encoded",
+   "expected": null,
+   "math_spans_tex": [
+    "2x + 3"
+   ],
+   "tags": [
+    "B4"
+   ],
+   "note": "read from origin/develop; comparison is after flutter_math_fork's encodeTeX on both sides, so whitespace differences are tolerated",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "tutor-student-valid-math-0002",
+   "source": "pupiltree.ai_tutor-frontend/test/common/widgets/student_valid_math_test.dart::preserve valid math: Compute $2x + 3$.",
+   "via": "LatexMarkdownText (flutter_math_fork)",
+   "input": "Compute $2x + 3$.",
+   "property": "exactly one Math widget whose TeX re-encodes equal to Math.tex('2x + 3') re-encoded",
+   "expected": null,
+   "math_spans_tex": [
+    "2x + 3"
+   ],
+   "tags": [
+    "B4"
+   ],
+   "note": "read from origin/develop; comparison is after flutter_math_fork's encodeTeX on both sides, so whitespace differences are tolerated",
+   "python_got": "<property not expressible>"
+  },
+  {
+   "id": "tutor-student-valid-math-0003",
+   "source": "pupiltree.ai_tutor-frontend/test/common/widgets/student_valid_math_test.dart::preserve valid math: Angle \\(\\theta \\times 2 \\neq 0\\) here.",
+   "via": "LatexMarkdownText (flutter_math_fork)",
+   "input": "Angle \\(\\theta \\times 2 \\neq 0\\) here.",
+   "property": "exactly one Math widget whose TeX re-encodes equal to Math.tex('\\\\theta \\\\times 2 \\\\neq 0') re-encoded",
+   "expected": null,
+   "math_spans_tex": [
+    "\\theta \\times 2 \\neq 0"
+   ],
+   "tags": [
+    "B4"
+   ],
+   "note": "read from origin/develop; comparison is after flutter_math_fork's encodeTeX on both sides, so whitespace differences are tolerated",
+   "python_got": "<property not expressible>"
+  }
+ ]
+}
