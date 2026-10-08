@@ -605,7 +605,7 @@ function trimPaddedLine(line: string): string {
  * trimmed when its padded content is math. `I paid $ 5 and got $ 3 back` is
  * currency and stays.
  */
-function trimPaddedSpans(text: string): string {
+export function trimPaddedSpans(text: string): string {
   if (!text.includes("$") || !PADDED_SPAN_HINT_RE.test(text)) return text;
   const out: string[] = [];
   for (const seg of segment(text)) {

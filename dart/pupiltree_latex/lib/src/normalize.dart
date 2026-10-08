@@ -9,6 +9,9 @@
 library;
 
 import 'audit.dart';
+// `canonicalize.dart` imports `isFormula` from here; the cycle is
+// call-time only.
+import 'canonicalize.dart' show trimPaddedSpansInText;
 import 'commands.dart';
 import 'guarded_regexp.dart';
 import 'mojibake.dart';
@@ -205,6 +208,38 @@ String escapeCurrency(String text) {
 }
 
 // ---------------------------------------------------------------------------
+// 5a. padded spans
+// ---------------------------------------------------------------------------
+
+/// `Solve $ x + 1 = 0 $` → `Solve $x + 1 = 0$` (tag `audit6-1`): the rule
+/// `canonicalize` applies (pairs per line; content clearly math; neither
+/// dollar glued to a letter or digit outside the pair, so a closer followed
+/// by a digit stays). Run after [escapeCurrency]: an escaped amount is
+/// never paired. [segment] keeps pandoc's rule, so without this a stored
+/// padded formula displays as raw text.
+String trimPaddedSpans(String text) => trimPaddedSpansInText(text);
+
+/// U+E000 (private use): never in content.
+const String _currencyMask = '\uE000';
+
+/// [trimPaddedSpans] on text whose amounts are not escaped (`toPlain`
+/// input): the dollars [currencyPositions] reads as money are masked
+/// first, so they are never paired (`Rs $5 and $10 for $ x^2 $` → only
+/// the last pair is trimmed).
+String trimPaddedSpansKeepCurrency(String text) {
+  if (!text.contains(r'$') || text.contains(_currencyMask)) return text;
+  final money = currencyPositions(text);
+  if (money.isNotEmpty) {
+    final units = text.codeUnits.toList();
+    for (final k in money) {
+      units[k] = 0xE000;
+    }
+    text = String.fromCharCodes(units);
+  }
+  return trimPaddedSpans(text).replaceAll(_currencyMask, r'$');
+}
+
+// ---------------------------------------------------------------------------
 // 6. prose escapes
 // ---------------------------------------------------------------------------
 
@@ -248,8 +283,8 @@ String decodeEscapesOutsideMath(String text) {
   // Protected: every `segment` math span (what the renderers typeset; tag
   // `audit5-8`: in `a $ $\nu$ b` the regex pairs `$ $` and used to decode
   // the `\nu` that `segment` renders) and every regex span (a padded
-  // `$ x \ne y $` that `canonicalize` trims later). Decoding is lossy, so a
-  // position either reader calls math is kept.
+  // `$ x \ne y $5` that `trimPaddedSpans` left). Decoding is lossy, so a position
+  // either reader calls math is kept.
   final n = text.length;
   final protected = List<bool>.filled(n, false);
   for (final m in _mathSpan.allMatches(text)) {
@@ -286,7 +321,8 @@ String decodeEscapesOutsideMath(String text) {
 // pipeline
 // ---------------------------------------------------------------------------
 
-/// repair → mojibake table → delimiters → orphans → currency → escapes.
+/// repair → mojibake table → delimiters → orphans → currency → padded
+/// spans → escapes.
 /// Idempotent, content-preserving.
 String normalize(String text) {
   if (text.isEmpty) return text;
@@ -295,6 +331,7 @@ String normalize(String text) {
   text = normalizeDelimiters(text);
   text = stripOrphanDelimiters(text);
   text = escapeCurrency(text);
+  text = trimPaddedSpans(text);
   text = decodeEscapesOutsideMath(text);
   return text;
 }

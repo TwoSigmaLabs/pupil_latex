@@ -208,6 +208,45 @@ def escape_currency(text: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# 5a. padded spans
+# ---------------------------------------------------------------------------
+
+
+def trim_padded_spans(text: str) -> str:
+    """``Solve $ x + 1 = 0 $`` → ``Solve $x + 1 = 0$`` (tag ``audit6-1``).
+
+    The same rule `canonicalize` applies (pairs per line; content clearly
+    math; neither dollar glued to a letter or digit outside the pair, so a
+    closer followed by a digit stays). Run after `escape_currency`: an
+    escaped amount is never paired. `segment` keeps pandoc's rule (no
+    whitespace inside the delimiters), so without this a stored padded
+    formula displays as raw text."""
+    # Imported here: `canonicalize` imports this module (`is_formula`).
+    from .canonicalize import _trim_padded_spans
+
+    return _trim_padded_spans(text)
+
+
+_CURRENCY_MASK = "\ue000"  # U+E000 (private use): never in content
+
+
+def trim_padded_spans_keep_currency(text: str) -> str:
+    """`trim_padded_spans` on text whose amounts are not escaped (`to_plain`
+    input): the dollars `currency_positions` reads as money are masked first,
+    so they are never paired (``Rs $5 and $10 for $ x^2 $`` → only the last
+    pair is trimmed)."""
+    if "$" not in text or _CURRENCY_MASK in text:
+        return text
+    money = currency_positions(text)
+    if money:
+        chars = list(text)
+        for k in money:
+            chars[k] = _CURRENCY_MASK
+        text = "".join(chars)
+    return trim_padded_spans(text).replace(_CURRENCY_MASK, "$")
+
+
+# ---------------------------------------------------------------------------
 # 6. prose escapes
 # ---------------------------------------------------------------------------
 
@@ -249,8 +288,8 @@ def decode_escapes_outside_math(text: str) -> str:
     # Protected: every `segment` math span (what the renderers typeset; tag
     # `audit5-8`: in `a $ $\\nu$ b` the regex pairs `$ $` and used to decode
     # the `\\nu` that `segment` renders) and every regex span (a padded
-    # `$ x \\ne y $` that `canonicalize` trims later). Decoding is lossy, so a
-    # position either reader calls math is kept.
+    # `$ x \\ne y $5` that `trim_padded_spans` left). Decoding is lossy, so
+    # a position either reader calls math is kept.
     n = len(text)
     protected = bytearray(n)
     for m in _MATH_SPAN_RE.finditer(text):
@@ -279,7 +318,8 @@ def decode_escapes_outside_math(text: str) -> str:
 
 
 def normalize(text: Any) -> Any:
-    """repair → mojibake table → delimiters → orphans → currency → escapes.
+    """repair → mojibake table → delimiters → orphans → currency → padded
+    spans → escapes.
 
     Idempotent, content-preserving. Non-strings are returned unchanged.
     """
@@ -290,5 +330,6 @@ def normalize(text: Any) -> Any:
     text = normalize_delimiters(text)
     text = strip_orphan_delimiters(text)
     text = escape_currency(text)
+    text = trim_padded_spans(text)
     text = decode_escapes_outside_math(text)
     return text

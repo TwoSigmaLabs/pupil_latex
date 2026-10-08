@@ -674,4 +674,55 @@ FIX += [
         ["B5", "audit5-8"],
         {},
     ),
+    # audit6-1: `normalize` now trims padded spans before `canonicalize` does;
+    # `fix` output is unchanged and stays idempotent (checked by the corpus).
+    (
+        "audit6-1-padded-equation",
+        "Solve $ x + 1 = 0 $ for x.",
+        "Solve $x + 1 = 0$ for x.",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-linear-equation",
+        "Solve $ 2x + 3 = 7 $",
+        "Solve $2x + 3 = 7$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-in-parentheses",
+        "($ a^2 + b^2 $)",
+        "($a^2 + b^2$)",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-space-before-closer",
+        "Compute $2x + 3 $.",
+        "Compute $2x + 3$.",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-one-sided-padding",
+        "$ x + 1$ and $x - 1 $",
+        "$x + 1$ and $x - 1$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-amounts-stay",
+        "Rs $5 and $10",
+        "Rs \\$5 and \\$10",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-prices-stay",
+        "Prices: $10, $20 and $ x^2 $",
+        "Prices: \\$10, \\$20 and $x^2$",
+        ["B3", "audit6-1"],
+        {},
+    ),
 ]

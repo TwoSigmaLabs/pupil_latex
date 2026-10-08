@@ -16,7 +16,10 @@ import {
   pyStrip,
   rstripChars,
 } from "./chars.js";
-import { currencyPositions } from "./normalize.js";
+import {
+  currencyPositions,
+  trimPaddedSpansKeepCurrency,
+} from "./normalize.js";
 import { repair } from "./repair.js";
 import { segment } from "./segment.js";
 import { mathMask } from "./spans.js";
@@ -1337,7 +1340,9 @@ export function toPlain(text: unknown, style: PlainStyle = "text"): unknown {
   // A form feed / backspace / TAB that was a command (`<FF>rac`,
   // `<TAB>imes`) is restored first, with the same `guessWhitespace` as `fix`
   // (`normalize`); tag `audit5-3`.
-  const src: string = repair(text);
+  // A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
+  // masked (tag `audit6-2`).
+  const src: string = trimPaddedSpansKeepCurrency(repair(text));
   if (style === "tts") return toSpoken(src);
   if (style === "compare")
     return foldForCompare(latexToPlain(src, false, false, true));

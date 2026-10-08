@@ -2172,20 +2172,24 @@ NORMALIZE += [
     ),
 ]
 
-# `normalize` keeps the dollars (no `\$`); `canonicalize`/`fix` trim the
-# padding so every renderer (segment's pandoc closer rule included) pairs it.
-MUST_NOT_CHANGE += [
+# `normalize` keeps the dollars (no `\$`) and, since 1.3.0 (audit6-1), trims
+# the padding as `canonicalize`/`fix` do, so every renderer (segment's pandoc
+# closer rule included) pairs it. Until 1.2.x these two inputs were
+# `must_not_change` via `normalize`.
+NORMALIZE += [
     (
         "audit4-6-space-before-closer",
         "Compute $2x + 3 $.",
-        ["normalize"],
-        ["B3", "audit4-6"],
+        "Compute $2x + 3$.",
+        ["B3", "audit4-6", "audit6-1"],
+        {},
     ),
     (
         "audit4-6-space-before-closer-power",
         "Find $3x^2 - 1 $ when x is 2",
-        ["normalize"],
-        ["B3", "audit4-6"],
+        "Find $3x^2 - 1$ when x is 2",
+        ["B3", "audit4-6", "audit6-1"],
+        {},
     ),
 ]
 
@@ -2391,7 +2395,7 @@ SEGMENT += [
 
 # audit5-8: the prose-escape decoder never touches a command inside what
 # `segment` renders as math (`a $ $\nu$ b`), nor inside a padded span that
-# `canonicalize` will trim (`$ x \ne y $`).
+# was not trimmed (`$ x \ne y $5`; since 1.3.0 `normalize` trims `$ x \ne y $`).
 NORMALIZE += [
     (
         "audit5-8-empty-padded-pair-keeps-nu",
@@ -2417,8 +2421,15 @@ NORMALIZE += [
     (
         "audit5-8-padded-span-keeps-ne",
         "$ x \\ne y $",
-        "$ x \\ne y $",
-        ["B5", "audit5-8"],
+        "$x \\ne y$",
+        ["B5", "audit5-8", "audit6-1"],
+        {},
+    ),
+    (
+        "audit5-8-untrimmed-padded-span-keeps-ne",
+        "$ x \\ne y $5",
+        "$ x \\ne y $5",
+        ["B5", "B7", "audit5-8", "audit6-1"],
         {},
     ),
     (
@@ -2428,6 +2439,222 @@ NORMALIZE += [
         ["B5", "audit5-8"],
         {},
     ),
+]
+
+
+# ---------------------------------------------------------------------------
+# 1.3.0 (audit round 6, found while moving the frontends to normalize+segment)
+# ---------------------------------------------------------------------------
+
+# audit6-1: `normalize` trims a padded span (`$ x + 1 = 0 $`, `$2x + 3 $`,
+# `$ x + 1$`) with `canonicalize`'s rule, so content stored before `fix` ran
+# displays as maths through `segment` (pandoc closer rule). Currency wins:
+# amounts, prose between dollars and a closer followed by a digit stay.
+NORMALIZE += [
+    (
+        "audit6-1-padded-equation",
+        "Solve $ x + 1 = 0 $ for x.",
+        "Solve $x + 1 = 0$ for x.",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-linear-equation",
+        "Solve $ 2x + 3 = 7 $",
+        "Solve $2x + 3 = 7$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-in-parentheses",
+        "($ a^2 + b^2 $)",
+        "($a^2 + b^2$)",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-one-sided-padding",
+        "$ x + 1$ and $x - 1 $",
+        "$x + 1$ and $x - 1$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-fraction-then-span",
+        "Speed $ v = \\frac{d}{t} $ and $\\nu = 5$ Hz",
+        "Speed $v = \\frac{d}{t}$ and $\\nu = 5$ Hz",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-then-prose-escape",
+        "Area is $ \\pi r^2 $.\\nNext line",
+        "Area is $\\pi r^2$.\nNext line",
+        ["B3", "B5", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-delimiters-then-padded",
+        "\\(a\\) and $ b^2 $",
+        "$a$ and $b^2$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-amounts-stay",
+        "Rs $5 and $10",
+        "Rs \\$5 and \\$10",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    ("audit6-1-amount-stays", "costs $5.", "costs \\$5.", ["B3", "audit6-1"], {}),
+    (
+        "audit6-1-prices-stay",
+        "Prices: $10, $20 and $ x^2 $",
+        "Prices: \\$10, \\$20 and $x^2$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-closer-before-digit-not-trimmed",
+        "pay $ x + 1 $5 now",
+        "pay $ x + 1 $5 now",
+        ["B3", "B7", "audit6-1"],
+        {},
+    ),
+]
+
+MUST_NOT_CHANGE += [
+    (
+        "audit6-1-padded-amounts",
+        "I paid $ 5 and got $ 3",
+        ["canonicalize", "fix", "normalize"],
+        ["B3", "B7", "audit6-1"],
+    ),
+    (
+        "audit6-1-single-letter-not-trimmed",
+        "where $ v $ is speed",
+        ["canonicalize", "fix", "normalize"],
+        ["B3", "B7", "audit6-1"],
+    ),
+    (
+        "audit6-1-padded-prose-not-trimmed",
+        "between $ a and b $ here",
+        ["canonicalize", "fix", "normalize"],
+        ["B3", "B7", "audit6-1"],
+    ),
+]
+
+# What the frontends do with stored content: segment(normalize(x)).
+SEGMENT += [
+    (
+        "audit6-1-trimmed-equation-is-math",
+        "Solve $x + 1 = 0$ for x.",
+        [
+            {"kind": "text", "display": False, "value": "Solve ", "raw": "Solve "},
+            {
+                "kind": "math",
+                "display": False,
+                "value": "x + 1 = 0",
+                "raw": "$x + 1 = 0$",
+            },
+            {"kind": "text", "display": False, "value": " for x.", "raw": " for x."},
+        ],
+        ["B3", "audit6-1"],
+        {"note": "normalize('Solve $ x + 1 = 0 $ for x.')"},
+    ),
+    (
+        "audit6-1-trimmed-in-parentheses-is-math",
+        "($a^2 + b^2$)",
+        [
+            {"kind": "text", "display": False, "value": "(", "raw": "("},
+            {
+                "kind": "math",
+                "display": False,
+                "value": "a^2 + b^2",
+                "raw": "$a^2 + b^2$",
+            },
+            {"kind": "text", "display": False, "value": ")", "raw": ")"},
+        ],
+        ["B3", "audit6-1"],
+        {"note": "normalize('($ a^2 + b^2 $)')"},
+    ),
+    (
+        "audit6-1-padded-amounts-are-text",
+        "I paid $ 5 and got $ 3",
+        [
+            {
+                "kind": "text",
+                "display": False,
+                "value": "I paid $ 5 and got $ 3",
+                "raw": "I paid $ 5 and got $ 3",
+            },
+        ],
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-escaped-amounts-are-text",
+        "Rs \\$5 and \\$10",
+        [
+            {
+                "kind": "text",
+                "display": False,
+                "value": "Rs $5 and $10",
+                "raw": "Rs \\$5 and \\$10",
+            },
+        ],
+        ["B3", "audit6-1"],
+        {"note": "normalize('Rs $5 and $10')"},
+    ),
+]
+
+# audit6-2: `to_plain` trims the same padding (currency masked), so a padded
+# span reads like a stored one: no space before the punctuation.
+TO_PLAIN += [
+    (
+        "audit6-2-space-before-closer",
+        "Compute $2x + 3 $.",
+        "Compute 2x + 3.",
+        ["B8", "audit6-2"],
+        {},
+    ),
+    (
+        "audit6-2-padded-in-parentheses",
+        "($ a^2 + b^2 $)",
+        "(a² + b²)",
+        ["B8", "audit6-2"],
+        {},
+    ),
+    (
+        "audit6-2-padded-equation",
+        "Solve $ 2x + 3 = 7 $",
+        "Solve 2x + 3 = 7",
+        ["B8", "audit6-2"],
+        {},
+    ),
+    (
+        "audit6-2-padded-equation-pdf",
+        "Solve $ x + 1 = 0 $ for x.",
+        "Solve x + 1 = 0 for x.",
+        ["B8", "audit6-2"],
+        {"style": "pdf"},
+    ),
+    (
+        "audit6-2-padded-equation-tts",
+        "Solve $ x^2 = 4 $.",
+        "Solve x squared = 4.",
+        ["B8", "audit6-2"],
+        {"style": "tts"},
+    ),
+    (
+        "audit6-2-amounts-and-padded-span",
+        "Rs $5 and $10 for $ x^2 $",
+        "Rs $5 and $10 for x²",
+        ["B3", "B8", "audit6-2"],
+        {},
+    ),
+    ("audit6-2-amount-stays", "costs $5.", "costs $5.", ["B3", "B8", "audit6-2"], {}),
 ]
 
 

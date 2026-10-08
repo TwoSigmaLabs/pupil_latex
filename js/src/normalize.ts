@@ -20,6 +20,8 @@ import {
   replaceAfter,
   type Blocked,
 } from "./lookbehind.js";
+// `canonicalize` imports `isFormula` from here; the cycle is call-time only.
+import { trimPaddedSpans as trimPaddedSpansInText } from "./canonicalize.js";
 import { fixMojibakeTable } from "./mojibake.js";
 import { repair } from "./repair.js";
 import { segment } from "./segment.js";
@@ -219,6 +221,42 @@ export function escapeCurrency(text: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// 5a. padded spans
+// ---------------------------------------------------------------------------
+
+/**
+ * `Solve $ x + 1 = 0 $` → `Solve $x + 1 = 0$` (tag `audit6-1`): the rule
+ * `canonicalize` applies (pairs per line; content clearly math; neither
+ * dollar glued to a letter or digit outside the pair, so a closer followed by
+ * a digit stays). Run after `escapeCurrency`: an escaped amount is never
+ * paired. `segment` keeps pandoc's rule, so without this a stored padded
+ * formula displays as raw text.
+ */
+export function trimPaddedSpans(text: string): string {
+  return trimPaddedSpansInText(text);
+}
+
+/** U+E000 (private use): never in content. */
+const CURRENCY_MASK = "\ue000";
+
+/**
+ * `trimPaddedSpans` on text whose amounts are not escaped (`toPlain` input):
+ * the dollars `currencyPositions` reads as money are masked first, so they
+ * are never paired (`Rs $5 and $10 for $ x^2 $` → only the last pair is
+ * trimmed).
+ */
+export function trimPaddedSpansKeepCurrency(text: string): string {
+  if (!text.includes("$") || text.includes(CURRENCY_MASK)) return text;
+  const money = currencyPositions(text);
+  if (money.length) {
+    const chars = text.split("");
+    for (const k of money) chars[k] = CURRENCY_MASK;
+    text = chars.join("");
+  }
+  return trimPaddedSpans(text).split(CURRENCY_MASK).join("$");
+}
+
+// ---------------------------------------------------------------------------
 // 6. prose escapes
 // ---------------------------------------------------------------------------
 
@@ -256,8 +294,8 @@ export function decodeEscapesOutsideMath(text: string): string {
   // Protected: every `segment` math span (what the renderers typeset; tag
   // `audit5-8`: in `a $ $\nu$ b` the regex pairs `$ $` and used to decode
   // the `\nu` that `segment` renders) and every regex span (a padded
-  // `$ x \ne y $` that `canonicalize` trims later). Decoding is lossy, so a
-  // position either reader calls math is kept.
+  // `$ x \ne y $5` that `trimPaddedSpans` left). Decoding is lossy, so a position
+  // either reader calls math is kept.
   const n = text.length;
   const isProtected = new Uint8Array(n);
   for (const m of matchAllAfter(MATH_SPAN_RE, text, MATH_SPAN_BLOCKED)) {
@@ -287,7 +325,8 @@ export function decodeEscapesOutsideMath(text: string): string {
 // ---------------------------------------------------------------------------
 
 /**
- * repair → mojibake table → delimiters → orphans → currency → escapes.
+ * repair → mojibake table → delimiters → orphans → currency → padded spans
+ * → escapes.
  * Idempotent, content-preserving. Non-strings are returned unchanged.
  */
 export function normalize<T>(text: T): T;
@@ -298,6 +337,7 @@ export function normalize(text: unknown): unknown {
   out = normalizeDelimiters(out);
   out = stripOrphanDelimiters(out);
   out = escapeCurrency(out);
+  out = trimPaddedSpans(out);
   out = decodeEscapesOutsideMath(out);
   return out;
 }

@@ -12,7 +12,7 @@ import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
 from .commands import KATEX_COMMANDS, SCRIPT_LABELS
-from .normalize import currency_positions
+from .normalize import currency_positions, trim_padded_spans_keep_currency
 from .repair import repair
 from .segment import segment
 from .spans import math_mask
@@ -1442,6 +1442,9 @@ def to_plain(text: Any, style: str = "text") -> Any:
     # A form feed / backspace / TAB that was a command (`<FF>rac`, `<TAB>imes`)
     # is restored first, with the same `guessWhitespace` as `fix` (`normalize`).
     text = repair(text)
+    # A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
+    # masked (tag `audit6-2`).
+    text = trim_padded_spans_keep_currency(text)
     if style == "tts":
         return _to_spoken(text)
     if style == "compare":

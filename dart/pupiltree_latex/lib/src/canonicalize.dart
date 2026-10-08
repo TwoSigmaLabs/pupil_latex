@@ -594,7 +594,7 @@ String _trimPaddedLine(String line) {
 /// formula shows its dollars and the wrapping steps used to nest a second
 /// span inside it. Text segments only, line by line; `I paid $ 5 and got
 /// $ 3 back` is currency and stays.
-String _trimPaddedSpans(String text) {
+String trimPaddedSpansInText(String text) {
   if (!text.contains(r'$') || !_paddedSpanHint.hasMatch(text)) return text;
   final out = StringBuffer();
   for (final seg in segment(text)) {
@@ -791,7 +791,7 @@ String canonicalize(String text, {bool chemistry = true}) {
   text = _fixLeftRightBraces(text);
   text = _parenInline.replaceAllMapped(text, (m) => '\$${m[1]}\$');
   text = _bracketDisplay.replaceAllMapped(text, (m) => '\$\$${m[1]}\$\$');
-  text = _trimPaddedSpans(text);
+  text = trimPaddedSpansInText(text);
   text = _closeUnbalancedBraces(text);
   text = _normalizeBraces(text);
   text = unicodeMathToLatex(text);

@@ -1,6 +1,6 @@
 {
  "function": "normalize",
- "version": "1.2.1",
+ "version": "1.3.0",
  "cases": [
   {
    "id": "curated-paren-inline",
@@ -456,6 +456,26 @@
    ]
   },
   {
+   "id": "curated-audit4-6-space-before-closer",
+   "input": "Compute $2x + 3 $.",
+   "expected": "Compute $2x + 3$.",
+   "tags": [
+    "B3",
+    "audit4-6",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-space-before-closer-power",
+   "input": "Find $3x^2 - 1 $ when x is 2",
+   "expected": "Find $3x^2 - 1$ when x is 2",
+   "tags": [
+    "B3",
+    "audit4-6",
+    "audit6-1"
+   ]
+  },
+  {
    "id": "curated-audit5-8-empty-padded-pair-keeps-nu",
    "input": "a $ $\\nu$ b",
    "expected": "a $ $\\nu$ b",
@@ -485,10 +505,22 @@
   {
    "id": "curated-audit5-8-padded-span-keeps-ne",
    "input": "$ x \\ne y $",
-   "expected": "$ x \\ne y $",
+   "expected": "$x \\ne y$",
    "tags": [
     "B5",
-    "audit5-8"
+    "audit5-8",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-untrimmed-padded-span-keeps-ne",
+   "input": "$ x \\ne y $5",
+   "expected": "$ x \\ne y $5",
+   "tags": [
+    "B5",
+    "B7",
+    "audit5-8",
+    "audit6-1"
    ]
   },
   {
@@ -498,6 +530,107 @@
    "tags": [
     "B5",
     "audit5-8"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-padded-equation",
+   "input": "Solve $ x + 1 = 0 $ for x.",
+   "expected": "Solve $x + 1 = 0$ for x.",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-padded-linear-equation",
+   "input": "Solve $ 2x + 3 = 7 $",
+   "expected": "Solve $2x + 3 = 7$",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-padded-in-parentheses",
+   "input": "($ a^2 + b^2 $)",
+   "expected": "($a^2 + b^2$)",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-one-sided-padding",
+   "input": "$ x + 1$ and $x - 1 $",
+   "expected": "$x + 1$ and $x - 1$",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-padded-fraction-then-span",
+   "input": "Speed $ v = \\frac{d}{t} $ and $\\nu = 5$ Hz",
+   "expected": "Speed $v = \\frac{d}{t}$ and $\\nu = 5$ Hz",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-padded-then-prose-escape",
+   "input": "Area is $ \\pi r^2 $.\\nNext line",
+   "expected": "Area is $\\pi r^2$.\nNext line",
+   "tags": [
+    "B3",
+    "B5",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-delimiters-then-padded",
+   "input": "\\(a\\) and $ b^2 $",
+   "expected": "$a$ and $b^2$",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-amounts-stay",
+   "input": "Rs $5 and $10",
+   "expected": "Rs \\$5 and \\$10",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-amount-stays",
+   "input": "costs $5.",
+   "expected": "costs \\$5.",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-prices-stay",
+   "input": "Prices: $10, $20 and $ x^2 $",
+   "expected": "Prices: \\$10, \\$20 and $x^2$",
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-closer-before-digit-not-trimmed",
+   "input": "pay $ x + 1 $5 now",
+   "expected": "pay $ x + 1 $5 now",
+   "tags": [
+    "B3",
+    "B7",
+    "audit6-1"
    ]
   },
   {

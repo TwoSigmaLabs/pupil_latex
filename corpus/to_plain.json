@@ -1,6 +1,6 @@
 {
  "function": "to_plain",
- "version": "1.2.1",
+ "version": "1.3.0",
  "cases": [
   {
    "id": "curated-frac-and-script",
@@ -1060,6 +1060,73 @@
     "audit5-3"
    ],
    "style": "pdf"
+  },
+  {
+   "id": "curated-audit6-2-space-before-closer",
+   "input": "Compute $2x + 3 $.",
+   "expected": "Compute 2x + 3.",
+   "tags": [
+    "B8",
+    "audit6-2"
+   ]
+  },
+  {
+   "id": "curated-audit6-2-padded-in-parentheses",
+   "input": "($ a^2 + b^2 $)",
+   "expected": "(a² + b²)",
+   "tags": [
+    "B8",
+    "audit6-2"
+   ]
+  },
+  {
+   "id": "curated-audit6-2-padded-equation",
+   "input": "Solve $ 2x + 3 = 7 $",
+   "expected": "Solve 2x + 3 = 7",
+   "tags": [
+    "B8",
+    "audit6-2"
+   ]
+  },
+  {
+   "id": "curated-audit6-2-padded-equation-pdf",
+   "input": "Solve $ x + 1 = 0 $ for x.",
+   "expected": "Solve x + 1 = 0 for x.",
+   "tags": [
+    "B8",
+    "audit6-2"
+   ],
+   "style": "pdf"
+  },
+  {
+   "id": "curated-audit6-2-padded-equation-tts",
+   "input": "Solve $ x^2 = 4 $.",
+   "expected": "Solve x squared = 4.",
+   "tags": [
+    "B8",
+    "audit6-2"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-audit6-2-amounts-and-padded-span",
+   "input": "Rs $5 and $10 for $ x^2 $",
+   "expected": "Rs $5 and $10 for x²",
+   "tags": [
+    "B3",
+    "B8",
+    "audit6-2"
+   ]
+  },
+  {
+   "id": "curated-audit6-2-amount-stays",
+   "input": "costs $5.",
+   "expected": "costs $5.",
+   "tags": [
+    "B3",
+    "B8",
+    "audit6-2"
+   ]
   },
   {
    "id": "backend-latex-to-plain-0001",

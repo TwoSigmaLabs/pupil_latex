@@ -6,7 +6,7 @@ library;
 
 import 'guarded_regexp.dart';
 import 'nfc.dart';
-import 'normalize.dart' show currencyPositions;
+import 'normalize.dart' show currencyPositions, trimPaddedSpansKeepCurrency;
 import 'repair.dart';
 import 'segment.dart';
 import 'spans.dart';
@@ -1324,6 +1324,9 @@ String toPlain(String text, {String style = 'text'}) {
   // `<TAB>imes`) is restored first, with the same `guessWhitespace` as `fix`
   // (`normalize`); tag `audit5-3`.
   text = repair(text);
+  // A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
+  // masked (tag `audit6-2`).
+  text = trimPaddedSpansKeepCurrency(text);
   if (style == 'tts') return _toSpoken(text);
   if (style == 'compare') {
     return _foldForCompare(
