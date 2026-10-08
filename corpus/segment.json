@@ -1,6 +1,6 @@
 {
  "function": "segment",
- "version": "1.2.0",
+ "version": "1.3.0",
  "cases": [
   {
    "id": "curated-mixed",
@@ -227,6 +227,141 @@
     "audit4-6"
    ],
    "note": "segment keeps the pandoc rule (no closer after a space); fix trims the padding instead"
+  },
+  {
+   "id": "curated-audit5-1-two-amounts-are-text",
+   "input": "Rs $5 and $10",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Rs $5 and $10",
+     "raw": "Rs $5 and $10"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit5-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-empty-padded-pair-then-span",
+   "input": "a $ $\\nu$ b",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "a $ ",
+     "raw": "a $ "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "\\nu",
+     "raw": "$\\nu$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " b",
+     "raw": " b"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit5-8"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-trimmed-equation-is-math",
+   "input": "Solve $x + 1 = 0$ for x.",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Solve ",
+     "raw": "Solve "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "x + 1 = 0",
+     "raw": "$x + 1 = 0$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " for x.",
+     "raw": " for x."
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit6-1"
+   ],
+   "note": "normalize('Solve $ x + 1 = 0 $ for x.')"
+  },
+  {
+   "id": "curated-audit6-1-trimmed-in-parentheses-is-math",
+   "input": "($a^2 + b^2$)",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "(",
+     "raw": "("
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "a^2 + b^2",
+     "raw": "$a^2 + b^2$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": ")",
+     "raw": ")"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit6-1"
+   ],
+   "note": "normalize('($ a^2 + b^2 $)')"
+  },
+  {
+   "id": "curated-audit6-1-padded-amounts-are-text",
+   "input": "I paid $ 5 and got $ 3",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "I paid $ 5 and got $ 3",
+     "raw": "I paid $ 5 and got $ 3"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-escaped-amounts-are-text",
+   "input": "Rs \\$5 and \\$10",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Rs $5 and $10",
+     "raw": "Rs \\$5 and \\$10"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit6-1"
+   ],
+   "note": "normalize('Rs $5 and $10')"
   },
   {
    "id": "worksheet-MathText-test-0001",

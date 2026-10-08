@@ -644,4 +644,85 @@ FIX += [
         ["B7", "audit4-9"],
         {},
     ),
+    # audit5-8: fix is idempotent on `$ $` shapes; `\nu` is never decoded to
+    # a newline + "u" (the corpus checks fix(fix(x)) == fix(x) too).
+    (
+        "audit5-8-malformed-idempotent",
+        "$\\nu = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        "$ $\\nu$ = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        ["B5", "B7", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-empty-padded-pair-keeps-nu",
+        "a $ $\\nu$ b",
+        "a $ $\\nu$ b",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-two-empty-padded-pairs",
+        "x $ $\\ne$ y $ $\\theta$",
+        "x $ $\\ne$ y $ $\\theta$",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-padded-span-keeps-ne",
+        "$ x \\ne y $",
+        "$x \\ne y$",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    # audit6-1: `normalize` now trims padded spans before `canonicalize` does;
+    # `fix` output is unchanged and stays idempotent (checked by the corpus).
+    (
+        "audit6-1-padded-equation",
+        "Solve $ x + 1 = 0 $ for x.",
+        "Solve $x + 1 = 0$ for x.",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-linear-equation",
+        "Solve $ 2x + 3 = 7 $",
+        "Solve $2x + 3 = 7$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-padded-in-parentheses",
+        "($ a^2 + b^2 $)",
+        "($a^2 + b^2$)",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-space-before-closer",
+        "Compute $2x + 3 $.",
+        "Compute $2x + 3$.",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-one-sided-padding",
+        "$ x + 1$ and $x - 1 $",
+        "$x + 1$ and $x - 1$",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-amounts-stay",
+        "Rs $5 and $10",
+        "Rs \\$5 and \\$10",
+        ["B3", "audit6-1"],
+        {},
+    ),
+    (
+        "audit6-1-prices-stay",
+        "Prices: $10, $20 and $ x^2 $",
+        "Prices: \\$10, \\$20 and $x^2$",
+        ["B3", "audit6-1"],
+        {},
+    ),
 ]

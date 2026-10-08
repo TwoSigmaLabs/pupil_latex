@@ -1,6 +1,6 @@
 {
  "function": "must_not_change",
- "version": "1.2.0",
+ "version": "1.3.0",
  "cases": [
   {
    "id": "curated-identifier-caps",
@@ -660,25 +660,45 @@
    ]
   },
   {
-   "id": "curated-audit4-6-space-before-closer",
-   "input": "Compute $2x + 3 $.",
+   "id": "curated-audit6-1-padded-amounts",
+   "input": "I paid $ 5 and got $ 3",
    "functions": [
+    "canonicalize",
+    "fix",
     "normalize"
    ],
    "tags": [
     "B3",
-    "audit4-6"
+    "B7",
+    "audit6-1"
    ]
   },
   {
-   "id": "curated-audit4-6-space-before-closer-power",
-   "input": "Find $3x^2 - 1 $ when x is 2",
+   "id": "curated-audit6-1-single-letter-not-trimmed",
+   "input": "where $ v $ is speed",
    "functions": [
+    "canonicalize",
+    "fix",
     "normalize"
    ],
    "tags": [
     "B3",
-    "audit4-6"
+    "B7",
+    "audit6-1"
+   ]
+  },
+  {
+   "id": "curated-audit6-1-padded-prose-not-trimmed",
+   "input": "between $ a and b $ here",
+   "functions": [
+    "canonicalize",
+    "fix",
+    "normalize"
+   ],
+   "tags": [
+    "B3",
+    "B7",
+    "audit6-1"
    ]
   },
   {

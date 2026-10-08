@@ -16,8 +16,14 @@ import {
   pyStrip,
   rstripChars,
 } from "./chars.js";
+import {
+  currencyPositions,
+  trimPaddedSpansKeepCurrency,
+} from "./normalize.js";
+import { repair } from "./repair.js";
 import { segment } from "./segment.js";
-import { KATEX_COMMANDS, LATEX_CMD_MAP } from "./tables.g.js";
+import { mathMask } from "./spans.js";
+import { KATEX_COMMANDS, LATEX_CMD_MAP, SCRIPT_LABELS } from "./tables.g.js";
 
 export { LATEX_CMD_MAP };
 
@@ -57,6 +63,8 @@ const LABEL_SENTINEL_CLOSE = "";
 // "struction". `text` keeps it verbatim; `pdf` and `compare` drop the
 // backslash, as `tts` always did.
 const SCRIPT_LABEL_LINE_RE = /(^|\n)([ \t]*)\\([a-z][a-z_]*):/g;
+// Anywhere in a line, only a word in `SCRIPT_LABELS` is a label.
+const SCRIPT_LABEL_ANY_RE = /\\([a-z][a-z_]*):/g;
 
 // Math spans for the prose-brace pass, display first.
 const PLAIN_SPAN_RE = /\$\$[\s\S]+?\$\$|\$[^$]+\$/g;
@@ -160,6 +168,29 @@ function protectProseBraces(s: string): string {
 const LATEX_DISPLAY_DOLLAR_RE = /\$\$([\s\S]+?)\$\$/g;
 const LATEX_DELIM_RE = /\$([^$]+)\$/g;
 const IMAGE_MARKER_RE = /\{\{IMAGE:[^}]+\}\}/g;
+// `$5`, `$1,200.50`: a dollar before an amount that is not followed by a
+// letter, a command or a script (`$45m`, `$4\sqrt{3}` are cut-off spans).
+const CURRENCY_AT_RE = /\$[0-9]+(?:[.,][0-9]+)*(?![0-9A-Za-z\\^_{])/y;
+
+/**
+ * Park the amounts (tag `audit5-1`): a dollar outside every `segment` math
+ * span that `escapeCurrency` reads as money (`Rs $5 and $10`: the closer is
+ * followed by a digit; `costs $5.`: no closer) and that is followed by an
+ * amount, not by a letter or a command (`$45m`, `$4\sqrt3` are cut-off
+ * spans). It becomes the literal-dollar sentinel, so the delimiter strip
+ * can no longer pair it with another amount.
+ */
+function parkCurrencyDollars(s: string): string {
+  if (!s.includes("$")) return s;
+  const money = currencyPositions(s);
+  if (money.length === 0) return s;
+  const inMath = mathMask(s);
+  const chars = s.split("");
+  for (const k of money) {
+    if (!inMath[k] && matchAt(CURRENCY_AT_RE, s, k)) chars[k] = DOLLAR_SENTINEL;
+  }
+  return chars.join("");
+}
 // A literal `\n` escape that survived into the stored string. Only fires
 // before an uppercase letter or whitespace, so the real commands that start
 // with "n" (\nu, \neq, \nabla, \notin) are untouched.
@@ -727,6 +758,10 @@ export function latexToPlain(
     });
   }
 
+  // Amounts outside the `segment` math spans (`Rs $5 and $10`, `costs $5.`)
+  // are literal dollars, never paired as a span (tag `audit5-1`).
+  out = parkCurrencyDollars(out);
+
   // Literal `\n` escapes first — before the greedy command scanner can claim
   // them as `\nStatement`-style pseudo-commands.
   out = out.replace(LATEX_NEWLINE_ESCAPE_RE, "\n");
@@ -754,6 +789,16 @@ export function latexToPlain(
         );
       },
     );
+    // A known label (`SCRIPT_LABELS`, the words `repair` restores) is a
+    // label anywhere: `(<TAB>ool: timer)` became `\tool:`, which the
+    // scanner read as `\to` + "ol" (tag `audit5-3`).
+    out = out.replace(SCRIPT_LABEL_ANY_RE, (m: string, name: string) => {
+      if (!SCRIPT_LABELS.has(name)) return m;
+      labels.push(name);
+      return (
+        LABEL_SENTINEL_OPEN + (labels.length - 1) + LABEL_SENTINEL_CLOSE + ":"
+      );
+    });
   }
 
   // Braces in prose are text (`A = {1, 2, 3}`), not grouping.
@@ -1292,8 +1337,14 @@ export function toPlain(text: unknown, style: PlainStyle = "text"): unknown {
     );
   }
   if (typeof text !== "string") return text;
-  if (style === "tts") return toSpoken(text);
+  // A form feed / backspace / TAB that was a command (`<FF>rac`,
+  // `<TAB>imes`) is restored first, with the same `guessWhitespace` as `fix`
+  // (`normalize`); tag `audit5-3`.
+  // A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
+  // masked (tag `audit6-2`).
+  const src: string = trimPaddedSpansKeepCurrency(repair(text));
+  if (style === "tts") return toSpoken(src);
   if (style === "compare")
-    return foldForCompare(latexToPlain(text, false, false, true));
-  return latexToPlain(text, style === "pdf", style === "text");
+    return foldForCompare(latexToPlain(src, false, false, true));
+  return latexToPlain(src, style === "pdf", style === "text");
 }

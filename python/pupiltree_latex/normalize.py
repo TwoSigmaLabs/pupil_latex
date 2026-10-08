@@ -16,6 +16,7 @@ from .audit import _detect_command_missing_argument, _detect_frac_missing_args
 from .commands import PROSE_ESCAPE_COMMANDS
 from .mojibake import fix_mojibake_table
 from .repair import repair
+from .segment import segment
 
 # ---------------------------------------------------------------------------
 # 3. delimiters
@@ -114,38 +115,32 @@ def is_formula(content: str) -> bool:
     )
 
 
-def _escape_currency_in_line(line: str) -> str:
+def _currency_positions_in_line(line: str) -> list[int]:
+    """Indices of the currency dollars in one line (the `$` that
+    `escape_currency` turns into `\\$`)."""
+    found: list[int] = []
     if "$" not in line:
-        return line
-    out: list[str] = []
+        return found
     i = 0
     n = len(line)
     while i < n:
         ch = line[i]
         if ch != "$" or _is_escaped(line, i):
-            out.append(ch)
             i += 1
             continue
         # `$$` display block: copy through to its closing `$$` (or end of line).
         if i + 1 < n and line[i + 1] == "$":
             close = line.find("$$", i + 2)
-            end = n if close == -1 else close + 2
-            out.append(line[i:end])
-            i = end
+            i = n if close == -1 else close + 2
             continue
         if not _is_digit(line, i + 1):
-            # A math opener: copy the whole span through to its first closer
+            # A math opener: skip the whole span through to its first closer
             # (the tokenizer's rule) so the closer is never re-examined as a
-            # currency opener (`$\sqrt$2` must not become `$\sqrt\$2`).
+            # currency opener (`$\\sqrt$2` must not become `$\\sqrt\\$2`).
             j = i + 1
             while j < n and not (line[j] == "$" and not _is_escaped(line, j)):
                 j += 1
-            if j < n:
-                out.append(line[i : j + 1])
-                i = j + 1
-                continue
-            out.append(ch)
-            i += 1
+            i = j + 1 if j < n else i + 1
             continue
         # `$<digit>`: currency unless the next single `$` is a valid closer.
         j = i + 1
@@ -153,7 +148,7 @@ def _escape_currency_in_line(line: str) -> str:
         while j < n:
             if line[j] == "$" and not _is_escaped(line, j):
                 # A `$` right after the closer is the NEXT span's opener
-                # (`$1$$\gamma$`), not a display delimiter: only whitespace
+                # (`$1$$\\gamma$`), not a display delimiter: only whitespace
                 # before and a digit after invalidate a closer.
                 closer_valid = (
                     not _is_digit(line, j + 1)
@@ -167,11 +162,37 @@ def _escape_currency_in_line(line: str) -> str:
                 break
             j += 1
         if closer_valid:
-            out.append(line[i : j + 1])
             i = j + 1
         else:
-            out.append("\\$")
+            found.append(i)
             i += 1
+    return found
+
+
+def currency_positions(text: str) -> list[int]:
+    """Indices of the dollars `escape_currency` reads as money (pandoc's
+    closer rule, per line). `to_plain` uses it to keep amounts."""
+    found: list[int] = []
+    if "$" not in text:
+        return found
+    base = 0
+    for line in text.split("\n"):
+        found.extend(base + k for k in _currency_positions_in_line(line))
+        base += len(line) + 1
+    return found
+
+
+def _escape_currency_in_line(line: str) -> str:
+    positions = _currency_positions_in_line(line)
+    if not positions:
+        return line
+    out: list[str] = []
+    pos = 0
+    for k in positions:
+        out.append(line[pos:k])
+        out.append("\\$")
+        pos = k + 1
+    out.append(line[pos:])
     return "".join(out)
 
 
@@ -184,6 +205,45 @@ def escape_currency(text: str) -> str:
     if "$" not in text:
         return text
     return "\n".join(_escape_currency_in_line(line) for line in text.split("\n"))
+
+
+# ---------------------------------------------------------------------------
+# 5a. padded spans
+# ---------------------------------------------------------------------------
+
+
+def trim_padded_spans(text: str) -> str:
+    """``Solve $ x + 1 = 0 $`` → ``Solve $x + 1 = 0$`` (tag ``audit6-1``).
+
+    The same rule `canonicalize` applies (pairs per line; content clearly
+    math; neither dollar glued to a letter or digit outside the pair, so a
+    closer followed by a digit stays). Run after `escape_currency`: an
+    escaped amount is never paired. `segment` keeps pandoc's rule (no
+    whitespace inside the delimiters), so without this a stored padded
+    formula displays as raw text."""
+    # Imported here: `canonicalize` imports this module (`is_formula`).
+    from .canonicalize import _trim_padded_spans
+
+    return _trim_padded_spans(text)
+
+
+_CURRENCY_MASK = "\ue000"  # U+E000 (private use): never in content
+
+
+def trim_padded_spans_keep_currency(text: str) -> str:
+    """`trim_padded_spans` on text whose amounts are not escaped (`to_plain`
+    input): the dollars `currency_positions` reads as money are masked first,
+    so they are never paired (``Rs $5 and $10 for $ x^2 $`` → only the last
+    pair is trimmed)."""
+    if "$" not in text or _CURRENCY_MASK in text:
+        return text
+    money = currency_positions(text)
+    if money:
+        chars = list(text)
+        for k in money:
+            chars[k] = _CURRENCY_MASK
+        text = "".join(chars)
+    return trim_padded_spans(text).replace(_CURRENCY_MASK, "$")
 
 
 # ---------------------------------------------------------------------------
@@ -225,13 +285,30 @@ def decode_escapes_outside_math(text: str) -> str:
     (``\\theta``, ``\\neq``, ``\\text{…}``, ``\\right``) is never touched."""
     if "\\" not in text:
         return text
-    out: list[str] = []
-    pos = 0
+    # Protected: every `segment` math span (what the renderers typeset; tag
+    # `audit5-8`: in `a $ $\\nu$ b` the regex pairs `$ $` and used to decode
+    # the `\\nu` that `segment` renders) and every regex span (a padded
+    # `$ x \\ne y $5` that `trim_padded_spans` left). Decoding is lossy, so
+    # a position either reader calls math is kept.
+    n = len(text)
+    protected = bytearray(n)
     for m in _MATH_SPAN_RE.finditer(text):
-        out.append(_decode_prose_escapes(text[pos : m.start()]))
-        out.append(m.group(0))
-        pos = m.end()
-    out.append(_decode_prose_escapes(text[pos:]))
+        protected[m.start() : m.end()] = b"\x01" * (m.end() - m.start())
+    pos = 0
+    for seg in segment(text):
+        end = pos + len(seg["raw"])
+        if seg["kind"] == "math":
+            protected[pos:end] = b"\x01" * (end - pos)
+        pos = end
+    out: list[str] = []
+    k = 0
+    while k < n:
+        j = k
+        flag = protected[k]
+        while j < n and protected[j] == flag:
+            j += 1
+        out.append(text[k:j] if flag else _decode_prose_escapes(text[k:j]))
+        k = j
     return "".join(out)
 
 
@@ -241,7 +318,8 @@ def decode_escapes_outside_math(text: str) -> str:
 
 
 def normalize(text: Any) -> Any:
-    """repair → mojibake table → delimiters → orphans → currency → escapes.
+    """repair → mojibake table → delimiters → orphans → currency → padded
+    spans → escapes.
 
     Idempotent, content-preserving. Non-strings are returned unchanged.
     """
@@ -252,5 +330,6 @@ def normalize(text: Any) -> Any:
     text = normalize_delimiters(text)
     text = strip_orphan_delimiters(text)
     text = escape_currency(text)
+    text = trim_padded_spans(text)
     text = decode_escapes_outside_math(text)
     return text

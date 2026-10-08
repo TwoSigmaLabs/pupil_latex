@@ -17,7 +17,10 @@ and virtualenvs are skipped):
            the workflow with `flutter pub get`.
 - fillers: the python files plus .html/.htm/.js/.jinja/.j2 pages (an IIFE
            `<script src>` on jsDelivr or a release URL), and every vendored
-           `pupiltree-latex.iife.js`, replaced with `--iife` when given.
+           `pupiltree-latex.iife.js`, replaced with `--iife` when given. A
+           README* next to a vendored bundle (Fillers
+           `frontend/static/vendor/pupiltree-latex/README.md`) gets its
+           `Version: X.Y.Z` line and `releases/tag/vX.Y.Z` link rewritten.
 
 Only references to the pupil_latex repository are touched: a git ref
 (`pupil_latex@vX.Y.Z`, `pupil_latex.git@vX.Y.Z`, `pupil_latex#vX.Y.Z`) or a
@@ -69,6 +72,8 @@ RELEASE_URL = re.compile(
     + SEMVER
     + r")?(?=[-.])"
 )
+# `pupil_latex/releases/tag/v1.2.0` (a release page link).
+RELEASE_TAG_URL = re.compile(r"(pupil_latex/releases/tag/)v(" + SEMVER + r")(?![\w.])")
 
 
 def normalize_version(version: str) -> str:
@@ -98,7 +103,40 @@ def rewrite_refs(text: str, version: str) -> tuple[str, set[str]]:
 
     text = GIT_REF.sub(git_ref, text)
     text = RELEASE_URL.sub(release, text)
+    text = RELEASE_TAG_URL.sub(git_ref, text)
     return text, old
+
+
+# `- Version: 1.2.0 (...)` in the README next to a vendored IIFE bundle
+# (Fillers `frontend/static/vendor/pupiltree-latex/README.md`).
+VENDORED_VERSION_LINE = re.compile(
+    r"^([ \t]*(?:[-*+][ \t]+)?(?:\*\*)?Version(?:\*\*)?:(?:\*\*)?[ \t]*`?)(v?)("
+    + SEMVER
+    + r")(?![\w.])",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
+def is_vendored_readme(path: Path) -> bool:
+    """A README (any extension) in the directory of a vendored IIFE bundle."""
+    return (
+        path.name.lower().startswith("readme") and (path.parent / IIFE_NAME).is_file()
+    )
+
+
+def rewrite_vendored_readme(text: str, version: str) -> tuple[str, set[str]]:
+    """Rewrite the `Version: X.Y.Z` line and the release links of the README
+    that documents a vendored IIFE bundle."""
+    version = normalize_version(version)
+    old: set[str] = set()
+
+    def line(m: re.Match[str]) -> str:
+        old.add(m.group(3))
+        return f"{m.group(1)}{m.group(2)}{version}"
+
+    text = VENDORED_VERSION_LINE.sub(line, text)
+    text, old2 = rewrite_refs(text, version)
+    return text, old | old2
 
 
 _DEP_KEY = re.compile(r"^(\s*)(pupiltree_latex(?:_flutter)?):\s*(#.*)?$")
@@ -131,7 +169,9 @@ def rewrite_pubspec(text: str, version: str) -> tuple[str, set[str]]:
                 r = _REF.match(lines[k].rstrip("\r\n"))
                 if r:
                     old.add(r.group(3))
-                    lines[k] = f"{r.group(1)}{r.group(2)}v{version}{r.group(2)}{r.group(4)}{eol}"
+                    lines[k] = (
+                        f"{r.group(1)}{r.group(2)}v{version}{r.group(2)}{r.group(4)}{eol}"
+                    )
         i = j
     return "".join(lines), old
 
@@ -223,16 +263,19 @@ def bump(
                 path.write_bytes(new_iife)
                 res.changed.append(rel)
             continue
-        if not any(_matches(k, path) for k in kinds):
+        readme = "fillers" in kinds and is_vendored_readme(path)
+        if not readme and not any(_matches(k, path) for k in kinds):
             continue
         try:
             raw = path.read_bytes()
             text = raw.decode("utf-8")
         except (OSError, UnicodeDecodeError):
             continue
-        if "pupil_latex" not in text:
+        if readme:
+            new, old = rewrite_vendored_readme(text, version)
+        elif "pupil_latex" not in text:
             continue
-        if path.name == "pubspec.yaml":
+        elif path.name == "pubspec.yaml":
             new, old = rewrite_pubspec(text, version)
             new, old2 = rewrite_refs(new, version)
             old |= old2

@@ -6,7 +6,10 @@ library;
 
 import 'guarded_regexp.dart';
 import 'nfc.dart';
+import 'normalize.dart' show currencyPositions, trimPaddedSpansKeepCurrency;
+import 'repair.dart';
 import 'segment.dart';
+import 'spans.dart';
 import 'tables.g.dart';
 import 'text_util.dart';
 
@@ -52,6 +55,8 @@ const _labelSentinelClose = '\uE014';
 // "struction". `text` keeps it verbatim; `pdf` and `compare` drop the
 // backslash.
 final _scriptLabelLine = RegExp(r'(^|\n)([ \t]*)\\([a-z][a-z_]*):');
+// Anywhere in a line, only a word in `kScriptLabels` is a label.
+final _scriptLabelAny = RegExp(r'\\([a-z][a-z_]*):');
 
 // Math spans for the prose-brace pass, display first.
 final _plainSpan = RegExp(r'\$\$[\s\S]+?\$\$|\$[^$]+\$');
@@ -183,6 +188,30 @@ bool _fractionNeedsParens(String prev, String s, int i) {
 }
 
 final _imageMarker = RegExp(r'\{\{IMAGE:[^}]+\}\}');
+// `$5`, `$1,200.50`: a dollar before an amount that is not followed by a
+// letter, a command or a script (`$45m`, `$4\sqrt{3}` are cut-off spans).
+final _currencyAt = RegExp(r'\$[0-9]+(?:[.,][0-9]+)*(?![0-9A-Za-z\\^_{])');
+
+/// Park the amounts (tag `audit5-1`): a dollar outside every `segment` math
+/// span that `escapeCurrency` reads as money (`Rs $5 and $10`: the closer
+/// is followed by a digit; `costs $5.`: no closer) and that is followed by
+/// an amount, not by a letter or a command (`$45m`, `$4\sqrt3` are cut-off
+/// spans). It becomes the literal-dollar sentinel, so the delimiter strip
+/// can no longer pair it with another amount.
+String _parkCurrencyDollars(String s) {
+  if (!s.contains(r'$')) return s;
+  final money = currencyPositions(s);
+  if (money.isEmpty) return s;
+  final inMath = mathMask(s);
+  final chars = s.split('');
+  for (final k in money) {
+    if (!inMath[k] && _currencyAt.matchAsPrefix(s, k) != null) {
+      chars[k] = _dollarSentinel;
+    }
+  }
+  return chars.join();
+}
+
 final _displayDollar = RegExp(r'\$\$(.+?)\$\$', dotAll: true);
 final _delim = RegExp(r'\$([^$]+)\$');
 // A literal `\n` escape that survived into the stored string. Only fires
@@ -712,6 +741,10 @@ String latexToPlain(
     });
   }
 
+  // Amounts outside the `segment` math spans (`Rs $5 and $10`, `costs $5.`)
+  // are literal dollars, never paired as a span (tag `audit5-1`).
+  out = _parkCurrencyDollars(out);
+
   // Literal `\n` escapes first — before the greedy command scanner can claim
   // them as `\nStatement`-style pseudo-commands.
   out = out.replaceAll(_newlineEscape, '\n');
@@ -730,6 +763,14 @@ String latexToPlain(
       labels.add(m[3]!);
       return '${m[1]}${m[2]}$_labelSentinelOpen${labels.length - 1}'
           '$_labelSentinelClose:';
+    });
+    // A known label (`kScriptLabels`, the words `repair` restores) is a
+    // label anywhere: `(<TAB>ool: timer)` became `\tool:`, which the
+    // scanner read as `\to` + "ol" (tag `audit5-3`).
+    out = out.replaceAllMapped(_scriptLabelAny, (m) {
+      if (!kScriptLabels.contains(m[1])) return m[0]!;
+      labels.add(m[1]!);
+      return '$_labelSentinelOpen${labels.length - 1}$_labelSentinelClose:';
     });
   }
 
@@ -1279,6 +1320,13 @@ String toPlain(String text, {String style = 'text'}) {
   if (!styles.contains(style)) {
     throw ArgumentError.value(style, 'style', 'expected one of $styles');
   }
+  // A form feed / backspace / TAB that was a command (`<FF>rac`,
+  // `<TAB>imes`) is restored first, with the same `guessWhitespace` as `fix`
+  // (`normalize`); tag `audit5-3`.
+  text = repair(text);
+  // A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
+  // masked (tag `audit6-2`).
+  text = trimPaddedSpansKeepCurrency(text);
   if (style == 'tts') return _toSpoken(text);
   if (style == 'compare') {
     return _foldForCompare(

@@ -691,7 +691,7 @@ void main() {
   });
 
   test('exported tables are populated and versioned', () {
-    expect(kVersion, '1.2.0');
+    expect(kVersion, '1.3.0');
     expect(kKatexCommands, contains('frac'));
     expect(kJsonWhitespaceCollisionCommands, contains('nu'));
     expect(kLatexCommandsBehindJsonEscapes, contains('theta'));

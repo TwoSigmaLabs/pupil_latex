@@ -11,8 +11,11 @@ import re
 import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
-from .commands import KATEX_COMMANDS
+from .commands import KATEX_COMMANDS, SCRIPT_LABELS
+from .normalize import currency_positions, trim_padded_spans_keep_currency
+from .repair import repair
 from .segment import segment
+from .spans import math_mask
 
 # Greek letters + common math operators that appear in physics/chem answers.
 LATEX_CMD_MAP: Dict[str, str] = {
@@ -307,6 +310,8 @@ _LABEL_SENTINEL_CLOSE = "\ue014"
 # "struction" (∈struction). `text` keeps it verbatim (the canvas reads the
 # labels); `pdf` and `compare` drop the backslash, as `tts` always did.
 _SCRIPT_LABEL_LINE_RE = re.compile(r"(^|\n)([ \t]*)\\([a-z][a-z_]*):")
+# Anywhere in a line, only a word in `SCRIPT_LABELS` is a label.
+_SCRIPT_LABEL_ANY_RE = re.compile(r"\\([a-z][a-z_]*):")
 
 # Math spans for the prose-brace pass, display first: the same shapes the
 # delimiter strip below removes.
@@ -409,6 +414,31 @@ def _protect_prose_braces(s: str) -> str:
 
 
 _IMAGE_MARKER_RE = re.compile(r"\{\{IMAGE:[^}]+\}\}")
+# `$5`, `$1,200.50`: a dollar before an amount that is not followed by a
+# letter, a command or a script (`$45m`, `$4\sqrt{3}` are cut-off spans).
+_CURRENCY_AT_RE = re.compile(r"\$[0-9]+(?:[.,][0-9]+)*(?![0-9A-Za-z\\^_{])")
+
+
+def _park_currency_dollars(s: str) -> str:
+    """Park the amounts (tag `audit5-1`): a dollar outside every `segment`
+    math span that `escape_currency` reads as money (`Rs $5 and $10`: the
+    closer is followed by a digit; `costs $5.`: no closer) and that is
+    followed by an amount, not by a letter or a command (`$45m`, `$4\\sqrt3`
+    are cut-off spans). It becomes the literal-dollar sentinel, so the
+    delimiter strip below can no longer pair it with another amount."""
+    if "$" not in s:
+        return s
+    money = currency_positions(s)
+    if not money:
+        return s
+    in_math = math_mask(s)
+    chars = list(s)
+    for k in money:
+        if not in_math[k] and _CURRENCY_AT_RE.match(s, k):
+            chars[k] = _DOLLAR_SENTINEL
+    return "".join(chars)
+
+
 _LATEX_DISPLAY_DOLLAR_RE = re.compile(r"\$\$(.+?)\$\$", re.DOTALL)
 _LATEX_DELIM_RE = re.compile(r"\$([^$]+)\$")
 # A literal ``\n`` escape that survived into the stored string, e.g.
@@ -943,6 +973,10 @@ def latex_to_plain(
     if "{{IMAGE:" in out:
         out = _IMAGE_MARKER_RE.sub(_stash_image, out)
 
+    # Amounts outside the `segment` math spans (`Rs $5 and $10`, `costs $5.`)
+    # are literal dollars, never paired as a span (tag `audit5-1`).
+    out = _park_currency_dollars(out)
+
     # Literal `\n` escapes first — before the greedy command scanner can claim
     # them as `\nStatement`-style pseudo-commands.
     out = _LATEX_NEWLINE_ESCAPE_RE.sub("\n", out)
@@ -968,8 +1002,18 @@ def latex_to_plain(
             + f"{_LABEL_SENTINEL_OPEN}{len(labels) - 1}{_LABEL_SENTINEL_CLOSE}:"
         )
 
+    def _stash_known_label(m: "re.Match[str]") -> str:
+        if m.group(1) not in SCRIPT_LABELS:
+            return m.group(0)
+        labels.append(m.group(1))
+        return f"{_LABEL_SENTINEL_OPEN}{len(labels) - 1}{_LABEL_SENTINEL_CLOSE}:"
+
     if "\\" in out and ":" in out:
         out = _SCRIPT_LABEL_LINE_RE.sub(_stash_label, out)
+        # A known label (`SCRIPT_LABELS`, the words `repair` restores) is a
+        # label anywhere: `(<TAB>ool: timer)` became `\tool:`, which the
+        # scanner read as `\to` + "ol" (tag `audit5-3`).
+        out = _SCRIPT_LABEL_ANY_RE.sub(_stash_known_label, out)
 
     # Braces in prose are text (`A = {1, 2, 3}`), not grouping.
     out = _protect_prose_braces(out)
@@ -1395,6 +1439,12 @@ def to_plain(text: Any, style: str = "text") -> Any:
         raise ValueError(f"unknown style {style!r}; expected one of {STYLES}")
     if not isinstance(text, str):
         return text
+    # A form feed / backspace / TAB that was a command (`<FF>rac`, `<TAB>imes`)
+    # is restored first, with the same `guessWhitespace` as `fix` (`normalize`).
+    text = repair(text)
+    # A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
+    # masked (tag `audit6-2`).
+    text = trim_padded_spans_keep_currency(text)
     if style == "tts":
         return _to_spoken(text)
     if style == "compare":

@@ -20,8 +20,11 @@ import {
   replaceAfter,
   type Blocked,
 } from "./lookbehind.js";
+// `canonicalize` imports `isFormula` from here; the cycle is call-time only.
+import { trimPaddedSpans as trimPaddedSpansInText } from "./canonicalize.js";
 import { fixMojibakeTable } from "./mojibake.js";
 import { repair } from "./repair.js";
+import { segment } from "./segment.js";
 
 // ---------------------------------------------------------------------------
 // 3. delimiters
@@ -124,39 +127,32 @@ export function isFormula(content: string): boolean {
   );
 }
 
-function escapeCurrencyInLine(line: string): string {
-  if (!line.includes("$")) return line;
-  const out: string[] = [];
+/** Indices of the currency dollars in one line (the `$` that
+ * `escapeCurrency` turns into `\$`). */
+function currencyPositionsInLine(line: string): number[] {
+  const found: number[] = [];
+  if (!line.includes("$")) return found;
   const n = line.length;
   let i = 0;
   while (i < n) {
     const ch = line[i];
     if (ch !== "$" || escapedAt(line, i)) {
-      out.push(ch);
       i++;
       continue;
     }
-    // `$$` display block: copy through to its closing `$$` (or end of line).
+    // `$$` display block: skip to its closing `$$` (or end of line).
     if (i + 1 < n && line[i + 1] === "$") {
       const close = line.indexOf("$$", i + 2);
-      const end = close === -1 ? n : close + 2;
-      out.push(line.slice(i, end));
-      i = end;
+      i = close === -1 ? n : close + 2;
       continue;
     }
     if (!digitAt(line, i + 1)) {
-      // A math opener: copy the whole span through to its first closer (the
+      // A math opener: skip the whole span through to its first closer (the
       // tokenizer's rule) so the closer is never re-examined as a currency
       // opener (`$\sqrt$2` must not become `$\sqrt\$2`).
       let j = i + 1;
       while (j < n && !(line[j] === "$" && !escapedAt(line, j))) j++;
-      if (j < n) {
-        out.push(line.slice(i, j + 1));
-        i = j + 1;
-        continue;
-      }
-      out.push(ch);
-      i++;
+      i = j < n ? j + 1 : i + 1;
       continue;
     }
     // `$<digit>`: currency unless the next single `$` is a valid closer.
@@ -177,13 +173,40 @@ function escapeCurrencyInLine(line: string): string {
       j++;
     }
     if (closerValid) {
-      out.push(line.slice(i, j + 1));
       i = j + 1;
     } else {
-      out.push("\\$");
+      found.push(i);
       i++;
     }
   }
+  return found;
+}
+
+/**
+ * Indices of the dollars `escapeCurrency` reads as money (pandoc's closer
+ * rule, per line). `toPlain` uses it to keep amounts.
+ */
+export function currencyPositions(text: string): number[] {
+  const found: number[] = [];
+  if (!text.includes("$")) return found;
+  let base = 0;
+  for (const line of text.split("\n")) {
+    for (const k of currencyPositionsInLine(line)) found.push(base + k);
+    base += line.length + 1;
+  }
+  return found;
+}
+
+function escapeCurrencyInLine(line: string): string {
+  const positions = currencyPositionsInLine(line);
+  if (positions.length === 0) return line;
+  const out: string[] = [];
+  let pos = 0;
+  for (const k of positions) {
+    out.push(line.slice(pos, k), "\\$");
+    pos = k + 1;
+  }
+  out.push(line.slice(pos));
   return out.join("");
 }
 
@@ -195,6 +218,42 @@ function escapeCurrencyInLine(line: string): string {
 export function escapeCurrency(text: string): string {
   if (!text.includes("$")) return text;
   return text.split("\n").map(escapeCurrencyInLine).join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// 5a. padded spans
+// ---------------------------------------------------------------------------
+
+/**
+ * `Solve $ x + 1 = 0 $` → `Solve $x + 1 = 0$` (tag `audit6-1`): the rule
+ * `canonicalize` applies (pairs per line; content clearly math; neither
+ * dollar glued to a letter or digit outside the pair, so a closer followed by
+ * a digit stays). Run after `escapeCurrency`: an escaped amount is never
+ * paired. `segment` keeps pandoc's rule, so without this a stored padded
+ * formula displays as raw text.
+ */
+export function trimPaddedSpans(text: string): string {
+  return trimPaddedSpansInText(text);
+}
+
+/** U+E000 (private use): never in content. */
+const CURRENCY_MASK = "\ue000";
+
+/**
+ * `trimPaddedSpans` on text whose amounts are not escaped (`toPlain` input):
+ * the dollars `currencyPositions` reads as money are masked first, so they
+ * are never paired (`Rs $5 and $10 for $ x^2 $` → only the last pair is
+ * trimmed).
+ */
+export function trimPaddedSpansKeepCurrency(text: string): string {
+  if (!text.includes("$") || text.includes(CURRENCY_MASK)) return text;
+  const money = currencyPositions(text);
+  if (money.length) {
+    const chars = text.split("");
+    for (const k of money) chars[k] = CURRENCY_MASK;
+    text = chars.join("");
+  }
+  return trimPaddedSpans(text).split(CURRENCY_MASK).join("$");
 }
 
 // ---------------------------------------------------------------------------
@@ -232,14 +291,32 @@ function decodeProseEscapes(prose: string): string {
  */
 export function decodeEscapesOutsideMath(text: string): string {
   if (!text.includes("\\")) return text;
-  const out: string[] = [];
-  let pos = 0;
+  // Protected: every `segment` math span (what the renderers typeset; tag
+  // `audit5-8`: in `a $ $\nu$ b` the regex pairs `$ $` and used to decode
+  // the `\nu` that `segment` renders) and every regex span (a padded
+  // `$ x \ne y $5` that `trimPaddedSpans` left). Decoding is lossy, so a position
+  // either reader calls math is kept.
+  const n = text.length;
+  const isProtected = new Uint8Array(n);
   for (const m of matchAllAfter(MATH_SPAN_RE, text, MATH_SPAN_BLOCKED)) {
-    out.push(decodeProseEscapes(text.slice(pos, m.index)));
-    out.push(m[0]);
-    pos = m.index + m[0].length;
+    isProtected.fill(1, m.index, m.index + m[0].length);
   }
-  out.push(decodeProseEscapes(text.slice(pos)));
+  let pos = 0;
+  for (const seg of segment(text)) {
+    const end = pos + seg.raw.length;
+    if (seg.kind === "math") isProtected.fill(1, pos, end);
+    pos = end;
+  }
+  const out: string[] = [];
+  let k = 0;
+  while (k < n) {
+    const flag = isProtected[k];
+    let j = k;
+    while (j < n && isProtected[j] === flag) j++;
+    const part = text.slice(k, j);
+    out.push(flag ? part : decodeProseEscapes(part));
+    k = j;
+  }
   return out.join("");
 }
 
@@ -248,7 +325,8 @@ export function decodeEscapesOutsideMath(text: string): string {
 // ---------------------------------------------------------------------------
 
 /**
- * repair → mojibake table → delimiters → orphans → currency → escapes.
+ * repair → mojibake table → delimiters → orphans → currency → padded spans
+ * → escapes.
  * Idempotent, content-preserving. Non-strings are returned unchanged.
  */
 export function normalize<T>(text: T): T;
@@ -259,6 +337,7 @@ export function normalize(text: unknown): unknown {
   out = normalizeDelimiters(out);
   out = stripOrphanDelimiters(out);
   out = escapeCurrency(out);
+  out = trimPaddedSpans(out);
   out = decodeEscapesOutsideMath(out);
   return out;
 }

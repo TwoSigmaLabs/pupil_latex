@@ -25,7 +25,7 @@ fix("Cost $5 and \\(\\theta\\) with \x0crac{1}{2} and π and H₂O")
 | Function                | What it does                                                                                                        | Lossless           | Where it runs                                        |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------- |
 | `repair(text)`          | Undo JSON-escape damage (`<FF>rac` → `\frac`, `<TAB>imes` → `\times`), drop other control bytes                     | yes                | everywhere: DB write sinks, read paths, clients      |
-| `normalize(text)`       | Display-safe prep: `\(…\)` → `$…$`, orphan delimiters, currency `$5` → `\$5`, literal `\n` in prose, mojibake table | content-preserving | clients before rendering                             |
+| `normalize(text)`       | Display-safe prep: `\(…\)` → `$…$`, orphan delimiters, currency `$5` → `\$5`, padded `$ x + 1 $` → `$x + 1$`, literal `\n` in prose, mojibake table | content-preserving | clients before rendering                             |
 | `canonicalize(text)`    | Full write-time sanitiser: everything above plus Unicode → LaTeX, bare `\frac`/`H_{2}O`/`π` wrapping, brace fixes   | no (heuristic)     | **only** at the generation chokepoint, never on read |
 | `segment(text)`         | The one tokenizer: prose / inline math / display math, escape- and brace-aware, currency-safe                       | yes                | every renderer                                       |
 | `to_plain(text, style)` | LaTeX → Unicode text for PDFs (`pdf`), canvases and reports (`text`), speech (`tts`), answer matching (`compare`)   | lossy by design    | PDF, canvas, TTS, answer matching                    |
@@ -39,22 +39,22 @@ Every consumer pins a release tag. There is no package registry: installs come f
 
 ```bash
 # Python (Backend, pupiltree-agents, Fillers, worksheet.ai backend), through git
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.2.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.3.0#subdirectory=python"
 
 # Python without git (recommended for Docker builds: slim images have no git)
-pip install "pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree_latex-1.2.0-py3-none-any.whl"
+pip install "pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree_latex-1.3.0-py3-none-any.whl"
 # requirements.txt:
-# pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree_latex-1.2.0-py3-none-any.whl
+# pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree_latex-1.3.0-py3-none-any.whl
 ```
 
 ```bash
 # JavaScript (worksheet.ai, pupil-assessment-ui): package.json keeps this URL
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree-latex-1.2.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree-latex-1.3.0.tgz
 ```
 
 ```html
 <!-- Plain <script> pages (Fillers), next to KaTeX; Safari/iOS 14+, Chrome/Edge 80+, Firefox 78+ -->
-<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.2.0/js/dist/pupiltree-latex.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.3.0/js/dist/pupiltree-latex.iife.js"></script>
 ```
 
 ```yaml
@@ -65,7 +65,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.2.0
+      ref: v1.3.0
       path: dart/pupiltree_latex_flutter
 ```
 
@@ -75,11 +75,11 @@ dependencies:
   pupiltree_latex:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.2.0
+      ref: v1.3.0
       path: dart/pupiltree_latex
 ```
 
-Releasing: push a `v*` tag. CI runs every suite, then attaches `pupiltree_latex-X.Y.Z-py3-none-any.whl`, `pupiltree-latex-X.Y.Z.tgz` and `pupiltree-latex.iife.js` to the GitHub release. Publishing the release runs `.github/workflows/propagate.yml`, which opens a `chore: bump pupiltree-latex to vX.Y.Z` pull request in every consumer that already pins the library (it needs the `PUPIL_LATEX_BUMP_TOKEN` secret; see the workflow header).
+Releasing: push a `v*` tag. CI runs every suite, then attaches `pupiltree_latex-X.Y.Z-py3-none-any.whl`, `pupiltree-latex-X.Y.Z.tgz` and `pupiltree-latex.iife.js` to the GitHub release. Publishing the release runs `.github/workflows/propagate.yml`, which opens a `chore: bump pupiltree-latex to vX.Y.Z` pull request in every consumer that already pins the library (it needs the `PUPIL_LATEX_BUMP_TOKEN` secret with contents and pull-request write on every consumer, all under TwoSigmaLabs including `TwoSigmaLabs/worksheet.ai`; see the workflow header). Without the secret the release still goes green and the run carries a warning; re-run propagate by hand once the secret is set.
 
 ## Use
 

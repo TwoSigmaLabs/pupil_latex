@@ -5,16 +5,15 @@
 # (workflow_call: a release made with GITHUB_TOKEN does not fire
 # `release: published`), or by hand (Actions → propagate → Run workflow).
 #
-# Secret PUPIL_LATEX_BUMP_TOKEN (required): a token that can push a branch and
-# open a pull request in the consumers: a fine-grained PAT or GitHub App token
-# with "Contents: read and write" and "Pull requests: read and write" on
+# Secret PUPIL_LATEX_BUMP_TOKEN: a token that can push a branch and open a
+# pull request in the consumers: a fine-grained PAT or GitHub App token with
+# "Contents: read and write" and "Pull requests: read and write" on
 # TwoSigmaLabs/Backend, pupiltree-agents, script_editor,
-# pupiltree.ai_tutor-frontend, pupil-assessment-ui and Fillers. A fine-grained
-# PAT or App installation token covers one owner only, so
-# pupiltree/worksheet.ai reads PUPIL_LATEX_BUMP_TOKEN_PUPILTREE (same
-# permissions on that repo) and falls back to PUPIL_LATEX_BUMP_TOKEN, which is
-# enough when that token is a classic PAT or a machine user's token with access
-# to both owners. A missing token fails the job; it never passes silently.
+# pupiltree.ai_tutor-frontend, pupil-assessment-ui, Fillers and worksheet.ai
+# (all one owner, so one token covers them). When the secret is missing the
+# `token` job writes a ::warning:: and a run summary and no consumer is
+# bumped; the release run stays green. On a tag run a consumer whose bump
+# fails is an ::error:: on its own job (continue-on-error), not a red release.
 #
 # The rewriting is tools/bump_consumer.py (tested in ci.yml). A consumer with
 # no pupiltree-latex reference yet is skipped. Lock files: package-lock.json is
@@ -47,6 +46,9 @@ env:
 jobs:
   resolve:
     runs-on: ubuntu-latest
+    # Called from ci.yml after the release was published: never turn the tag
+    # run red from here (the ::error:: annotation stays on this job).
+    continue-on-error: ${{ github.event_name == 'push' }}
     outputs:
       version: ${{ steps.v.outputs.version }}
       ready: ${{ steps.v.outputs.ready }}
@@ -83,70 +85,60 @@ jobs:
           fi
           echo "ready=true" >> "$GITHUB_OUTPUT"
 
-  bump:
+  # One check for the one secret, so a missing token is a warning on this
+  # run instead of seven red matrix jobs (and a red tag run in ci.yml).
+  token:
     needs: resolve
     if: needs.resolve.outputs.ready == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      present: ${{ steps.t.outputs.present }}
+    steps:
+      - name: PUPIL_LATEX_BUMP_TOKEN present
+        id: t
+        env:
+          GH_TOKEN: ${{ secrets.PUPIL_LATEX_BUMP_TOKEN }}
+          VERSION: ${{ needs.resolve.outputs.version }}
+        run: |
+          if [ -n "$GH_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "present=false" >> "$GITHUB_OUTPUT"
+          msg="secret PUPIL_LATEX_BUMP_TOKEN is not set, so no consumer bump pull request was opened for v$VERSION. The release itself is published. Add the secret (contents and pull-requests write on every TwoSigmaLabs consumer, see the header of .github/workflows/propagate.yml) and run Actions -> propagate -> Run workflow with version $VERSION."
+          echo "::warning title=consumer bumps skipped::$msg"
+          { echo "### Consumer bumps skipped"; echo; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
+
+  bump:
+    needs: [resolve, token]
+    if: needs.resolve.outputs.ready == 'true' && needs.token.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    # On a tag run (called from ci.yml) a consumer that cannot be bumped is an
+    # ::error:: on its job and a line in the summary, but the release run stays
+    # green: the release is already published. A manual or `release` run
+    # still fails.
+    continue-on-error: ${{ github.event_name == 'push' }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {
-              repo: TwoSigmaLabs/Backend,
-              base: develop,
-              kinds: python,
-              secret: PUPIL_LATEX_BUMP_TOKEN,
-            }
-          - {
-              repo: TwoSigmaLabs/pupiltree-agents,
-              base: develop,
-              kinds: python,
-              secret: PUPIL_LATEX_BUMP_TOKEN,
-            }
-          - {
-              repo: TwoSigmaLabs/script_editor,
-              base: develop,
-              kinds: flutter,
-              secret: PUPIL_LATEX_BUMP_TOKEN,
-            }
+          - { repo: TwoSigmaLabs/Backend, base: develop, kinds: python }
+          - { repo: TwoSigmaLabs/pupiltree-agents, base: develop, kinds: python }
+          - { repo: TwoSigmaLabs/script_editor, base: develop, kinds: flutter }
           - {
               repo: TwoSigmaLabs/pupiltree.ai_tutor-frontend,
               base: develop,
               kinds: flutter,
-              secret: PUPIL_LATEX_BUMP_TOKEN,
             }
-          - {
-              repo: TwoSigmaLabs/pupil-assessment-ui,
-              base: develop,
-              kinds: js,
-              secret: PUPIL_LATEX_BUMP_TOKEN,
-            }
-          - {
-              repo: TwoSigmaLabs/Fillers,
-              base: develop,
-              kinds: fillers,
-              secret: PUPIL_LATEX_BUMP_TOKEN,
-            }
-          - {
-              repo: pupiltree/worksheet.ai,
-              base: main,
-              kinds: "python,js",
-              secret: PUPIL_LATEX_BUMP_TOKEN_PUPILTREE,
-            }
+          - { repo: TwoSigmaLabs/pupil-assessment-ui, base: develop, kinds: js }
+          - { repo: TwoSigmaLabs/Fillers, base: develop, kinds: fillers }
+          - { repo: TwoSigmaLabs/worksheet.ai, base: main, kinds: "python,js" }
     concurrency:
       group: propagate-${{ matrix.repo }}-${{ needs.resolve.outputs.version }}
     env:
       VERSION: ${{ needs.resolve.outputs.version }}
       BRANCH: chore/pupiltree-latex-v${{ needs.resolve.outputs.version }}
-      GH_TOKEN: ${{ secrets[matrix.secret] || secrets.PUPIL_LATEX_BUMP_TOKEN }}
+      GH_TOKEN: ${{ secrets.PUPIL_LATEX_BUMP_TOKEN }}
     steps:
-      - name: token present
-        run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::secret ${{ matrix.secret }} (or PUPIL_LATEX_BUMP_TOKEN) is not set; it needs contents and pull-requests write on ${{ matrix.repo }}. See the header of .github/workflows/propagate.yml."
-            exit 1
-          fi
-
       - uses: actions/checkout@v4
         with:
           repository: ${{ env.LIBRARY_REPO }}
@@ -235,3 +227,9 @@ jobs:
       - name: nothing to bump
         if: steps.bump.outputs.changed != 'true'
         run: echo "::notice::${{ matrix.repo }} has no pupiltree-latex pin to move to v$VERSION (references found ${{ steps.bump.outputs.references }}); skipped"
+
+      - name: summary on failure
+        if: failure()
+        run: |
+          echo "::error::bumping ${{ matrix.repo }} to v$VERSION failed; open the pull request by hand or re-run this job"
+          echo "- ${{ matrix.repo }}: bump to v$VERSION failed (see the job log)" >> "$GITHUB_STEP_SUMMARY"

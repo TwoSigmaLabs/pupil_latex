@@ -163,7 +163,10 @@ jobs:
           fi
 
   # A release created with GITHUB_TOKEN does not fire `release: published`
-  # in other workflows, so propagation is called directly.
+  # in other workflows, so propagation is called directly. It cannot turn
+  # this run red: a missing PUPIL_LATEX_BUMP_TOKEN is a ::warning:: and a
+  # failed consumer bump an ::error:: on a continue-on-error job (see the
+  # header of propagate.yml).
   propagate:
     needs: release
     uses: ./.github/workflows/propagate.yml

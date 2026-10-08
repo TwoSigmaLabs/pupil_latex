@@ -173,6 +173,40 @@ class Bump(unittest.TestCase):
             "new bundle",
         )
 
+    def test_fillers_vendored_readme_version_line(self):
+        vendor = "frontend/static/vendor/pupiltree-latex"
+        self.write(f"{vendor}/pupiltree-latex.iife.js", "old bundle")
+        self.write(
+            f"{vendor}/README.md",
+            "# pupiltree-latex (vendored browser bundle)\n\n"
+            "- Version: 1.1.0 (`PupiltreeLatex.VERSION` inside the file is authoritative)\n"
+            "- Source: https://github.com/TwoSigmaLabs/pupil_latex/releases/tag/v1.1.0\n"
+            "- The `?ref=pupil_latex@vX.Y.Z` query on those tags is the cache-buster.\n",
+        )
+        self.write("docs/README.md", "- Version: 1.1.0\n")  # no bundle next to it
+        new = self.write("new/pupiltree-latex.iife.js.download", "new bundle")
+        res = bc.bump(self.root, ["fillers"], "1.2.1", iife=new)
+        self.assertEqual(
+            res.changed,
+            [f"{vendor}/README.md", f"{vendor}/pupiltree-latex.iife.js"],
+        )
+        readme = (self.root / vendor / "README.md").read_text()
+        self.assertIn("- Version: 1.2.1 (`PupiltreeLatex.VERSION`", readme)
+        self.assertIn("pupil_latex/releases/tag/v1.2.1\n", readme)
+        self.assertIn("`?ref=pupil_latex@vX.Y.Z`", readme)
+        self.assertNotIn("1.1.0", readme)
+        self.assertIn("1.1.0", (self.root / "docs/README.md").read_text())
+        self.assertEqual(res.old_versions, {"1.1.0"})
+        # Idempotent: a second run changes nothing.
+        again = bc.bump(self.root, ["fillers"], "1.2.1", iife=new)
+        self.assertEqual(again.changed, [])
+
+    def test_vendored_readme_needs_fillers_kind(self):
+        self.write("static/pupiltree-latex.iife.js", "bundle")
+        self.write("static/README", "Version: 1.1.0\n")
+        res = bc.bump(self.root, ["python", "js"], "1.2.1")
+        self.assertEqual(res.changed, [])
+
     def test_already_current(self):
         self.write("requirements.txt", GIT_PIN.replace("1.1.0", "1.2.0"))
         res = bc.bump(self.root, ["python"], "1.2.0")

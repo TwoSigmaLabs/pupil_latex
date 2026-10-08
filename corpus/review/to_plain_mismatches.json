@@ -71,19 +71,6 @@
    "python_got": "(√3)/2"
   },
   {
-   "id": "backend-latex-to-plain-r2-0005",
-   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
-   "via": "latex_to_plain",
-   "input": "\\$50",
-   "expected": "$50",
-   "style": "text",
-   "tags": [
-    "B8",
-    "backend#1599"
-   ],
-   "python_got": "$50"
-  },
-  {
    "id": "backend-latex-to-plain-r2-0006",
    "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
    "via": "latex_to_plain",
