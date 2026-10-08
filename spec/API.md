@@ -211,3 +211,18 @@ Findings are sorted by position then kind. `auditDeep(obj)` walks a document lik
 ## 9. Corpus files
 
 `corpus/<function>.json`: `{"function": "...", "cases": [{"id", "input", "expected", "tags", "impl"?, "style"?, "property"?, "source"?, "note"?}]}`. `impl` defaults to all three. `opts` (fix and canonicalize only) holds keyword options, e.g. `{"chemistry": false}`. `expected` is a string (repair, normalize, canonicalize, to_plain), a list of segments (segment), a list of kinds (audit), or a JSON value (json_transport). `property: "idempotent"` means `f(f(x)) == f(x)` is asserted instead of a value. `corpus/must_not_change.json` lists inputs that every named function must return unchanged.
+
+## 10. Prompt rules (Python only)
+
+Prompts are built server-side, so the rule text exists only in `pupiltree_latex.prompt_rules` (CONTRACT §6); Dart and JS do not carry it.
+
+| Name                                                                  | Returns                                                                                                               |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`, `PLAIN_NOTATION_RULES` | the rule blocks (strings)                                                                                             |
+| `inject_latex_rules(prompt)`                                          | `LATEX_SYSTEM_RULES + "\n\n" + prompt`, or `prompt` unchanged when the block is already in it                         |
+| `inject_narrative_prose_rules(prompt)`                                | the same for `NARRATIVE_PROSE_RULES`                                                                                  |
+| `inject_plain_notation_rules(prompt)` (1.4.0)                         | the same for `PLAIN_NOTATION_RULES`                                                                                   |
+| `has_formatting_contract(prompt)`                                     | `True` when any of the three blocks is present                                                                        |
+| `narrative_field_exemption(*fields)`                                  | a clause, appended after `inject_latex_rules`, that exempts the named JSON fields (spoken prose) from the LaTeX rules |
+
+Each block's first line is its presence marker (`LATEX_RULES_MARKER`, `NARRATIVE_RULES_MARKER`, `PLAIN_NOTATION_MARKER`), so every injector is idempotent: `inject(inject(p)) == inject(p)`. An injector looks only for its own block.
