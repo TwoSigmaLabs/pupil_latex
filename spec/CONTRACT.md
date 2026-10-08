@@ -1,6 +1,6 @@
 # The Pupiltree math-text contract
 
-Version 1.1.0 (2026-09-26). This file is the single description of what math text looks like on the wire between the LLM services, the database and every renderer. `pupiltree-latex` implements it; `python/pupiltree_latex/prompt_rules.py` carries the same rules as prompt text.
+Version 1.2.0 (2026-10-08). This file is the single description of what math text looks like on the wire between the LLM services, the database and every renderer. `pupiltree-latex` implements it; `python/pupiltree_latex/prompt_rules.py` carries the same rules as prompt text.
 
 ## If you read only one thing
 
@@ -54,6 +54,12 @@ Markdown emphasis (`**bold**`, `*italic*`) is allowed in prose and must not appe
 | `audit`        | read-only          | yes (log)                       | yes (log)                   | optional  | debug                | –                           |
 
 The read path serves stored bytes plus `repair`. This is the lesson of Backend #1595 and the 14 September 2026 incident (a full sanitiser replay over stored content rewrote `√2` as `$\sqrt$2` in about 11k fields).
+
+**The read path is exactly `repair(text, guessWhitespace=False)`** (`repair_deep(doc, False)`): it restores a form feed, backspace or vertical tab that was a command (`<FF>rac` → `\frac`), removes ANSI colour codes and other control bytes, and keeps every TAB, LF and CR as stored. A service that knows its stored text went through a JSON parser may opt in to `guessWhitespace=True`, which additionally restores TAB/LF/CR only before an unambiguous command (`<TAB>ext{` → `\text{`, `<TAB>imes`, `<TAB>heta`, `<TAB>an`, `<LF>ightarrow` inside a closed `$…$`); never `<LF>u` or `<LF>e`, which are line breaks as often as `\nu`/`\ne`. Corpus tag `audit4-12` pins both forms.
+
+**Answer comparison** uses `to_plain(text, "compare")` on both sides (API §5), so a typed `1/3`, `x^2`, `H_2O`, `−3` or `90°` equals the stored `$\frac{1}{3}$`, `$x^2$`, `$H_2O$`, `-3` or `$90^\circ$`.
+
+**Renderers without mhchem** (Fillers loads KaTeX core only) call `fix(text, chemistry=False)`; `typesetMath` does so automatically when `\ce` does not parse. Loading `katex/contrib/mhchem` is the alternative.
 
 ## 4. Rendering
 

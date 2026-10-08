@@ -29,6 +29,7 @@ export {
   decodeEscapesOutsideMath,
 } from "./normalize.js";
 export { canonicalize, canonicalizeDeep } from "./canonicalize.js";
+export type { CanonicalizeOptions } from "./canonicalize.js";
 export { segment, containsMath, isPlainProse } from "./segment.js";
 export type { Segment } from "./segment.js";
 export { toPlain, STYLES } from "./toPlain.js";
@@ -80,4 +81,5 @@ export {
   HTML_ENTITIES,
   GREEK_MATH_LETTERS,
   GREEK_UNIT_SYMBOLS,
+  DECLARATION_COMMANDS,
 } from "./tables.g.js";

@@ -1,6 +1,6 @@
 {
  "function": "canonicalize",
- "version": "1.1.0",
+ "version": "1.2.0",
  "cases": [
   {
    "id": "curated-formfeed-frac-wrapped",
@@ -957,6 +957,52 @@
     "audit3-script-group"
    ],
    "note": "a one-argument \\frac (R6) and an unclosed group stay prose; their symbols get spans of their own, as before"
+  },
+  {
+   "id": "curated-audit4-1-single-letter-bases-still-wrap",
+   "input": "x_0 and v_1 and a_n",
+   "expected": "$x_0$ and $v_1$ and $a_n$",
+   "tags": [
+    "B5",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-1-chemistry-capitals-still-wrap",
+   "input": "H_2O and CO_2",
+   "expected": "$H_2O$ and $CO_2$",
+   "tags": [
+    "B5",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-space-before-closer-trimmed",
+   "input": "Compute $2x + 3 $.",
+   "expected": "Compute $2x + 3$.",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-space-before-closer-power-trimmed",
+   "input": "Find $3x^2 - 1 $ when x is 2",
+   "expected": "Find $3x^2 - 1$ when x is 2",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-amounts-not-trimmed",
+   "input": "I paid $ 5 and got $ 3 back; Prices: $10, $20",
+   "expected": "I paid $ 5 and got $ 3 back; Prices: $10, $20",
+   "tags": [
+    "B3",
+    "B7",
+    "audit4-6"
+   ]
   },
   {
    "id": "backend-latex-rules-0001",

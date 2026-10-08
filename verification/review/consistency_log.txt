@@ -127,9 +127,9 @@
   script_missing_braces         15   e.g. '$e^-x$ decay' -> '$e^-x$ decay'
   unicode_chemistry              8   e.g. 'mc² and x₁ and xH₂O' -> 'mc² and x₁ and xH₂O'
 Traceback (most recent call last):
-  File "C:\Users\Ankit\Desktop\pupiltree\pupiltree-latex\verification\review\consistency.py", line 281, in <module>
+  File "verification/review/consistency.py", line 281, in <module>
     json.dump(report, f, ensure_ascii=False, indent=1)
-  File "C:\Users\Ankit\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 180, in dump
+  File "<python>/Lib/json/__init__.py", line 180, in dump
     fp.write(chunk)
 UnicodeEncodeError: 'utf-8' codec can't encode character '\ud83d' in position 1: surrogates not allowed
 CONS_DONE

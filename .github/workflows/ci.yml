@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   python:
     runs-on: ubuntu-latest
@@ -84,3 +87,86 @@ jobs:
         working-directory: js
       - run: npm test
         working-directory: js
+
+  tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: bump_consumer tests
+        run: python -m unittest discover -s tools/tests -v
+      - name: prompt rules match the package
+        run: python tools/check_prompt_parity.py .
+
+  # A `v*` tag publishes the GitHub release with the three install assets,
+  # then opens the pin-bump pull requests in the consumers.
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [python, dart, flutter, js, tools]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: tag matches every package version
+        id: version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          py=$(python -c "import re;print(re.search(r'^VERSION = \"(.+)\"', open('python/pupiltree_latex/__init__.py').read(), re.M).group(1))")
+          js=$(node -p "require('./js/package.json').version")
+          dart=$(sed -n 's/^version: //p' dart/pupiltree_latex/pubspec.yaml)
+          flutter=$(sed -n 's/^version: //p' dart/pupiltree_latex_flutter/pubspec.yaml)
+          for v in "$py" "$js" "$dart" "$flutter"; do
+            if [ "$v" != "$tag" ]; then
+              echo "::error::tag $GITHUB_REF_NAME does not match package versions (python $py, js $js, dart $dart, flutter $flutter)"
+              exit 1
+            fi
+          done
+          echo "version=$tag" >> "$GITHUB_OUTPUT"
+      - name: build the Python wheel
+        run: python -m pip wheel --no-deps -w ../release ./
+        working-directory: python
+      - name: pack the npm tarball and check the committed IIFE bundle
+        run: |
+          npm ci
+          npm pack --pack-destination ../release
+          git diff --exit-code -- dist/pupiltree-latex.iife.js
+          cp dist/pupiltree-latex.iife.js ../release/
+        working-directory: js
+      - name: release notes from CHANGELOG
+        run: |
+          awk -v v="${GITHUB_REF_NAME#v}" '
+            /^## / { if (on) exit; if ($2 == v) { on = 1; next } }
+            on { print }
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md || { echo "::error::CHANGELOG.md has no '## ${GITHUB_REF_NAME#v}' section"; exit 1; }
+      - name: publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -l release
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" release/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" release/* --verify-tag \
+              --title "$GITHUB_REF_NAME" --notes-file release-notes.md
+          fi
+
+  # A release created with GITHUB_TOKEN does not fire `release: published`
+  # in other workflows, so propagation is called directly.
+  propagate:
+    needs: release
+    uses: ./.github/workflows/propagate.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+    secrets: inherit

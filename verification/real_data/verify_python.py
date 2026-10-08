@@ -15,7 +15,7 @@ import time
 from collections import Counter, defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, r"C:\Users\Ankit\Desktop\pupiltree\pupiltree-latex\python")
+sys.path.insert(0, os.path.join(HERE, "..", "..", "python"))
 from pupiltree_latex import audit_kinds, fix, loads_latex_aware, segment, to_plain  # noqa: E402
 
 DEFECT_KINDS = [

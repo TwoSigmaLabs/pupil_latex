@@ -382,6 +382,15 @@ def escape_text_specials(text: Any) -> Any:
 
 _ONLY_BLANKS_RE = re.compile(r"[ \t]*")
 _ENV_RE = re.compile(r"\\(begin|end)\{")
+# Declaration-style switches: they change the scope of a merged span.
+DECLARATION_COMMANDS = (
+    "bf it rm sf tt cal sl em mit color displaystyle textstyle scriptstyle "
+    "scriptscriptstyle tiny scriptsize footnotesize small normalsize large Large "
+    "LARGE huge Huge"
+).split()
+_DECLARATION_RE = re.compile(
+    r"\\(?:" + "|".join(DECLARATION_COMMANDS) + r")(?![A-Za-z])"
+)
 
 
 def _mergeable(value: str) -> bool:
@@ -397,6 +406,11 @@ def _mergeable(value: str) -> bool:
             if depth < 0:
                 return False
     if depth != 0:
+        return False
+    # A declaration-style switch (`\bf`, `\color{red}`, `\Large`) acts on
+    # everything after it in its span: merged, `$\flat$ $\bf x$` would set
+    # the neighbours in bold too.
+    if "\\" in value and _DECLARATION_RE.search(value):
         return False
     envs = _ENV_RE.findall(value)
     return envs.count("begin") == envs.count("end")
@@ -461,12 +475,15 @@ def merge_adjacent_math(text: Any) -> Any:
 # ---------------------------------------------------------------------------
 
 
-def fix(text: Any) -> Any:
+def fix(text: Any, *, chemistry: bool = True) -> Any:
     """Repair, normalise, canonicalise, wrap what is still bare, escape what
-    would cut a formula short and merge adjacent spans, in one call."""
+    would cut a formula short and merge adjacent spans, in one call.
+
+    ``chemistry=False`` is for renderers without KaTeX's mhchem extension:
+    a bare ``\\ce{…}`` / ``\\pu{…}`` is never put into a new math span."""
     if not isinstance(text, str) or not text:
         return text
-    text = canonicalize(normalize(text))
+    text = canonicalize(normalize(text), chemistry=chemistry)
     text = wrap_bare_symbol_commands(text)
     text = wrap_unicode_chemistry(text)
     text = wrap_unicode_scripts(text)
@@ -474,17 +491,17 @@ def fix(text: Any) -> Any:
     return merge_adjacent_math(text)
 
 
-def fix_deep(obj: Any, _key_hint: str = "") -> Any:
+def fix_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
     """`fix` over every content string of a JSON-like document, skipping
     non-content keys and URL-shaped values (CONTRACT §5)."""
     if isinstance(obj, str):
         if is_non_content_key(_key_hint) or is_url_or_path_string(obj):
             return obj
-        return fix(obj)
+        return fix(obj, chemistry=chemistry)
     if isinstance(obj, dict):
-        return {k: fix_deep(v, _key_hint=k) for k, v in obj.items()}
+        return {k: fix_deep(v, _key_hint=k, chemistry=chemistry) for k, v in obj.items()}
     if isinstance(obj, list):
-        return [fix_deep(v, _key_hint=_key_hint) for v in obj]
+        return [fix_deep(v, _key_hint=_key_hint, chemistry=chemistry) for v in obj]
     return obj
 
 

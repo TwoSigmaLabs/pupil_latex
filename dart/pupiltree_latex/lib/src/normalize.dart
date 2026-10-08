@@ -8,6 +8,7 @@
 /// touches URLs.
 library;
 
+import 'audit.dart';
 import 'commands.dart';
 import 'guarded_regexp.dart';
 import 'mojibake.dart';
@@ -75,6 +76,37 @@ bool _isSpaceAt(String s, int i) =>
 
 bool _isEscaped(String s, int i) => i > 0 && s[i - 1] == r'\';
 
+final _formulaChars = RegExp(r'^[0-9A-Za-z+\-*/=<>().,^_ \t]+$');
+final _formulaOperator = RegExp(r'[+\-*/=<>^_]');
+final _formulaCommand = RegExp(r'\\[A-Za-z]+');
+final _twoLetters = RegExp(r'[A-Za-z]{2,}');
+final _alphaChar = RegExp(r'\p{L}', unicode: true);
+
+/// True when the content of `$<digit>… $` (space before the closer) is
+/// clearly a formula, not prose between two amounts: after removing command
+/// names it is only digits, letters, operators, brackets and spaces, has an
+/// operator and a letter or command, and no two letters in a row (no word).
+bool isFormula(String content) {
+  var end = content.length;
+  while (end > 0 && (content[end - 1] == ' ' || content[end - 1] == '\t')) {
+    end--;
+  }
+  final core = content.substring(0, end);
+  if (core.isEmpty) return false;
+  final hasCommand = _formulaCommand.hasMatch(core);
+  final bare = core.replaceAll(_formulaCommand, ' ');
+  if (!_formulaChars.hasMatch(bare) || _twoLetters.hasMatch(bare)) {
+    return false;
+  }
+  if (!_formulaOperator.hasMatch(bare) && !hasCommand) return false;
+  if (!(hasCommand || _alphaChar.hasMatch(bare))) return false;
+  // A command that needs an argument and has none (`$5 \text $`) cannot
+  // render: as currency it at least stays readable.
+  final probe = '\$$core\$';
+  return detectCommandMissingArgument(probe).isEmpty &&
+      detectFracMissingArgs(probe).isEmpty;
+}
+
 String _escapeCurrencyInLine(String line) {
   if (!line.contains(r'$')) return line;
   final out = StringBuffer();
@@ -120,7 +152,11 @@ String _escapeCurrencyInLine(String line) {
         // A `$` right after the closer is the NEXT span's opener
         // (`$1$$\gamma$`), not a display delimiter: only whitespace before
         // and a digit after invalidate a closer.
-        closerValid = !_isSpaceAt(line, j - 1) && !_isDigitAt(line, j + 1);
+        closerValid = !_isDigitAt(line, j + 1) &&
+            (!_isSpaceAt(line, j - 1) ||
+                // `Compute $2x + 3 $.`: the renderers pair a closer after a
+                // space, so a formula keeps its dollars.
+                isFormula(line.substring(i + 1, j)));
         break;
       }
       j++;

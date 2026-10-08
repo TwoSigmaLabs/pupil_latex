@@ -43,7 +43,41 @@ export interface TypesetOptions {
   /** Extra classes to leave alone (in addition to `katex` and `pt-esc-dollar`). */
   ignoredClasses?: string[];
   /** Where to find auto-render; defaults to `window.renderMathInElement`. */
-  katex?: { renderMathInElement: RenderMathInElement };
+  katex?: {
+    renderMathInElement: RenderMathInElement;
+    renderToString?: KatexRenderToString;
+  };
+  /**
+   * Passed to `fix` (mode `"fix"` only): `false` never wraps a bare
+   * `\ce{…}` / `\pu{…}` into maths. Default: `true` when KaTeX's mhchem
+   * extension is loaded (`hasMhchem()`), else `false`, so a page that
+   * loads KaTeX core only (Fillers) never shows a red `\ce` error.
+   */
+  chemistry?: boolean;
+}
+
+export type KatexRenderToString = (
+  tex: string,
+  options?: { throwOnError?: boolean },
+) => string;
+
+/**
+ * True when the KaTeX in use knows `\ce` (the mhchem extension is loaded).
+ * Looks at `katex.renderToString` (from the argument, else
+ * `window.katex`); `true` when no KaTeX is found, as nothing can be checked.
+ */
+export function hasMhchem(renderToString?: KatexRenderToString): boolean {
+  const fn =
+    renderToString ??
+    (globalThis as { katex?: { renderToString?: KatexRenderToString } }).katex
+      ?.renderToString;
+  if (typeof fn !== "function") return true;
+  try {
+    fn("\\ce{H2O}", { throwOnError: true });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** The four delimiter pairs every Pupiltree surface accepts, `$$` before `$`. */
@@ -254,7 +288,12 @@ export function typesetMath(
   const extraIgnored = options.ignoredClasses ?? [];
   const ignored = new Set<string>(["katex", ESC_DOLLAR_CLASS, ...extraIgnored]);
 
-  const prepare = (options.mode ?? "fix") === "fix" ? fix : normalize;
+  const chemistry =
+    options.chemistry ?? hasMhchem(options.katex?.renderToString);
+  const prepare =
+    (options.mode ?? "fix") === "fix"
+      ? (s: string): string => fix(s, { chemistry })
+      : normalize;
   prepareTextForMath(root, ignored, delimiters, prepare);
   try {
     renderMathInElement(root, {

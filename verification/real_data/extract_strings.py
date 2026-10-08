@@ -14,9 +14,13 @@ import re
 import sys
 from collections import Counter, OrderedDict
 
-ROOT = r"C:\Users\Ankit\Desktop\pupiltree"
 OUT = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(ROOT, "pupiltree-latex", "python"))
+REPO = os.path.abspath(os.path.join(OUT, "..", ".."))
+# The workspace that holds the sibling app checkouts and the local exports
+# (mongo-backups/, Backend/, pupiltree-agents/, ...): $PUPILTREE_WORKSPACE, or
+# the directory this repository is checked out in.
+ROOT = os.environ.get("PUPILTREE_WORKSPACE") or os.path.dirname(REPO)
+sys.path.insert(0, os.path.join(REPO, "python"))
 from pupiltree_latex.walk import is_non_content_key, is_url_or_path_string, is_not_rendered_key  # noqa: E402
 
 PII_KEY_RE = re.compile(r"(name|email|phone|mobile|teacher|student|school|login|password)", re.I)
@@ -33,7 +37,7 @@ SOURCES["Backend/tests"] = sorted(
 SOURCES["pupiltree-agents/tests"] = sorted(glob.glob(os.path.join(ROOT, "pupiltree-agents", "tests", "**", "*.json"), recursive=True))
 SOURCES["script_editor/test"] = sorted(glob.glob(os.path.join(ROOT, "script_editor", "test", "**", "*.json"), recursive=True))
 SOURCES["tutor-frontend/test"] = sorted(glob.glob(os.path.join(ROOT, "pupiltree.ai_tutor-frontend", "test", "**", "*.json"), recursive=True))
-SOURCES["corpus/harvested (inputs)"] = sorted(glob.glob(os.path.join(ROOT, "pupiltree-latex", "corpus", "harvested", "*.json")))
+SOURCES["corpus/harvested (inputs)"] = sorted(glob.glob(os.path.join(REPO, "corpus", "harvested", "*.json")))
 
 strings: "OrderedDict[str, dict]" = OrderedDict()
 raws: list[dict] = []

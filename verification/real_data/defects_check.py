@@ -9,7 +9,7 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, r"C:\Users\Ankit\Desktop\pupiltree\pupiltree-latex\python")
+sys.path.insert(0, os.path.join(HERE, "..", "..", "python"))
 from pupiltree_latex import audit_kinds, fix, to_plain  # noqa: E402
 
 S = {

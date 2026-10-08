@@ -23,30 +23,30 @@ Things it never guesses: a formula with a missing piece, such as `$\frac{1}{$`. 
 
 ## Install
 
-Pin a release tag. All three packages share one version number.
-
-The repository `TwoSigmaLabs/pupil_latex` is private. pip and Flutter download it through git, so they work anywhere git can already reach TwoSigmaLabs: your machine, or a CI job with a GitHub token.
+Pin a release tag. All three packages share one version number. The repository `TwoSigmaLabs/pupil_latex` is public, so no GitHub token is needed anywhere.
 
 **Python** (Backend, pupiltree-agents, Fillers, worksheet.ai backend):
 
 ```bash
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.1.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.2.0#subdirectory=python"
+```
+
+That line needs `git`. Slim Docker images do not have it, so for Docker builds install the wheel attached to the release instead (recommended). In `requirements.txt`:
+
+```text
+pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree_latex-1.2.0-py3-none-any.whl
 ```
 
 The `[ftfy]` extra gives the best repair of garbled characters. Without it the library uses its built-in table, which covers the common cases.
 
 **JavaScript and React** (worksheet.ai, pupil-assessment-ui):
 
-The repository is private, so npm cannot download from it directly. Download the release file with the GitHub CLI (`gh`), install it from that file, and commit it:
-
 ```bash
-gh release download v1.1.0 -R TwoSigmaLabs/pupil_latex -p "*.tgz" -D vendor
-npm install ./vendor/pupiltree-latex-1.1.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree-latex-1.2.0.tgz
 npm install katex        # needed for rendering; react too if you use <MathText>
-git add vendor/pupiltree-latex-1.1.0.tgz package.json package-lock.json
 ```
 
-Because the file is committed, `npm ci` on CI servers and in Docker builds works without GitHub access.
+`package.json` then lists `"@pupiltree/latex": "https://github.com/.../pupiltree-latex-1.2.0.tgz"`. No `vendor/` folder is needed.
 
 **Flutter** (script_editor, tutor frontend), in `pubspec.yaml`:
 
@@ -55,13 +55,21 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.1.0
+      ref: v1.2.0
       path: dart/pupiltree_latex_flutter
 ```
 
 Add only the Flutter package. It brings in the core `pupiltree_latex` package for you. Listing both with the same tag makes `flutter pub get` fail.
 
-**Plain HTML pages with no bundler** (Fillers): copy `js/dist/pupiltree-latex.iife.js` from the release next to your KaTeX files.
+**Plain HTML pages with no bundler** (Fillers): load the bundle from jsDelivr, pinned to the tag, after KaTeX:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.2.0/js/dist/pupiltree-latex.iife.js"></script>
+```
+
+To serve it yourself instead, download `pupiltree-latex.iife.js` from the v1.2.0 release and put it next to your KaTeX files.
+
+**Upgrading**: when a new version is released, every consumer that already pins the library gets a `chore: bump pupiltree-latex to vX.Y.Z` pull request. Read the CHANGELOG section it links, let CI run, and merge.
 
 ## Backend: one call before you save
 
@@ -127,6 +135,8 @@ import { MathText } from "@pupiltree/latex/react";
 
 `typesetMath` fixes every text node under the element, keeps dollar amounts as text, and renders the maths. Running it twice on the same element is safe.
 
+If the page does not load `mhchem.min.js`, `typesetMath` notices (`PupiltreeLatex.hasMhchem()`) and leaves a bare `\ce{…}` as text instead of turning it into a red error. Pass `{ chemistry: true }` or `{ chemistry: false }` to decide yourself; `fix(text, { chemistry: false })` does the same for one string.
+
 Supported browsers: Safari and iOS 14 or newer, Chrome and Edge 80 or newer, Firefox 78 or newer. On anything older the script logs one console error and does nothing, so check `window.PupiltreeLatex` before calling it.
 
 ## Flutter app: one widget
@@ -147,10 +157,13 @@ Use `to_plain` (Python), `toPlain` (JavaScript and Dart) when the target cannot 
 ```python
 from pupiltree_latex import to_plain
 
-to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "text")   # '(1)/(2) of H₂O'   canvases, grading, answer matching
-to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "pdf")    # '(1)/(2) of H₂O'   PDF export
+to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "text")   # '1/2 of H₂O'   canvases, reports
+to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "pdf")    # '1/2 of H₂O'   PDF export
 to_plain(r"$x^{2} + \frac{1}{2}$", "tts")                      # 'x squared + (1 over 2)'   text to speech
+to_plain(r"$\frac{1}{3}$", "compare") == to_plain("1/3", "compare")   # True   answer matching
 ```
+
+`compare` gives one form for comparing a typed answer with a stored one: `x^2` and `$x^2$` both become `x^2`, `H_2O`, `H₂O` and `$\text{H}_{2}\text{O}$` become `H_2O`, `−3` becomes `-3`, `$90^\circ$` becomes `90°`, and spaces around operators go. `text` and `pdf` keep braces in prose (`A = {1, 2, 3}`), keep lesson-script labels at a line start (`\instruction:`; `pdf` drops the backslash) and keep the minus sign `−` as written.
 
 ## Checking content: audit
 
@@ -179,7 +192,7 @@ A good backend pattern: `fix_deep` the model output, `audit_deep` the result, an
 | Find what is broken     | `audit(text)`           | `audit(text)`               | `audit(text)`             |
 | Render                  | none                    | `<MathText>`, `typesetMath` | `MathText` widget         |
 
-Every function gives the same output in all three languages for the same input. A shared set of about 3,800 test cases checks this in CI.
+Every function gives the same output in all three languages for the same input. A shared set of about 3,900 test cases checks this in CI.
 
 ## Rules of thumb
 

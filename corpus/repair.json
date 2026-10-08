@@ -1,6 +1,6 @@
 {
  "function": "repair",
- "version": "1.1.0",
+ "version": "1.2.0",
  "cases": [
   {
    "id": "curated-formfeed-frac",
@@ -239,6 +239,103 @@
    "tags": [
     "B7",
     "review-F11"
+   ]
+  },
+  {
+   "id": "curated-audit4-5-ansi-bold",
+   "input": "\u001b[1mRecall Prompt 1:\u001b[0m",
+   "expected": "Recall Prompt 1:",
+   "tags": [
+    "B1",
+    "audit4-5"
+   ]
+  },
+  {
+   "id": "curated-audit4-5-ansi-bold-read-path",
+   "input": "\u001b[1mRecall Prompt 1:\u001b[0m and $x$",
+   "expected": "Recall Prompt 1: and $x$",
+   "tags": [
+    "B1",
+    "audit4-5"
+   ],
+   "variant": "hard"
+  },
+  {
+   "id": "curated-audit4-5-ansi-colour-params",
+   "input": "\u001b[38;5;196mred\u001b[39m text \u001b[K",
+   "expected": "red text ",
+   "tags": [
+    "B1",
+    "audit4-5"
+   ]
+  },
+  {
+   "id": "curated-audit4-5-lone-escape-dropped",
+   "input": "a\u001bb [1m",
+   "expected": "ab [1m",
+   "tags": [
+    "B1",
+    "audit4-5"
+   ]
+  },
+  {
+   "id": "curated-audit4-12-read-path-keeps-tab-text",
+   "input": "\text{H}_2O",
+   "expected": "\text{H}_2O",
+   "tags": [
+    "B1",
+    "B7",
+    "audit4-12"
+   ],
+   "variant": "hard"
+  },
+  {
+   "id": "curated-audit4-12-opt-in-restores-tab-text",
+   "input": "\text{H}_2O and \times and \theta and \tan x",
+   "expected": "\\text{H}_2O and \\times and \\theta and \\tan x",
+   "tags": [
+    "B1",
+    "audit4-12"
+   ]
+  },
+  {
+   "id": "curated-audit4-12-read-path-restores-form-feed",
+   "input": "Area \frac{1}{2}",
+   "expected": "Area \\frac{1}{2}",
+   "tags": [
+    "B1",
+    "audit4-12"
+   ],
+   "variant": "hard"
+  },
+  {
+   "id": "curated-audit4-12-opt-in-restores-lf-rightarrow-in-math",
+   "input": "$x \nightarrow y$",
+   "expected": "$x \\rightarrow y$",
+   "tags": [
+    "B1",
+    "audit4-12"
+   ]
+  },
+  {
+   "id": "curated-audit4-12-read-path-keeps-lf",
+   "input": "$x \nightarrow y$",
+   "expected": "$x \nightarrow y$",
+   "tags": [
+    "B1",
+    "B7",
+    "audit4-12"
+   ],
+   "variant": "hard"
+  },
+  {
+   "id": "curated-audit4-12-opt-in-keeps-ambiguous-newline",
+   "input": "line one\nu = 5",
+   "expected": "line one\nu = 5",
+   "tags": [
+    "B1",
+    "B7",
+    "audit4-12"
    ]
   },
   {

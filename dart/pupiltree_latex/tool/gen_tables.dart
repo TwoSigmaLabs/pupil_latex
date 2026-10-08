@@ -41,6 +41,7 @@ const _names = <String, String>{
   'single_letter_units': 'kSingleLetterUnits',
   'greek_math_letters': 'kGreekMathLetters',
   'greek_unit_symbols': 'kGreekUnitSymbols',
+  'declaration_commands': 'kDeclarationCommands',
 };
 
 /// Tables whose JSON form is a list but whose Dart form is a `Set` (membership

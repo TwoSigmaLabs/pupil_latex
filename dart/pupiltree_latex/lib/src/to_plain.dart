@@ -39,10 +39,148 @@ String _translate(String s, Map<String, String> table) {
 // `\{`, `\}` and `\$` are literal characters, not grouping or maths
 // delimiters. They are parked as sentinels for the duration of the
 // transform so neither the delimiter passes nor the brace scanner can
-// consume them, then restored.
-const _lbraceSentinel = '\x00LB\x00';
-const _rbraceSentinel = '\x00RB\x00';
-const _dollarSentinel = '\x00DL\x00';
+// consume them, then restored. Single private-use characters (U+E010 to
+// U+E014): one code unit, so an argument reader can never take half of one.
+const _lbraceSentinel = '\uE010';
+const _rbraceSentinel = '\uE011';
+const _dollarSentinel = '\uE012';
+const _labelSentinelOpen = '\uE013';
+const _labelSentinelClose = '\uE014';
+
+// A lesson-script label at the start of a line (`\instruction:`): parked
+// before the command scanner, which read `\instruction` as `\in` +
+// "struction". `text` keeps it verbatim; `pdf` and `compare` drop the
+// backslash.
+final _scriptLabelLine = RegExp(r'(^|\n)([ \t]*)\\([a-z][a-z_]*):');
+
+// Math spans for the prose-brace pass, display first.
+final _plainSpan = RegExp(r'\$\$[\s\S]+?\$\$|\$[^$]+\$');
+final _simpleFractionPart = RegExp(
+  r'^(?:[0-9]+(?:\.[0-9]+)?|[\p{L}\p{Nl}\p{No}])$',
+  unicode: true,
+);
+
+/// Index of the `}` closing the `{` at [k], or -1. Positions marked in
+/// [skip] (math spans) are not counted.
+int _matchingBrace(String s, int k, [List<bool>? skip]) {
+  var depth = 0;
+  for (var j = k; j < s.length; j++) {
+    if (skip != null && skip[j]) continue;
+    if (s[j] == '{') {
+      depth++;
+    } else if (s[j] == '}') {
+      depth--;
+      if (depth == 0) return j;
+    }
+  }
+  return -1;
+}
+
+bool _isAsciiLetterUnit(int c) =>
+    (c >= 0x61 && c <= 0x7A) || (c >= 0x41 && c <= 0x5A);
+
+/// The name of the `\name` whose last letter is `s[end - 1]`, or null.
+String? _commandNameEndingAt(String s, int end) {
+  var j = end;
+  while (j > 0 && _isAsciiLetterUnit(s.codeUnitAt(j - 1))) {
+    j--;
+  }
+  if (j < end && j > 0 && s[j - 1] == r'\') return s.substring(j, end);
+  return null;
+}
+
+/// True when the `{` at [k] is a command or script argument.
+bool _attachedBrace(String s, int k, Set<int> closes) {
+  if (k == 0) return false;
+  final prev = s[k - 1];
+  if (prev == '^' || prev == '_' || closes.contains(k - 1)) return true;
+  if (prev == ']') {
+    if (k < 2) return false;
+    final opener = s.lastIndexOf('[', k - 2);
+    return opener > 0 && _commandNameEndingAt(s, opener) != null;
+  }
+  if (prev == ' ' || prev == '\t') {
+    var j = k - 1;
+    while (j > 0 && (s[j - 1] == ' ' || s[j - 1] == '\t')) {
+      j--;
+    }
+    return _argumentTakingCmds.contains(_commandNameEndingAt(s, j));
+  }
+  return _commandNameEndingAt(s, k) != null;
+}
+
+// A prose brace pair is a literal set / JSON object when its content holds
+// one of these (a list or key separator).
+const _literalBraceHints = ',:;|';
+
+/// Braces in prose (outside `$…$`/`$$…$$`, not a command or script
+/// argument) whose content is a list or object are text: parked as the
+/// `\{`/`\}` sentinels. `1{,}000` and `{x}` stay grouping; an unclosed `{`
+/// is kept.
+String _protectProseBraces(String s) {
+  if (!s.contains('{')) return s;
+  final n = s.length;
+  final inMath = List<bool>.filled(n, false);
+  for (final m in _plainSpan.allMatches(s)) {
+    for (var j = m.start; j < m.end; j++) {
+      inMath[j] = true;
+    }
+  }
+  final chars = s.split('');
+  final closes = <int>{};
+  var k = 0;
+  while (k < n) {
+    if (inMath[k] || s[k] != '{') {
+      k++;
+      continue;
+    }
+    final close = _matchingBrace(s, k, inMath);
+    if (_attachedBrace(s, k, closes)) {
+      if (close == -1) break;
+      closes.add(close);
+      k = close + 1;
+      continue;
+    }
+    if (close == -1) {
+      chars[k] = _lbraceSentinel;
+      k++;
+      continue;
+    }
+    final inner = s.substring(k + 1, close);
+    if (cpLength(inner) <= 1 ||
+        !inner.split('').any(_literalBraceHints.contains)) {
+      k = close + 1; // `{,}`, `{x}`: grouping
+      continue;
+    }
+    chars[k] = _lbraceSentinel;
+    chars[close] = _rbraceSentinel;
+    k++;
+  }
+  return chars.join();
+}
+
+/// A numerator or denominator: a single token (a number or one letter)
+/// or one parenthesised group stays bare; anything compound gets
+/// parentheses.
+String _fractionPart(String part) {
+  final core = pyStrip(part);
+  if (_simpleFractionPart.hasMatch(core) || _isWrapped(core)) return core;
+  return '($part)';
+}
+
+/// The last code point of [s], or ''.
+String _lastCodePoint(String s) {
+  if (s.isEmpty) return '';
+  final r = s.runes.last;
+  return String.fromCharCode(r);
+}
+
+/// A fraction touching a term is parenthesised (`2(1/2)`, `(1/2)x`).
+bool _fractionNeedsParens(String prev, String s, int i) {
+  final nxt = i < s.length ? codePointAt(s, i) : '';
+  return (prev.isNotEmpty && (isAlnum(prev) || prev == '/')) ||
+      (nxt.isNotEmpty && (isAlnum(nxt) || '(\\^_{'.contains(nxt)));
+}
 
 final _imageMarker = RegExp(r'\{\{IMAGE:[^}]+\}\}');
 final _displayDollar = RegExp(r'\$\$(.+?)\$\$', dotAll: true);
@@ -138,6 +276,20 @@ const _dropCmds = {
   'displaystyle',
   'scriptscriptstyle',
 };
+// Commands whose `{…}` argument may follow after spaces (prose-brace pass).
+final _argumentTakingCmds = <String?>{
+  ..._fracCmds,
+  ..._binomCmds,
+  ..._wrapperCmds,
+  ..._colorCmds,
+  ..._dropWithArgCmds,
+  ..._accentCmds.keys,
+  ..._plainAccentCmds,
+  'sqrt',
+  'begin',
+  'end',
+};
+
 const _matrixEnvs = <String, (String, String)>{
   'matrix': ('[', ']'),
   'pmatrix': ('[', ']'),
@@ -312,7 +464,9 @@ String _environment(String name, String content, bool markAccents) {
     final (den, j2) = _readArg(s, j1);
     final a = _convert(num ?? '', markAccents);
     final b = _convert(den ?? '', markAccents);
-    if (_fracCmds.contains(name)) return ('($a)/($b)', j2);
+    if (_fracCmds.contains(name)) {
+      return ('${_fractionPart(a)}/${_fractionPart(b)}', j2);
+    }
     return ('C($a, $b)', j2);
   }
   if (name == 'sqrt') {
@@ -441,7 +595,7 @@ String _convert(String s, bool markAccents) {
 }
 
 String _convertInner(String s, bool markAccents) {
-  final out = StringBuffer();
+  final out = _TrackedBuffer();
   var i = 0;
   final n = s.length;
   while (i < n) {
@@ -449,7 +603,11 @@ String _convertInner(String s, bool markAccents) {
     if (c == r'\') {
       final m = _cmd.matchAsPrefix(s, i);
       if (m != null) {
-        final (piece, next) = _command(m[1]!, s, m.end, markAccents);
+        var (piece, next) = _command(m[1]!, s, m.end, markAccents);
+        if (_fracCmds.contains(m[1]!) &&
+            _fractionNeedsParens(out.lastChar, s, next)) {
+          piece = '($piece)';
+        }
         out.write(piece);
         i = next;
         continue;
@@ -509,13 +667,37 @@ String _convertInner(String s, bool markAccents) {
   return out.toString();
 }
 
+/// A [StringBuffer] that remembers the last code point written (the
+/// fraction rule looks at the character before a `\frac`).
+class _TrackedBuffer {
+  final _buf = StringBuffer();
+  String lastChar = '';
+
+  void write(String piece) {
+    if (piece.isEmpty) return;
+    _buf.write(piece);
+    lastChar = _lastCodePoint(piece);
+  }
+
+  @override
+  String toString() => _buf.toString();
+}
+
 final _multiSpace = RegExp(r'[ \t]{2,}');
 
 /// Convert a LaTeX-math-laced string into plain text/Unicode (Backend
 /// `latex_to_plain`). With [markAccents] a one-symbol accent argument gets
 /// the combining mark (F⃗) and a longer one is named (vec(AB)).
-String latexToPlain(String text, {bool markAccents = false}) {
-  if (!text.contains(r'$') && !text.contains(r'\') && !text.contains('{')) {
+String latexToPlain(
+  String text, {
+  bool markAccents = false,
+  bool keepLabelBackslash = true,
+  bool force = false,
+}) {
+  if (!force &&
+      !text.contains(r'$') &&
+      !text.contains(r'\') &&
+      !text.contains('{')) {
     return text;
   }
 
@@ -540,6 +722,19 @@ String latexToPlain(String text, {bool markAccents = false}) {
       .replaceAll(r'\$', _dollarSentinel)
       .replaceAll(r'\{', _lbraceSentinel)
       .replaceAll(r'\}', _rbraceSentinel);
+
+  // Lesson-script labels at a line start are not commands.
+  final labels = <String>[];
+  if (out.contains(r'\') && out.contains(':')) {
+    out = out.replaceAllMapped(_scriptLabelLine, (m) {
+      labels.add(m[3]!);
+      return '${m[1]}${m[2]}$_labelSentinelOpen${labels.length - 1}'
+          '$_labelSentinelClose:';
+    });
+  }
+
+  // Braces in prose are text (`A = {1, 2, 3}`), not grouping.
+  out = _protectProseBraces(out);
 
   // Pull maths out of `$$...$$` / `$...$` so the scanner below operates on
   // the inner content too. `\(...\)` / `\[...\]` are dropped by the scanner.
@@ -575,6 +770,13 @@ String latexToPlain(String text, {bool markAccents = false}) {
       .replaceAll(_lbraceSentinel, '{')
       .replaceAll(_rbraceSentinel, '}')
       .replaceAll(_dollarSentinel, r'$');
+
+  for (var idx = 0; idx < labels.length; idx++) {
+    out = out.replaceAll(
+      '$_labelSentinelOpen$idx$_labelSentinelClose',
+      (keepLabelBackslash ? r'\' : '') + labels[idx],
+    );
+  }
 
   for (var idx = 0; idx < imageStash.length; idx++) {
     out = out.replaceAll('\x00IMG$idx\x00', imageStash[idx]);
@@ -1020,18 +1222,72 @@ String _toSpoken(String text) {
 }
 
 /// The accepted [toPlain] styles.
-const List<String> styles = ['text', 'pdf', 'tts'];
+const List<String> styles = ['text', 'pdf', 'tts', 'compare'];
+
+final _superscriptToAscii = {
+  for (var i = 0; i < _superscriptChars.length; i++)
+    _superscriptForms[i]: _superscriptChars[i],
+};
+final _subscriptToAscii = {
+  for (var i = 0; i < _subscriptChars.length; i++)
+    _subscriptForms[i]: _subscriptChars[i],
+};
+final _superscriptRun = RegExp('[${_superscriptToAscii.keys.join()}]+');
+final _subscriptRun = RegExp('[${_subscriptToAscii.keys.join()}]+');
+const _compareFold = {
+  '\u2212': '-', // minus sign
+  '\u2010': '-', // hyphen
+  '\u2012': '-', // figure dash
+  '\u00D7': '*', // ×
+  '\u00B7': '*', // ·
+  '\u22C5': '*', // ⋅
+  '\u2217': '*', // ∗
+  '\u00F7': '/', // ÷
+};
+final _compareSpace = RegExp(r'\s+');
+final _compareOperatorSpace = RegExp(r' ?([+\-*/=<>^_(),{}\[\]]) ?');
+
+/// One ASCII-leaning form for answer comparison.
+String _foldForCompare(String text) {
+  final b = StringBuffer();
+  for (var i = 0; i < text.length; i++) {
+    b.write(_compareFold[text[i]] ?? text[i]);
+  }
+  text = b.toString();
+  text = text.replaceAllMapped(
+    _superscriptRun,
+    (m) => '^${m[0]!.split('').map((c) => _superscriptToAscii[c]).join()}',
+  );
+  text = text.replaceAllMapped(
+    _subscriptRun,
+    (m) => '_${m[0]!.split('').map((c) => _subscriptToAscii[c]).join()}',
+  );
+  text = text.replaceAll(_compareSpace, ' ').trim();
+  return text.replaceAllMapped(_compareOperatorSpace, (m) => m[1]!);
+}
 
 /// LaTeX → plain text.
 ///
 /// `style: 'text'`: accents dropped (grading, canvas, in-class report).
 /// `style: 'pdf'`: accents marked (`\vec{F}` → `F⃗`, `\vec{AB}` → `vec(AB)`).
 /// `style: 'tts'`: spoken English for a text-to-speech voice.
+/// `style: 'compare'`: one form for answer comparison, so a typed answer
+/// equals the same value in LaTeX (`1/3` = `$\frac{1}{3}$`, `x^2` =
+/// `$x^2$`, `−3` = `-3`).
 /// Throws an [ArgumentError] for any other style.
 String toPlain(String text, {String style = 'text'}) {
   if (!styles.contains(style)) {
     throw ArgumentError.value(style, 'style', 'expected one of $styles');
   }
   if (style == 'tts') return _toSpoken(text);
-  return latexToPlain(text, markAccents: style == 'pdf');
+  if (style == 'compare') {
+    return _foldForCompare(
+      latexToPlain(text, keepLabelBackslash: false, force: true),
+    );
+  }
+  return latexToPlain(
+    text,
+    markAccents: style == 'pdf',
+    keepLabelBackslash: style == 'text',
+  );
 }

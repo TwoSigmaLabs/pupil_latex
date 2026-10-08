@@ -21,6 +21,7 @@ from .audit import (
 )
 from .canonicalize import canonicalize, canonicalize_deep
 from .fix import (
+    DECLARATION_COMMANDS,
     SINGLE_LETTER_UNITS,
     UNIT_BASES,
     escape_text_specials,
@@ -69,7 +70,7 @@ from .unicode_math import (
 )
 from .walk import NON_CONTENT_KEY_SUFFIXES, NON_CONTENT_KEYS
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 __version__ = VERSION
 
 __all__ = [
@@ -135,4 +136,5 @@ __all__ = [
     "SINGLE_LETTER_UNITS",
     "GREEK_MATH_LETTERS",
     "GREEK_UNIT_SYMBOLS",
+    "DECLARATION_COMMANDS",
 ]

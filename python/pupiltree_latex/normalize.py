@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .audit import _detect_command_missing_argument, _detect_frac_missing_args
 from .commands import PROSE_ESCAPE_COMMANDS
 from .mojibake import fix_mojibake_table
 from .repair import repair
@@ -81,6 +82,38 @@ def _is_escaped(s: str, i: int) -> bool:
     return i > 0 and s[i - 1] == "\\"
 
 
+_FORMULA_CHARS_RE = re.compile(r"[0-9A-Za-z+\-*/=<>().,^_ \t]+")
+_FORMULA_OPERATOR_RE = re.compile(r"[+\-*/=<>^_]")
+_FORMULA_COMMAND_RE = re.compile(r"\\[A-Za-z]+")
+_TWO_LETTERS_RE = re.compile(r"[A-Za-z]{2,}")
+
+
+def is_formula(content: str) -> bool:
+    """True when the content of `$<digit>… $` (space before the closer) is
+    clearly a formula, not prose between two amounts: after removing command
+    names it is only digits, letters, operators, brackets and spaces, has an
+    operator and a letter or command, and no two letters in a row (no word).
+    `2x + 3`, `3x^2 - 1`, `5\\times 2 = 10` are formulas; `5 and x`, `10, `
+    are not."""
+    core = content.rstrip(" \t")
+    if not core:
+        return False
+    has_command = bool(_FORMULA_COMMAND_RE.search(core))
+    bare = _FORMULA_COMMAND_RE.sub(" ", core)
+    if not _FORMULA_CHARS_RE.fullmatch(bare) or _TWO_LETTERS_RE.search(bare):
+        return False
+    if not _FORMULA_OPERATOR_RE.search(bare) and not has_command:
+        return False
+    if not (has_command or any(c.isalpha() for c in bare)):
+        return False
+    # A command that needs an argument and has none (`$5 \text $`) cannot
+    # render: as currency it at least stays readable.
+    probe = "$" + core + "$"
+    return not (
+        _detect_command_missing_argument(probe) or _detect_frac_missing_args(probe)
+    )
+
+
 def _escape_currency_in_line(line: str) -> str:
     if "$" not in line:
         return line
@@ -122,7 +155,15 @@ def _escape_currency_in_line(line: str) -> str:
                 # A `$` right after the closer is the NEXT span's opener
                 # (`$1$$\gamma$`), not a display delimiter: only whitespace
                 # before and a digit after invalidate a closer.
-                closer_valid = not _is_space(line, j - 1) and not _is_digit(line, j + 1)
+                closer_valid = (
+                    not _is_digit(line, j + 1)
+                    and (
+                        not _is_space(line, j - 1)
+                        # `Compute $2x + 3 $.`: the renderers pair a closer after
+                        # a space, so a formula keeps its dollars.
+                        or is_formula(line[i + 1 : j])
+                    )
+                )
                 break
             j += 1
         if closer_valid:

@@ -58,6 +58,19 @@
    "python_got": "1/λ = R(1/n₁² - 1/n₂²)"
   },
   {
+   "id": "backend-latex-to-plain-r2-0001",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "$\\frac{\\sqrt{3}}{2}$",
+   "expected": "(√3)/(2)",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "python_got": "(√3)/2"
+  },
+  {
    "id": "backend-latex-to-plain-r2-0005",
    "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
    "via": "latex_to_plain",
@@ -69,6 +82,111 @@
     "backend#1599"
    ],
    "python_got": "$50"
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0006",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "$\\frac{a}{\\frac{b}{\\frac{c}{\\frac{d}{e}}}}$",
+   "expected": "(a)/((b)/((c)/((d)/(e))))",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "python_got": "a/(b/(c/(d/e)))"
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0014",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "$\\lim_{x\\to 0}\\frac{\\sin x}{x}$",
+   "expected": "lim_(x→0)(sin x)/(x)",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "python_got": "lim_(x→0)(sin x)/x"
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0021",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "$\\frac{\\sqrt{2m(\\frac{hc}{\\lambda}-\\phi)}}{eB}$",
+   "expected": "(√(2m((hc)/(λ)-φ)))/(eB)",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "python_got": "(√(2m((hc)/λ-φ)))/(eB)"
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0026",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "$\\dfrac{1}{2}$",
+   "expected": "(1)/(2)",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "python_got": "1/2"
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0027",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "$\\frac12$",
+   "expected": "(1)/(2)",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "python_got": "1/2"
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0040",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_marked_accents_keep_their_meaning",
+   "via": "latex_to_plain",
+   "input": "$\\frac{\\sqrt{3}}{2}$",
+   "expected": "(√3)/(2)",
+   "style": "pdf",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ],
+   "note": "mark_accents=True",
+   "python_got": "(√3)/2"
+  },
+  {
+   "id": "backend-latex-to-plain-no-residue-0003",
+   "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+   "via": "plain_text (report_pdf) == clean_text(...).strip()",
+   "input": "$\\frac{1}{2}$",
+   "expected": "(1)/(2)",
+   "style": "text",
+   "tags": [
+    "B8"
+   ],
+   "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+   "python_got": "1/2"
+  },
+  {
+   "id": "backend-latex-to-plain-no-residue-0004",
+   "source": "Backend/tests/unit/test_latex_to_plain_no_residue.py::test_exact_plain_text",
+   "via": "plain_text (report_pdf) == clean_text(...).strip()",
+   "input": "$\\dfrac{3}{4}$",
+   "expected": "(3)/(4)",
+   "style": "text",
+   "tags": [
+    "B8"
+   ],
+   "note": "also asserted: no regex \\\\[A-Za-z]+ match; no '$' (except a literal 'costs $5'); no empty/doubled brace pair; no leaked command name (boxed|fbox|cancel|color|textcolor|hspace|vspace|phantom|label|displaystyle|frac|dfrac|sqrt|text|mathbf|lbrace|rbrace|langle|rangle|left|right|begin|end|circ|times|div)",
+   "python_got": "3/4"
   },
   {
    "id": "backend-latex-to-plain-no-residue-0022",

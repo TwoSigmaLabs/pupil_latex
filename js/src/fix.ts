@@ -18,6 +18,7 @@
  */
 
 import { canonicalize, mapContentStrings } from "./canonicalize.js";
+import type { CanonicalizeOptions } from "./canonicalize.js";
 import { isAsciiDigit, matchAt } from "./chars.js";
 import { padSpan, wrapUnicodeChemistry } from "./chemistry.js";
 import { SYMBOL_COMMANDS } from "./commands.js";
@@ -30,7 +31,11 @@ import {
 import { normalize } from "./normalize.js";
 import { segment } from "./segment.js";
 import { delimiterWidth } from "./spans.js";
-import { SINGLE_LETTER_UNITS, UNIT_BASES } from "./tables.g.js";
+import {
+  DECLARATION_COMMANDS,
+  SINGLE_LETTER_UNITS,
+  UNIT_BASES,
+} from "./tables.g.js";
 import {
   clusterLeft,
   clusterRight,
@@ -316,6 +321,10 @@ export function escapeTextSpecials(text: unknown): unknown {
 
 const ONLY_BLANKS_RE = /^[ \t]*$/;
 const ENV_RE = /\\(begin|end)\{/g;
+// Declaration-style switches: they change the scope of a merged span.
+const DECLARATION_RE = new RegExp(
+  "\\\\(?:" + DECLARATION_COMMANDS.join("|") + ")(?![A-Za-z])",
+);
 
 /**
  * A span is merged only when it is self-contained: balanced braces and
@@ -333,6 +342,10 @@ function mergeable(value: string): boolean {
     }
   }
   if (depth !== 0) return false;
+  // A declaration-style switch (`\bf`, `\color{red}`, `\Large`) acts on
+  // everything after it in its span: merged, `$\flat$ $\bf x$` would set
+  // the neighbours in bold too.
+  if (value.includes("\\") && DECLARATION_RE.test(value)) return false;
   let begins = 0;
   let ends = 0;
   for (const m of value.matchAll(ENV_RE)) {
@@ -410,10 +423,10 @@ export function mergeAdjacentMath(text: unknown): unknown {
  * Repair, normalise, canonicalise, wrap what is still bare, escape what
  * would cut a formula short and merge adjacent spans, in one call.
  */
-export function fix<T>(text: T): T;
-export function fix(text: unknown): unknown {
+export function fix<T>(text: T, options?: CanonicalizeOptions): T;
+export function fix(text: unknown, options: CanonicalizeOptions = {}): unknown {
   if (typeof text !== "string" || !text) return text;
-  let out: string = canonicalize(normalize(text));
+  let out: string = canonicalize(normalize(text), options);
   out = wrapBareSymbolCommands(out);
   out = wrapUnicodeChemistry(out);
   out = wrapUnicodeScripts(out);
@@ -426,6 +439,8 @@ export function fix(text: unknown): unknown {
  * non-content keys and URL-shaped values (CONTRACT §5). Unlike
  * `canonicalizeDeep`, a `Date` passes through unchanged (as in Python).
  */
-export function fixDeep<T>(obj: T): T {
-  return mapContentStrings(obj, fix, { convertDates: false });
+export function fixDeep<T>(obj: T, options: CanonicalizeOptions = {}): T {
+  return mapContentStrings(obj, (s: string) => fix(s, options), {
+    convertDates: false,
+  });
 }

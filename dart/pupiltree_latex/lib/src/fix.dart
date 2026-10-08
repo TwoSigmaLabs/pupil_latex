@@ -369,6 +369,11 @@ String escapeTextSpecials(String text) {
 
 final _onlyBlanks = RegExp(r'^[ \t]*$');
 final _env = RegExp(r'\\(begin|end)\{');
+// Declaration-style switches (`\bf`, `\color{red}`, `\Large`): they act on
+// everything after them in their span, so merging changes their scope.
+final _declaration = RegExp(
+  '\\\\(?:${kDeclarationCommands.join('|')})(?![A-Za-z])',
+);
 
 /// A span is merged only when it is self-contained: balanced braces and
 /// matched `\begin`/`\end`. Merging a broken span would break its
@@ -384,6 +389,7 @@ bool _mergeable(String value) {
     }
   }
   if (depth != 0) return false;
+  if (value.contains(r'\') && _declaration.hasMatch(value)) return false;
   final envs = _env.allMatches(value).map((m) => m[1]).toList();
   return envs.where((e) => e == 'begin').length ==
       envs.where((e) => e == 'end').length;
@@ -451,9 +457,12 @@ String mergeAdjacentMath(String text) {
 /// Repair, normalise, canonicalise, wrap what is still bare, escape what
 /// would cut a formula short and merge adjacent spans, in one call.
 /// Idempotent; the empty string passes through.
-String fix(String text) {
+///
+/// `chemistry: false` is for renderers without KaTeX's mhchem extension: a
+/// bare `\ce{…}` / `\pu{…}` is never put into a new math span.
+String fix(String text, {bool chemistry = true}) {
   if (text.isEmpty) return text;
-  text = canonicalize(normalize(text));
+  text = canonicalize(normalize(text), chemistry: chemistry);
   text = wrapBareSymbolCommands(text);
   text = wrapUnicodeChemistry(text);
   text = wrapUnicodeScripts(text);
@@ -464,19 +473,21 @@ String fix(String text) {
 /// [fix] over every content string of a JSON-like document, skipping
 /// non-content keys and URL-shaped values (CONTRACT §5); list items inherit
 /// the parent key.
-Object? fixDeep(Object? obj, {String keyHint = ''}) {
+Object? fixDeep(Object? obj, {String keyHint = '', bool chemistry = true}) {
   if (obj is String) {
     if (isNonContentKey(keyHint) || isUrlOrPathString(obj)) return obj;
-    return fix(obj);
+    return fix(obj, chemistry: chemistry);
   }
   if (obj is Map) {
     return mapValuesWithKey(
       obj,
-      (k, v) => fixDeep(v, keyHint: k is String ? k : ''),
+      (k, v) => fixDeep(v, keyHint: k is String ? k : '', chemistry: chemistry),
     );
   }
   if (obj is List) {
-    return <Object?>[for (final v in obj) fixDeep(v, keyHint: keyHint)];
+    return <Object?>[
+      for (final v in obj) fixDeep(v, keyHint: keyHint, chemistry: chemistry),
+    ];
   }
   return obj;
 }

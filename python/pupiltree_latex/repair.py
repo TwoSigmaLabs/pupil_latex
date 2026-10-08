@@ -33,6 +33,10 @@ _ALPHA_RUN_RE = re.compile(r"[A-Za-z]+")
 # Every C0 control except TAB, LF, CR — plus DEL.
 _OTHER_CONTROL_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 _ANY_CONTROL_RE = re.compile(r"[\x00-\x1f\x7f]")
+# A whole ANSI CSI sequence (terminal colour/bold codes copied from a log):
+# ESC `[`, parameter bytes, intermediate bytes, one final byte. Removing only
+# the ESC left `[1mRecall Prompt 1:[0m` behind.
+_ANSI_CSI_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 
 
 def repair(text: Any, guess_whitespace: bool = True) -> Any:
@@ -43,6 +47,7 @@ def repair(text: Any, guess_whitespace: bool = True) -> Any:
     - TAB / LF / CR → ``\\t`` / ``\\n`` / ``\\r`` only when ``guess_whitespace``
       and the following letters spell a command in
       `LATEX_COMMANDS_BEHIND_JSON_ESCAPES`; otherwise they are kept.
+    - An ANSI CSI sequence (``ESC [ … m``) is removed whole.
     - Any other C0 control and DEL is removed.
 
     ``guess_whitespace=False`` is the read-path form (Backend #1595): stored
@@ -53,18 +58,24 @@ def repair(text: Any, guess_whitespace: bool = True) -> Any:
         return text
     if not _ANY_CONTROL_RE.search(text):
         return text
+    if "\x1b[" in text:
+        text = _ANSI_CSI_RE.sub("", text)
     out: list[str] = []
     n = len(text)
     dollars: list[int] | None = None  # positions of unescaped `$`, on demand
 
     def _in_closed_span(pos: int) -> bool:
         """An odd number of unescaped `$` before ``pos`` and one after it:
-        the corrupted span `$x <LF>ightarrow y$` still counts (the newline
-        is the very damage), an unterminated `$
-o` does not."""
+                the corrupted span `$x <LF>ightarrow y$` still counts (the newline
+                is the very damage), an unterminated `$
+        o` does not."""
         nonlocal dollars
         if dollars is None:
-            dollars = [k for k, c in enumerate(text) if c == "$" and (k == 0 or text[k - 1] != "\\")]
+            dollars = [
+                k
+                for k, c in enumerate(text)
+                if c == "$" and (k == 0 or text[k - 1] != "\\")
+            ]
         before = sum(1 for k in dollars if k < pos)
         return before % 2 == 1 and any(k > pos for k in dollars)
 

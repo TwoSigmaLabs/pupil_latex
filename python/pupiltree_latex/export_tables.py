@@ -34,7 +34,7 @@ from .commands import (
     SCRIPT_LABELS,
     UNSUPPORTED_COMMANDS,
 )
-from .fix import SINGLE_LETTER_UNITS, SYMBOL_COMMANDS, UNIT_BASES
+from .fix import DECLARATION_COMMANDS, SINGLE_LETTER_UNITS, SYMBOL_COMMANDS, UNIT_BASES
 from .mojibake import HTML_ENTITIES
 from .unicode_math import (
     GREEK_MATH_LETTERS,
@@ -73,6 +73,7 @@ TABLES = {
     "single_letter_units": "".join(sorted(SINGLE_LETTER_UNITS)),
     "greek_math_letters": "".join(sorted(GREEK_MATH_LETTERS)),
     "greek_unit_symbols": list(GREEK_UNIT_SYMBOLS),
+    "declaration_commands": list(DECLARATION_COMMANDS),
 }
 
 

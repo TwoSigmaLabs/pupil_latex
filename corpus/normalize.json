@@ -1,6 +1,6 @@
 {
  "function": "normalize",
- "version": "1.1.0",
+ "version": "1.2.0",
  "cases": [
   {
    "id": "curated-paren-inline",
@@ -408,6 +408,52 @@
     "audit2-double-greek"
    ],
    "note": "UTF-8 ππ read as cp1252; the harvested script_editor case expecting one π is in review"
+  },
+  {
+   "id": "curated-audit4-6-prices-list",
+   "input": "Prices: $10, $20",
+   "expected": "Prices: \\$10, \\$20",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-two-amounts",
+   "input": "$5 and $10",
+   "expected": "\\$5 and \\$10",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-command-without-argument-stays-currency",
+   "input": "Unit: $5 \\text $ m",
+   "expected": "Unit: \\$5 \\text $ m",
+   "tags": [
+    "B3",
+    "B7",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-prose-before-padded-dollar",
+   "input": "costs $5 and x $ more",
+   "expected": "costs \\$5 and x $ more",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-closer-before-digit-is-currency",
+   "input": "pay $2x + 3 $4 now",
+   "expected": "pay \\$2x + 3 \\$4 now",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
   },
   {
    "id": "script-editor-latex-preprocess-0001",

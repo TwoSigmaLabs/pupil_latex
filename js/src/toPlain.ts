@@ -6,6 +6,7 @@
  */
 
 import {
+  charAt,
   codePointLength,
   escapeRegExp,
   isAlnum,
@@ -43,9 +44,118 @@ function translate(s: string, table: ReadonlyMap<string, string>): string {
 // `\{`, `\}` and `\$` are literal characters, not grouping or maths
 // delimiters. They are parked as sentinels for the duration of the
 // transform and restored at the end.
-const LBRACE_SENTINEL = "\x00LB\x00";
-const RBRACE_SENTINEL = "\x00RB\x00";
-const DOLLAR_SENTINEL = "\x00DL\x00";
+// Single private-use characters (U+E010–U+E014): one code unit, so an
+// argument reader can never take half of one (`$\binom$"}`).
+const LBRACE_SENTINEL = "";
+const RBRACE_SENTINEL = "";
+const DOLLAR_SENTINEL = "";
+const LABEL_SENTINEL_OPEN = "";
+const LABEL_SENTINEL_CLOSE = "";
+
+// A lesson-script label at the start of a line (`\instruction:`): parked
+// before the command scanner, which read `\instruction` as `\in` +
+// "struction". `text` keeps it verbatim; `pdf` and `compare` drop the
+// backslash, as `tts` always did.
+const SCRIPT_LABEL_LINE_RE = /(^|\n)([ \t]*)\\([a-z][a-z_]*):/g;
+
+// Math spans for the prose-brace pass, display first.
+const PLAIN_SPAN_RE = /\$\$[\s\S]+?\$\$|\$[^$]+\$/g;
+
+/** Index of the `}` closing the `{` at `k`, or -1 (math positions skipped). */
+function matchingBrace(s: string, k: number, skip: Uint8Array): number {
+  let depth = 0;
+  for (let j = k; j < s.length; j++) {
+    if (skip[j]) continue;
+    if (s[j] === "{") depth++;
+    else if (s[j] === "}") {
+      depth--;
+      if (depth === 0) return j;
+    }
+  }
+  return -1;
+}
+
+/** The name of the `\name` whose last letter is `s[end - 1]`, or null. */
+function commandNameEndingAt(s: string, end: number): string | null {
+  let j = end;
+  while (j > 0 && /[A-Za-z]/.test(s[j - 1])) j--;
+  if (j < end && j > 0 && s[j - 1] === "\\") return s.slice(j, end);
+  return null;
+}
+
+/**
+ * True when the `{` at `k` is a command or script argument: right after
+ * `^`/`_`, a `\name`, the `]` of an optional argument that follows a
+ * `\name`, or the `}` of another argument; or after spaces when the command
+ * takes arguments (`\frac {a}{b}`).
+ */
+function attachedBrace(s: string, k: number, closes: Set<number>): boolean {
+  if (k === 0) return false;
+  const prev = s[k - 1];
+  if (prev === "^" || prev === "_" || closes.has(k - 1)) return true;
+  if (prev === "]") {
+    const opener = s.lastIndexOf("[", k - 2);
+    return opener > 0 && commandNameEndingAt(s, opener) !== null;
+  }
+  if (prev === " " || prev === "\t") {
+    let j = k - 1;
+    while (j > 0 && (s[j - 1] === " " || s[j - 1] === "\t")) j--;
+    const name = commandNameEndingAt(s, j);
+    return name !== null && ARGUMENT_TAKING_CMDS.has(name);
+  }
+  return commandNameEndingAt(s, k) !== null;
+}
+
+// A prose brace pair is a literal set / JSON object when its content holds
+// one of these (a list or key separator).
+const LITERAL_BRACE_HINTS = /[,:;|]/;
+
+/**
+ * Braces in prose (outside `$…$`/`$$…$$` and not a command or script
+ * argument) whose content is a list or object (`A = {1, 2, 3}`,
+ * `{"central": …}`) are text: they are parked as the `\{`/`\}` sentinels.
+ * `1{,}000` and `{x}` are still grouping, an unclosed `{` is kept, and a
+ * `}` with no opener is dropped as before.
+ */
+function protectProseBraces(s: string): string {
+  if (!s.includes("{")) return s;
+  const n = s.length;
+  const inMath = new Uint8Array(n);
+  PLAIN_SPAN_RE.lastIndex = 0;
+  for (const m of s.matchAll(PLAIN_SPAN_RE)) {
+    for (let j = m.index!; j < m.index! + m[0].length; j++) inMath[j] = 1;
+  }
+  const chars = s.split("");
+  const closes = new Set<number>();
+  let k = 0;
+  while (k < n) {
+    if (inMath[k] || s[k] !== "{") {
+      k++;
+      continue;
+    }
+    const close = matchingBrace(s, k, inMath);
+    if (attachedBrace(s, k, closes)) {
+      if (close === -1) break;
+      closes.add(close);
+      k = close + 1;
+      continue;
+    }
+    if (close === -1) {
+      chars[k] = LBRACE_SENTINEL;
+      k++;
+      continue;
+    }
+    const inner = s.slice(k + 1, close);
+    if (codePointLength(inner) <= 1 || !LITERAL_BRACE_HINTS.test(inner)) {
+      k = close + 1; // `{,}`, `{x}`: grouping
+      continue;
+    }
+    chars[k] = LBRACE_SENTINEL;
+    chars[close] = RBRACE_SENTINEL;
+    k++;
+  }
+  return chars.join("");
+}
 
 const LATEX_DISPLAY_DOLLAR_RE = /\$\$([\s\S]+?)\$\$/g;
 const LATEX_DELIM_RE = /\$([^$]+)\$/g;
@@ -180,6 +290,20 @@ const MATRIX_ENVS: ReadonlyMap<string, [string, string]> = new Map([
 ]);
 // Characters that read correctly as a superscript without a Unicode script
 // form: primes and the degree sign (`0^\circ` → `0°`).
+// Commands whose `{…}` argument may follow after spaces (prose-brace pass).
+const ARGUMENT_TAKING_CMDS: ReadonlySet<string> = new Set([
+  ...FRAC_CMDS,
+  ...BINOM_CMDS,
+  ...WRAPPER_CMDS,
+  ...COLOR_CMDS,
+  ...DROP_WITH_ARG_CMDS,
+  ...ACCENT_CMDS.keys(),
+  ...PLAIN_ACCENT_CMDS,
+  "sqrt",
+  "begin",
+  "end",
+]);
+
 const SCRIPT_PASSTHROUGH = new Set("°′″‴");
 const SUPERSCRIPT_CHARS = new Set("0123456789+-=()ni");
 const SUBSCRIPT_CHARS = new Set("0123456789+-=()aeoxhklmnpst");
@@ -219,6 +343,44 @@ function readArg(s: string, i: number): [string | null, number] {
   const m = matchAt(LATEX_CMD_RE, s, j);
   if (m) return [m[0], j + m[0].length];
   return [s[j], j + 1];
+}
+
+// A fraction part that stays bare: a number or one letter (`22`, `3.5`,
+// `x`, `π`); Python `[0-9]+(?:\.[0-9]+)?|[^\W\d_]`.
+const SIMPLE_FRACTION_PART_RE =
+  /^(?:[0-9]+(?:\.[0-9]+)?|[\p{L}\p{Nl}\p{No}])$/u;
+
+/**
+ * A numerator or denominator: a single token or one parenthesised group
+ * stays bare; anything compound gets parentheses (`(a+b)`).
+ */
+function fractionPart(part: string): string {
+  const core = pyStrip(part);
+  if (SIMPLE_FRACTION_PART_RE.test(core) || isWrapped(core)) return core;
+  return "(" + part + ")";
+}
+
+/**
+ * `2\frac{1}{2}` and `\frac{1}{2}x` read `2(1/2)` and `(1/2)x`: a fraction
+ * touching a term (a letter or digit or `/` before it; a letter, digit, `(`,
+ * `\`, `^`, `_` or `{` after it) is parenthesised.
+ */
+function fractionNeedsParens(out: string[], s: string, i: number): boolean {
+  let prev = "";
+  for (let k = out.length - 1; k >= 0; k--) {
+    if (out[k]) {
+      const cps = Array.from(out[k]);
+      prev = cps[cps.length - 1];
+      break;
+    }
+  }
+  const nxt = charAt(s, i);
+  return (
+    isAlnum(prev) ||
+    prev === "/" ||
+    isAlnum(nxt) ||
+    (nxt !== "" && "(\\^_{".includes(nxt))
+  );
 }
 
 /** True when `body` is one parenthesised group: "(a+b)", not "(a)/(b)". */
@@ -352,7 +514,8 @@ function command(
     [den, j] = readArg(s, j);
     const a = convert(num ?? "", markAccents);
     const b = convert(den ?? "", markAccents);
-    if (FRAC_CMDS.has(name)) return ["(" + a + ")/(" + b + ")", j];
+    if (FRAC_CMDS.has(name))
+      return [fractionPart(a) + "/" + fractionPart(b), j];
     return ["C(" + a + ", " + b + ")", j];
   }
   if (name === "sqrt") {
@@ -470,7 +633,11 @@ function convert(s: string, markAccents: boolean): string {
       const m = matchAt(LATEX_CMD_RE, s, i);
       if (m) {
         const [piece, next] = command(m[1], s, i + m[0].length, markAccents);
-        out.push(piece);
+        out.push(
+          FRAC_CMDS.has(m[1]) && fractionNeedsParens(out, s, next)
+            ? "(" + piece + ")"
+            : piece,
+        );
         i = next;
         continue;
       }
@@ -534,9 +701,19 @@ function convert(s: string, markAccents: boolean): string {
  * `latex_to_plain`). With `markAccents` a one-symbol accent argument gets
  * the combining mark (F⃗) and a longer one is named (vec(AB)).
  */
-export function latexToPlain(text: string, markAccents = false): string {
+export function latexToPlain(
+  text: string,
+  markAccents = false,
+  keepLabelBackslash = true,
+  force = false,
+): string {
   if (typeof text !== "string") return text;
-  if (!text.includes("$") && !text.includes("\\") && !text.includes("{"))
+  if (
+    !force &&
+    !text.includes("$") &&
+    !text.includes("\\") &&
+    !text.includes("{")
+  )
     return text;
 
   let out = text;
@@ -559,6 +736,28 @@ export function latexToPlain(text: string, markAccents = false): string {
   out = out.split("\\$").join(DOLLAR_SENTINEL);
   out = out.split("\\{").join(LBRACE_SENTINEL);
   out = out.split("\\}").join(RBRACE_SENTINEL);
+
+  // Lesson-script labels at a line start are not commands.
+  const labels: string[] = [];
+  if (out.includes("\\") && out.includes(":")) {
+    out = out.replace(
+      SCRIPT_LABEL_LINE_RE,
+      (_m, start: string, indent: string, name: string) => {
+        labels.push(name);
+        return (
+          start +
+          indent +
+          LABEL_SENTINEL_OPEN +
+          (labels.length - 1) +
+          LABEL_SENTINEL_CLOSE +
+          ":"
+        );
+      },
+    );
+  }
+
+  // Braces in prose are text (`A = {1, 2, 3}`), not grouping.
+  out = protectProseBraces(out);
 
   // Pull maths out of `$$...$$` / `$...$` so the scanner below operates on
   // the inner content too. `\(...\)` / `\[...\]` are dropped by the scanner.
@@ -597,6 +796,12 @@ export function latexToPlain(text: string, markAccents = false): string {
   out = out.split(LBRACE_SENTINEL).join("{");
   out = out.split(RBRACE_SENTINEL).join("}");
   out = out.split(DOLLAR_SENTINEL).join("$");
+
+  for (let idx = 0; idx < labels.length; idx++) {
+    out = out
+      .split(LABEL_SENTINEL_OPEN + idx + LABEL_SENTINEL_CLOSE)
+      .join((keepLabelBackslash ? "\\" : "") + labels[idx]);
+  }
 
   // Compose accents where a precomposed character exists (`i` + U+0302 →
   // `î`) so PDF fonts draw one glyph.
@@ -1025,8 +1230,48 @@ function toSpoken(text: string): string {
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
   return pyStrip(cleaned);
 }
-export const STYLES = ["text", "pdf", "tts"] as const;
+export const STYLES = ["text", "pdf", "tts", "compare"] as const;
 export type PlainStyle = (typeof STYLES)[number];
+
+const SUPERSCRIPT_TO_ASCII = charMap("⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ", "0123456789+-=()ni");
+const SUBSCRIPT_TO_ASCII = charMap(
+  "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₒₓₕₖₗₘₙₚₛₜ",
+  "0123456789+-=()aeoxhklmnpst",
+);
+const SUPERSCRIPT_RUN_RE = /[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ]+/g;
+const SUBSCRIPT_RUN_RE = /[₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₒₓₕₖₗₘₙₚₛₜ]+/g;
+// Characters `compare` folds to one ASCII form.
+const COMPARE_FOLD: ReadonlyMap<string, string> = new Map([
+  ["−", "-"], // minus sign
+  ["‐", "-"], // hyphen
+  ["‒", "-"], // figure dash
+  ["×", "*"],
+  ["·", "*"],
+  ["⋅", "*"],
+  ["∗", "*"],
+  ["÷", "/"],
+]);
+const COMPARE_OPERATOR_SPACE_RE = / ?([+\-*/=<>^_(),{}[\]]) ?/g;
+
+/**
+ * One ASCII-leaning form for answer comparison: scripts as `^…`/`_…`, minus
+ * signs and multiplication dots folded, whitespace collapsed and removed
+ * around operators and brackets.
+ */
+function foldForCompare(text: string): string {
+  let out = "";
+  for (const ch of text) out += COMPARE_FOLD.get(ch) ?? ch;
+  out = out.replace(
+    SUPERSCRIPT_RUN_RE,
+    (m) => "^" + translate(m, SUPERSCRIPT_TO_ASCII),
+  );
+  out = out.replace(
+    SUBSCRIPT_RUN_RE,
+    (m) => "_" + translate(m, SUBSCRIPT_TO_ASCII),
+  );
+  out = pyStrip(out.replace(/\s+/gu, " "));
+  return out.replace(COMPARE_OPERATOR_SPACE_RE, "$1");
+}
 
 /**
  * LaTeX → plain text.
@@ -1034,6 +1279,9 @@ export type PlainStyle = (typeof STYLES)[number];
  * `style="text"`: accents dropped (grading, canvas, in-class report).
  * `style="pdf"`: accents marked (`\vec{F}` → `F⃗`, `\vec{AB}` → `vec(AB)`).
  * `style="tts"`: spoken English for a text-to-speech voice.
+ * `style="compare"`: one form for answer comparison, so a typed answer
+ * equals the same value in LaTeX (`1/3` = `$rac{1}{3}$`, `x^2` = `$x^2$`,
+ * `−3` = `-3`).
  * Non-strings are returned unchanged.
  */
 export function toPlain<T>(text: T, style?: PlainStyle): T;
@@ -1045,5 +1293,7 @@ export function toPlain(text: unknown, style: PlainStyle = "text"): unknown {
   }
   if (typeof text !== "string") return text;
   if (style === "tts") return toSpoken(text);
-  return latexToPlain(text, style === "pdf");
+  if (style === "compare")
+    return foldForCompare(latexToPlain(text, false, false, true));
+  return latexToPlain(text, style === "pdf", style === "text");
 }

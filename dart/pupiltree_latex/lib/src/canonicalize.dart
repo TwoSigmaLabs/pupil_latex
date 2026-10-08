@@ -10,6 +10,7 @@ import 'audit.dart';
 import 'commands.dart';
 import 'guarded_regexp.dart';
 import 'mojibake.dart';
+import 'normalize.dart' show isFormula;
 import 'repair.dart';
 import 'segment.dart';
 import 'spans.dart';
@@ -316,7 +317,9 @@ bool _hasDollarInsideBraces(String text) {
   return false;
 }
 
-String _wrapPureMathShortStrings(String text) {
+final _chemistryCmd = RegExp(r'\\(?:ce|pu)(?![A-Za-z])');
+
+String _wrapPureMathShortStrings(String text, {bool chemistry = true}) {
   if (cpLength(text) > 200 ||
       text.contains(r'$$') ||
       !_anyLatexCmd.hasMatch(text)) {
@@ -325,6 +328,9 @@ String _wrapPureMathShortStrings(String text) {
   if (_hasDollarInsideBraces(text)) return text;
   // A lesson-script line (`\teacher: …`) is prose, however short.
   if (_scriptLabel.hasMatch(text)) return text;
+  // `\ce`/`\pu` need KaTeX's mhchem extension; `chemistry: false` (a
+  // renderer without it) leaves them as prose instead of a red error.
+  if (!chemistry && _chemistryCmd.hasMatch(text)) return text;
   // An unpaired `$` means the author's spans are broken; stripping and
   // re-wrapping would not converge (`$ H₂` → `$ $…$` → …).
   if (_countUnescapedDollars(text).isOdd) return text;
@@ -381,6 +387,7 @@ final _bareScript = GuardedRegExp.notAfter(
 final _digits = RegExp(r'^[0-9]+$');
 final _shortCapitals = RegExp(r'^[A-Z]{1,4}$');
 final _lowercaseWord = RegExp(r'^[a-z]{3,}$');
+final _twoLowercase = RegExp(r'^[a-z]{2}$');
 
 /// snake_case / ALL_CAPS / slug tokens the script regex matches by accident:
 /// `MCQ_SINGLE`, `q_001_easy_2026`, `ahs_69e74f5e84fd`.
@@ -396,6 +403,10 @@ bool _looksLikeIdentifier(String s) {
   final cut = s.indexOf('_');
   final base = s.substring(0, cut);
   if (cpLength(base) >= 3) return true;
+  // A two-letter lowercase base is a word or an id prefix (`lo_0` gap
+  // titles), not a variable: math subscripts sit on one letter (`x_0`) and
+  // chemistry on capitals (`H_2O`, `CO_2`).
+  if (_twoLowercase.hasMatch(base)) return true;
   final rest = s.substring(cut + 1);
   // A class name: digits, underscore, 1–4 capital letters (`10_A`, `6_B`,
   // `12_PCM`). Math never writes a numeric base with a capital subscript.
@@ -563,7 +574,7 @@ String _trimPaddedLine(String line) {
     final core = _stripBlanks(inner);
     if (core.isEmpty ||
         core == inner ||
-        !_looksLikePaddedMath(core) ||
+        !(_looksLikePaddedMath(core) || isFormula(core)) ||
         // A dollar glued to a word or number outside the pair (`$x = $y`,
         // `wait$ … $now`) reads as currency or a typo.
         (b + 1 < line.length && isAlnum(codePointAt(line, b + 1))) ||
@@ -750,7 +761,10 @@ String _stashToken(int idx) =>
     '${u(0xE002)}${String.fromCharCode(0xE100 + idx)}${u(0xE003)}';
 
 /// Normalize a fresh model string to the canonical form (spec §3).
-String canonicalize(String text) {
+///
+/// `chemistry: false` never puts a bare `\ce{…}` / `\pu{…}` into a new
+/// math span (for renderers without mhchem).
+String canonicalize(String text, {bool chemistry = true}) {
   if (text.isEmpty) return text;
   if (_url.hasMatch(text)) return text;
 
@@ -785,7 +799,7 @@ String canonicalize(String text) {
   text = wrapBareUnicodeMath(text);
   text = _wrapBareLatexCommands(text);
   text = _wrapBareScripts(text);
-  text = _wrapPureMathShortStrings(text);
+  text = _wrapPureMathShortStrings(text, chemistry: chemistry);
   // Step 14 left the symbols inside bare script / command argument groups
   // (`e^{iπ}`, `\frac{π}{2}`) to steps 15–17, which put the whole group in
   // one span. A group none of them took is prose; its symbols are wrapped
@@ -811,22 +825,31 @@ String canonicalize(String text) {
 /// Skips non-content keys and URL-shaped values (CONTRACT §5); list items
 /// inherit the parent key. Anything that is not a string, map or list is
 /// returned as is.
-Object? canonicalizeDeep(Object? obj, {String keyHint = ''}) {
+Object? canonicalizeDeep(
+  Object? obj, {
+  String keyHint = '',
+  bool chemistry = true,
+}) {
   if (obj is String) {
     if (isNonContentKey(keyHint) || isUrlOrPathString(obj)) return obj;
-    return canonicalize(obj);
+    return canonicalize(obj, chemistry: chemistry);
   }
   if (obj is Map) {
     return mapValuesWithKey(
       obj,
       // A non-string key is never a non-content key (Python passes it to
       // `is_non_content_key`, which answers False).
-      (k, v) => canonicalizeDeep(v, keyHint: k is String ? k : ''),
+      (k, v) => canonicalizeDeep(
+        v,
+        keyHint: k is String ? k : '',
+        chemistry: chemistry,
+      ),
     );
   }
   if (obj is List) {
     return <Object?>[
-      for (final v in obj) canonicalizeDeep(v, keyHint: keyHint)
+      for (final v in obj)
+        canonicalizeDeep(v, keyHint: keyHint, chemistry: chemistry)
     ];
   }
   return obj;

@@ -134,7 +134,7 @@ LATEX_CMD_MAP: Dict[str, str] = {
     "max": "max",
     "min": "min",
     # Seen in live in-class content (frequency-ordered from a scan of
-    # Pupil-Amigo.student_submitted); without these they rendered as the
+    # student submissions); without these they rendered as the
     # bare command name, e.g. "\colon" → "colon".
     "angle": "∠",
     "colon": ":",
@@ -293,10 +293,120 @@ _SUBSCRIPT_MAP = str.maketrans(
 # `\{`, `\}` and `\$` are literal characters, not grouping or maths
 # delimiters. They are parked as sentinels for the duration of the transform
 # so neither the delimiter passes nor the brace scanner can consume them, then
-# restored. Characters chosen to be ones that cannot occur in question text.
-_LBRACE_SENTINEL = "\x00LB\x00"
-_RBRACE_SENTINEL = "\x00RB\x00"
-_DOLLAR_SENTINEL = "\x00DL\x00"
+# restored. Single private-use characters (U+E010–U+E014): one code unit,
+# so an argument reader can never take half of one (`$\binom$"}`).
+_LBRACE_SENTINEL = "\ue010"
+_RBRACE_SENTINEL = "\ue011"
+_DOLLAR_SENTINEL = "\ue012"
+_LABEL_SENTINEL_OPEN = "\ue013"
+_LABEL_SENTINEL_CLOSE = "\ue014"
+
+# A lesson-script label at the start of a line (`\instruction:`, `\heading:`,
+# `\mindmap:`): a lowercase word right after a backslash and before `:`. It
+# is parked before the command scanner, which read `\instruction` as `\in` +
+# "struction" (∈struction). `text` keeps it verbatim (the canvas reads the
+# labels); `pdf` and `compare` drop the backslash, as `tts` always did.
+_SCRIPT_LABEL_LINE_RE = re.compile(r"(^|\n)([ \t]*)\\([a-z][a-z_]*):")
+
+# Math spans for the prose-brace pass, display first: the same shapes the
+# delimiter strip below removes.
+_PLAIN_SPAN_RE = re.compile(r"\$\$[\s\S]+?\$\$|\$[^$]+\$")
+_SIMPLE_FRACTION_PART_RE = re.compile(r"[0-9]+(?:\.[0-9]+)?|[^\W\d_]")
+
+
+def _matching_brace(s: str, k: int, skip: Optional[bytearray] = None) -> int:
+    """Index of the `}` closing the `{` at ``k``, or -1. Positions marked in
+    ``skip`` (math spans) are not counted."""
+    depth = 0
+    for j in range(k, len(s)):
+        if skip is not None and skip[j]:
+            continue
+        if s[j] == "{":
+            depth += 1
+        elif s[j] == "}":
+            depth -= 1
+            if depth == 0:
+                return j
+    return -1
+
+
+def _command_name_ending_at(s: str, end: int) -> Optional[str]:
+    """The name of the `\\name` whose last letter is ``s[end - 1]``, or None."""
+    j = end
+    while j > 0 and ("a" <= s[j - 1] <= "z" or "A" <= s[j - 1] <= "Z"):
+        j -= 1
+    if j < end and j > 0 and s[j - 1] == "\\":
+        return s[j:end]
+    return None
+
+
+def _attached_brace(s: str, k: int, closes: set) -> bool:
+    """True when the `{` at ``k`` is a command or script argument: right
+    after `^`/`_`, a `\\name`, the `]` of an optional argument that follows a
+    `\\name`, or the `}` of another argument; or after spaces when the
+    command takes arguments (`\\frac {a}{b}`)."""
+    if k == 0:
+        return False
+    prev = s[k - 1]
+    if prev in "^_" or (k - 1) in closes:
+        return True
+    if prev == "]":
+        opener = s.rfind("[", 0, k - 1)
+        return opener > 0 and _command_name_ending_at(s, opener) is not None
+    if prev in " \t":
+        j = k - 1
+        while j > 0 and s[j - 1] in " \t":
+            j -= 1
+        return _command_name_ending_at(s, j) in _ARGUMENT_TAKING_CMDS
+    return _command_name_ending_at(s, k) is not None
+
+
+# A prose brace pair is a literal set / JSON object when its content holds
+# one of these (a list or key separator).
+_LITERAL_BRACE_HINTS = frozenset(",:;|")
+
+
+def _protect_prose_braces(s: str) -> str:
+    """Braces in prose (outside `$…$`/`$$…$$` and not a command or script
+    argument) whose content is a list or object (`A = {1, 2, 3}`,
+    `{x | x > 0}`, `{"central": …}`: a `,` `:` `;` or `|` inside, more than
+    one character) are text. They are parked as the `\\{`/`\\}` sentinels.
+    `1{,}000` and `{x}` are still LaTeX grouping, an unclosed `{` is kept,
+    and a `}` with no opener is dropped as before."""
+    if "{" not in s:
+        return s
+    n = len(s)
+    in_math = bytearray(n)
+    for m in _PLAIN_SPAN_RE.finditer(s):
+        for j in range(m.start(), m.end()):
+            in_math[j] = 1
+    chars = list(s)
+    closes: set = set()
+    k = 0
+    while k < n:
+        if in_math[k] or s[k] != "{":
+            k += 1
+            continue
+        close = _matching_brace(s, k, in_math)
+        if _attached_brace(s, k, closes):
+            if close == -1:
+                break
+            closes.add(close)
+            k = close + 1
+            continue
+        if close == -1:
+            chars[k] = _LBRACE_SENTINEL
+            k += 1
+            continue
+        inner = s[k + 1 : close]
+        if len(inner) <= 1 or not any(c in _LITERAL_BRACE_HINTS for c in inner):
+            k = close + 1  # `{,}`, `{x}`: grouping
+            continue
+        chars[k] = _LBRACE_SENTINEL
+        chars[close] = _RBRACE_SENTINEL
+        k += 1
+    return "".join(chars)
+
 
 _IMAGE_MARKER_RE = re.compile(r"\{\{IMAGE:[^}]+\}\}")
 _LATEX_DISPLAY_DOLLAR_RE = re.compile(r"\$\$(.+?)\$\$", re.DOTALL)
@@ -439,6 +549,18 @@ _MATRIX_ENVS = {
     "vmatrix": ("|", "|"),
     "Vmatrix": ("‖", "‖"),
 }
+# Commands whose `{…}` argument may follow after spaces (prose-brace pass).
+_ARGUMENT_TAKING_CMDS = (
+    _FRAC_CMDS
+    | _BINOM_CMDS
+    | _WRAPPER_CMDS
+    | _COLOR_CMDS
+    | _DROP_WITH_ARG_CMDS
+    | frozenset(_ACCENT_CMDS)
+    | _PLAIN_ACCENT_CMDS
+    | frozenset({"sqrt", "begin", "end"})
+)
+
 # Characters that read correctly as a superscript without a Unicode script
 # form: primes and the degree sign (`0^\circ` → `0°`).
 _SCRIPT_PASSTHROUGH = frozenset("°′″‴")
@@ -594,6 +716,34 @@ def _environment(name: str, content: str, mark_accents: bool) -> str:
     return "; ".join(joiner.join(c for c in row if c) for row in rows)
 
 
+def _fraction_part(part: str) -> str:
+    """A numerator or denominator: a single token (a number or one letter,
+    `22`, `3.5`, `x`, `π`) or one parenthesised group stays bare; anything
+    compound gets parentheses (`(a+b)`)."""
+    core = part.strip()
+    if _SIMPLE_FRACTION_PART_RE.fullmatch(core) or _is_wrapped(core):
+        return core
+    return f"({part})"
+
+
+def _fraction_needs_parens(out: List[str], s: str, i: int) -> bool:
+    """`2\\frac{1}{2}` and `\\frac{1}{2}x` read `2(1/2)` and `(1/2)x`: a
+    fraction touching a term (a letter or digit before it, a letter, digit,
+    `(`, `\\`, `^`, `_` or `{` after it, or a `/` before it) is parenthesised
+    so it is not read as `21/2` or `1/2x`."""
+    prev = ""
+    for piece in reversed(out):
+        if piece:
+            prev = piece[-1]
+            break
+    nxt = s[i] if i < len(s) else ""
+    return (
+        (prev.isalnum() or prev == "/")
+        or nxt.isalnum()
+        or (nxt != "" and nxt in "(\\^_{")
+    )
+
+
 def _command(name: str, s: str, j: int, mark_accents: bool) -> Tuple[str, int]:
     """Render control word ``\\name`` whose arguments start at ``j``. Returns
     the text and the index after everything consumed."""
@@ -603,7 +753,7 @@ def _command(name: str, s: str, j: int, mark_accents: bool) -> Tuple[str, int]:
         a = _convert(num or "", mark_accents)
         b = _convert(den or "", mark_accents)
         if name in _FRAC_CMDS:
-            return f"({a})/({b})", j
+            return f"{_fraction_part(a)}/{_fraction_part(b)}", j
         return f"C({a}, {b})", j
     if name == "sqrt":
         k = j
@@ -700,6 +850,8 @@ def _convert(s: str, mark_accents: bool) -> str:
             m = _LATEX_CMD_RE.match(s, i)
             if m:
                 piece, i = _command(m.group(1), s, m.end(), mark_accents)
+                if m.group(1) in _FRAC_CMDS and _fraction_needs_parens(out, s, i):
+                    piece = f"({piece})"
                 out.append(piece)
                 continue
             nxt = s[i + 1] if i + 1 < n else ""
@@ -745,7 +897,13 @@ def _convert(s: str, mark_accents: bool) -> str:
     return "".join(out)
 
 
-def latex_to_plain(text: Any, *, mark_accents: bool = False) -> Any:
+def latex_to_plain(
+    text: Any,
+    *,
+    mark_accents: bool = False,
+    keep_label_backslash: bool = True,
+    force: bool = False,
+) -> Any:
     """Convert a LaTeX-math-laced string into plain text/Unicode.
 
     Targets the constructs question and BAA content actually carries:
@@ -770,7 +928,7 @@ def latex_to_plain(text: Any, *, mark_accents: bool = False) -> Any:
     """
     if not isinstance(text, str):
         return text
-    if "$" not in text and "\\" not in text and "{" not in text:
+    if not force and "$" not in text and "\\" not in text and "{" not in text:
         return text
 
     out = text
@@ -798,6 +956,23 @@ def latex_to_plain(text: Any, *, mark_accents: bool = False) -> Any:
         .replace(r"\{", _LBRACE_SENTINEL)
         .replace(r"\}", _RBRACE_SENTINEL)
     )
+
+    # Lesson-script labels at a line start are not commands.
+    labels: List[str] = []
+
+    def _stash_label(m: "re.Match[str]") -> str:
+        labels.append(m.group(3))
+        return (
+            m.group(1)
+            + m.group(2)
+            + f"{_LABEL_SENTINEL_OPEN}{len(labels) - 1}{_LABEL_SENTINEL_CLOSE}:"
+        )
+
+    if "\\" in out and ":" in out:
+        out = _SCRIPT_LABEL_LINE_RE.sub(_stash_label, out)
+
+    # Braces in prose are text (`A = {1, 2, 3}`), not grouping.
+    out = _protect_prose_braces(out)
 
     # Pull maths out of `$$...$$` / `$...$` so the scanner below operates on
     # the inner content too. `\(...\)` / `\[...\]` are dropped by the scanner.
@@ -833,6 +1008,12 @@ def latex_to_plain(text: Any, *, mark_accents: bool = False) -> Any:
         .replace(_RBRACE_SENTINEL, "}")
         .replace(_DOLLAR_SENTINEL, "$")
     )
+
+    for idx, name in enumerate(labels):
+        out = out.replace(
+            f"{_LABEL_SENTINEL_OPEN}{idx}{_LABEL_SENTINEL_CLOSE}",
+            ("\\" if keep_label_backslash else "") + name,
+        )
 
     for idx, original in enumerate(image_stash):
         out = out.replace(f"\x00IMG{idx}\x00", original)
@@ -1161,15 +1342,53 @@ def _to_spoken(text: str) -> str:
     return cleaned.strip()
 
 
-STYLES = ("text", "pdf", "tts")
+STYLES = ("text", "pdf", "tts", "compare")
+
+_SUPERSCRIPT_TO_ASCII = {v: k for k, v in zip("0123456789+-=()ni", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ")}
+_SUBSCRIPT_TO_ASCII = {
+    v: k for k, v in zip("0123456789+-=()aeoxhklmnpst", "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₒₓₕₖₗₘₙₚₛₜ")
+}
+_SUPERSCRIPT_RUN_RE = re.compile("[" + "".join(_SUPERSCRIPT_TO_ASCII) + "]+")
+_SUBSCRIPT_RUN_RE = re.compile("[" + "".join(_SUBSCRIPT_TO_ASCII) + "]+")
+# Characters `compare` folds to one ASCII form.
+_COMPARE_FOLD = {
+    "−": "-",  # minus sign
+    "‐": "-",  # hyphen
+    "‒": "-",  # figure dash
+    "×": "*",
+    "·": "*",
+    "⋅": "*",
+    "∗": "*",
+    "÷": "/",
+}
+_COMPARE_SPACE_RE = re.compile(r"\s+")
+_COMPARE_OPERATOR_SPACE_RE = re.compile(r" ?([+\-*/=<>^_(),{}\[\]]) ?")
+
+
+def _fold_for_compare(text: str) -> str:
+    """One ASCII-leaning form for answer comparison: scripts as `^…`/`_…`,
+    minus signs and multiplication dots folded, whitespace collapsed and
+    removed around operators and brackets."""
+    text = "".join(_COMPARE_FOLD.get(ch, ch) for ch in text)
+    text = _SUPERSCRIPT_RUN_RE.sub(
+        lambda m: "^" + "".join(_SUPERSCRIPT_TO_ASCII[c] for c in m.group(0)), text
+    )
+    text = _SUBSCRIPT_RUN_RE.sub(
+        lambda m: "_" + "".join(_SUBSCRIPT_TO_ASCII[c] for c in m.group(0)), text
+    )
+    text = _COMPARE_SPACE_RE.sub(" ", text).strip()
+    return _COMPARE_OPERATOR_SPACE_RE.sub(r"\1", text)
 
 
 def to_plain(text: Any, style: str = "text") -> Any:
     """LaTeX → plain text.
 
     ``style="text"``: accents dropped (grading, canvas, in-class report).
-    ``style="pdf"``: accents marked (``\vec{F}`` → ``F⃗``, ``\vec{AB}`` → ``vec(AB)``).
+    ``style="pdf"``: accents marked (``\\vec{F}`` → ``F⃗``, ``\\vec{AB}`` → ``vec(AB)``).
     ``style="tts"``: spoken English for a text-to-speech voice.
+    ``style="compare"``: one form for answer comparison, so a typed answer
+    equals the same value in LaTeX (``1/3`` = ``$\\frac{1}{3}$``, ``x^2`` =
+    ``$x^2$``, ``−3`` = ``-3``, ``90°`` = ``$90^\\circ$``).
     Non-strings are returned unchanged.
     """
     if style not in STYLES:
@@ -1178,4 +1397,9 @@ def to_plain(text: Any, style: str = "text") -> Any:
         return text
     if style == "tts":
         return _to_spoken(text)
-    return latex_to_plain(text, mark_accents=(style == "pdf"))
+    if style == "compare":
+        plain = latex_to_plain(text, keep_label_backslash=False, force=True)
+        return _fold_for_compare(plain)
+    return latex_to_plain(
+        text, mark_accents=(style == "pdf"), keep_label_backslash=(style == "text")
+    )
