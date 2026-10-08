@@ -51,9 +51,11 @@ from .normalize import (
 from .prompt_rules import (
     LATEX_SYSTEM_RULES,
     NARRATIVE_PROSE_RULES,
+    PLAIN_NOTATION_RULES,
     has_formatting_contract,
     inject_latex_rules,
     inject_narrative_prose_rules,
+    inject_plain_notation_rules,
     narrative_field_exemption,
 )
 from .repair import repair, repair_deep
@@ -114,8 +116,10 @@ __all__ = [
     "HTML_ENTITIES",
     "LATEX_SYSTEM_RULES",
     "NARRATIVE_PROSE_RULES",
+    "PLAIN_NOTATION_RULES",
     "inject_latex_rules",
     "inject_narrative_prose_rules",
+    "inject_plain_notation_rules",
     "narrative_field_exemption",
     "has_formatting_contract",
     "LATEX_COMMANDS_BEHIND_JSON_ESCAPES",

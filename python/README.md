@@ -11,7 +11,7 @@ from pupiltree_latex import (
     repair, normalize, canonicalize, segment, to_plain, audit,
     repair_deep, canonicalize_deep, audit_deep,
     escape_latex_for_json, loads_latex_aware,
-    inject_latex_rules, inject_narrative_prose_rules,
+    inject_latex_rules, inject_narrative_prose_rules, inject_plain_notation_rules,
 )
 ```
 

@@ -106,6 +106,16 @@ from pupiltree_latex import inject_latex_rules
 system_prompt = inject_latex_rules(system_prompt)
 ```
 
+Pick the block by where the output is shown:
+
+| Output                                                            | Injector                       |
+| ----------------------------------------------------------------- | ------------------------------ |
+| rendered with KaTeX / flutter_math_fork (questions, explanations) | `inject_latex_rules`           |
+| read aloud by TTS (podcast and story scripts)                     | `inject_narrative_prose_rules` |
+| shown as plain text, no maths renderer (period plans, board text) | `inject_plain_notation_rules`  |
+
+`inject_plain_notation_rules` asks for maths in plain Unicode (`x²`, `√2`, `π`, `≤`, `H₂O`, `3 × 10⁸`) with no `$` and no backslash commands. Every injector is idempotent, so a per-call chokepoint and the generator can both call it. Don't paste the rule text into your own prompt: `python tools/check_prompt_parity.py <repo>` fails on a diverged copy and lists hand-written rules the library already carries.
+
 ## React frontend: one component
 
 ```tsx

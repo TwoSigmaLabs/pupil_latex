@@ -179,6 +179,91 @@ def test_prompt_rules_injection_is_idempotent():
     assert "   - story_script" in ex and "   - sections[].content" in ex
 
 
+def test_plain_notation_rules_injection_is_idempotent():
+    q = L.inject_plain_notation_rules("Write 5 in-class questions.")
+    marker = L.prompt_rules.PLAIN_NOTATION_MARKER
+    # Split so tools/check_prompt_parity.py does not read this as a pasted block.
+    assert marker == "=== PLAIN NOTATION RULES" + " (MANDATORY) ==="
+    assert q.startswith("\n" + marker)
+    assert q.endswith("Write 5 in-class questions.")
+    assert L.inject_plain_notation_rules(q) == q
+    assert L.has_formatting_contract(q)
+    # Each injector only looks for its own block.
+    assert L.inject_latex_rules(q) != q
+    assert L.inject_narrative_prose_rules(q) != q
+
+
+def test_latex_rules_carry_the_v140_rules():
+    r = L.LATEX_SYSTEM_RULES
+    for needle in (
+        "ONE span per whole expression, operators included",
+        "Never output a literal * for multiplication",
+        r"$\frac{a}{b}$",
+        r"\sqrt2           ->  \sqrt{2}",
+        r"|sqrt or \|sqrt",
+        "[...] used as grouping",
+        "Plain numbers and money are NOT math",
+        "₹ 45,00,000",
+        r"Escape a dollar sign that is not a delimiter as \$.",
+        "NEVER invent a command",
+    ):
+        assert needle in r, needle
+
+
+def test_plain_notation_rules_forbid_latex_and_show_unicode():
+    r = L.PLAIN_NOTATION_RULES
+    for needle in ("x²", "√2", "π", "≤", "H₂O", "3 × 10⁸", "Not a single $ character"):
+        assert needle in r, needle
+    assert "NARRATIVE PROSE" not in r
+
+
+def _parity_tool():
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[2] / "tools" / "check_prompt_parity.py"
+    spec = importlib.util.spec_from_file_location("check_prompt_parity", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_parity_tool_checks_plain_notation_copies(tmp_path):
+    tool = _parity_tool()
+    same = repr(L.PLAIN_NOTATION_RULES)
+    changed = repr(L.PLAIN_NOTATION_RULES.replace("x²", "x^2"))
+    (tmp_path / "ok.py").write_text(
+        f"PLAIN_NOTATION_RULES = {same}\n", encoding="utf-8"
+    )
+    assert tool.main(["x", str(tmp_path)]) == 0
+    (tmp_path / "bad.py").write_text(
+        f"MY_PLAIN_NOTATION_RULES = {changed}\n", encoding="utf-8"
+    )
+    assert tool.main(["x", str(tmp_path)]) == 1
+
+
+def test_parity_tool_finds_a_block_pasted_inside_a_prompt(tmp_path):
+    tool = _parity_tool()
+    pasted = repr("Task text.\n" + L.LATEX_SYSTEM_RULES + "\nMore task text.")
+    (tmp_path / "gen.py").write_text(f"PROMPT = {pasted}\n", encoding="utf-8")
+    assert [c[1] for c in tool.find_copies(tmp_path)] == ["LATEX_SYSTEM_RULES"]
+    assert tool.main(["x", str(tmp_path)]) == 0
+    edited = repr("Task.\n" + L.LATEX_SYSTEM_RULES.replace("\\times", "*") + "\n")
+    (tmp_path / "gen.py").write_text(f"PROMPT = {edited}\n", encoding="utf-8")
+    assert tool.main(["x", str(tmp_path)]) == 1
+
+
+def test_parity_tool_lists_hand_written_rules_without_failing(tmp_path, capsys):
+    tool = _parity_tool()
+    rule = repr("- NOTATION: plain text only (H₂SO₄, 10⁻¹⁰). NO " + "LaTeX.")
+    todo = "# TODO(pupiltree-latex): " + "move to LATEX_SYSTEM_RULES (a/b)"
+    (tmp_path / "gen.py").write_text(f"{todo}\nRULE = {rule}\n", encoding="utf-8")
+    assert tool.main(["x", str(tmp_path)]) == 0
+    out = capsys.readouterr().out
+    assert "gen.py:1 :: rule now in LATEX_SYSTEM_RULES" in out
+    assert "gen.py:2 :: plain-notation rule" in out
+
+
 def test_to_plain_rejects_unknown_style():
     with pytest.raises(ValueError):
         L.to_plain("$x$", "html")

@@ -2,6 +2,14 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
+## Unreleased — 1.4.0
+
+### Prompt rules (Python)
+
+- **`LATEX_SYSTEM_RULES` carries the rules consumers kept locally (C1).** Backend `routes/fix_latex.py` and `services/pdf_extractor_v2/prompts.py` restored these as local bullets; they are now in the shared block: one span per whole expression, operators included (rule 1); plain numbers and money are never wrapped in `$…$` (rules 1 and 4: a dollar amount is `\$5`, `₹ 45,00,000` is plain text); multiplication is `\times` or `\cdot`, never a literal `*`, and a maths fraction `a/b` is `\frac{a}{b}` (rule 6); use only the listed standard commands and never invent one (rule 8); new rule 11 repairs malformed commands (`|sqrt` / `\|sqrt`, `\sqrt2` → `\sqrt{2}`, `\sqrt[x]` as a radicand, `[…]` grouping → braces). The pre-submit checklist covers each. The header line (the idempotency marker) is unchanged, so prompts built with an older block are still recognised; a local copy of the 1.3.0 text now reports `DIVERGED`.
+- **New `PLAIN_NOTATION_RULES` + `inject_plain_notation_rules` (C2).** A Class B block for text displayed without a maths renderer (period plans, in-class questions on the smart board): maths in plain Unicode (`x²`, `√2`, `π`, `≤`, `H₂O`, `3 × 10⁸`, `→`, `⇌`), never `$` or a backslash command, no markdown emphasis. It replaces the local "NOTATION" rules in Backend `in_class_question_generator.py` and `period_plan_generator.py`. Distinct from `NARRATIVE_PROSE_RULES`, which is for spoken TTS scripts. The injector is idempotent; `has_formatting_contract` now also recognises this block.
+- **`tools/check_prompt_parity.py`** also checks `PLAIN_NOTATION_RULES` copies, finds a block pasted inside a larger prompt string (from its header line to its END line), and lists without failing (`LOCAL` lines) hand-written rules the library now carries: `TODO(pupiltree-latex): move to LATEX_SYSTEM_RULES` comments and strings that forbid LaTeX while showing Unicode sub/superscripts.
+
 ## 1.3.0 (2026-10-08)
 
 Bugs found while migrating Fillers, Backend, pupiltree-agents, script_editor and worksheet.ai to 1.2.0 (audit rounds 5 and 6). New corpus cases are tagged `audit5-<n>` and `audit6-<n>`; every fix is in Python, JavaScript and Dart.

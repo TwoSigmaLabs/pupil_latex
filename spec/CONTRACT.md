@@ -39,7 +39,7 @@ Markdown emphasis (`**bold**`, `*italic*`) is allowed in prose and must not appe
 ## 2. Two content classes
 
 - **Class A: renderable math text.** Questions, options, explanations, remedies, AHS content, lesson scripts, assessments. Canonical form applies. Generated through prompts that carry `LATEX_SYSTEM_RULES`.
-- **Class B: plain narrative or plain Unicode.** Podcast and story scripts (narration read by TTS), and period plans / in-class questions produced by the master-plan generators, which use Unicode subscripts and arrows on purpose. Prompts carry `NARRATIVE_PROSE_RULES` or a "no LaTeX" notation rule. The library must never "upgrade" Class B text to LaTeX. `canonicalize` is only called at Class A write chokepoints.
+- **Class B: plain narrative or plain Unicode.** Podcast and story scripts (narration read by TTS), and period plans / in-class questions produced by the master-plan generators, which use Unicode subscripts and arrows on purpose. Prompts carry `NARRATIVE_PROSE_RULES` (spoken scripts) or `PLAIN_NOTATION_RULES` (displayed plain Unicode, §6). The library must never "upgrade" Class B text to LaTeX. `canonicalize` is only called at Class A write chokepoints.
 
 ## 3. Where each function may run
 
@@ -81,7 +81,19 @@ Values under these keys are passed through untouched by the deep walkers: ids (`
 
 ## 6. Prompt text
 
-`LATEX_SYSTEM_RULES` (Class A) and `NARRATIVE_PROSE_RULES` (Class B) live in `python/pupiltree_latex/prompt_rules.py`. Services must inject them through `inject_latex_rules` / `inject_narrative_prose_rules`, which are idempotent, and may append `narrative_field_exemption(...)` when one JSON object mixes both classes. The consumer CI check `tools/check_prompt_parity.py` fails when a service carries a diverged copy of this text.
+Three rule blocks live in `python/pupiltree_latex/prompt_rules.py`:
+
+| Block                   | Class | Injector                       | For                                                                                                                                                              |
+| ----------------------- | ----- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LATEX_SYSTEM_RULES`    | A     | `inject_latex_rules`           | text rendered with KaTeX / flutter_math_fork                                                                                                                     |
+| `NARRATIVE_PROSE_RULES` | B     | `inject_narrative_prose_rules` | spoken scripts read by TTS: quantities in words, no symbols                                                                                                      |
+| `PLAIN_NOTATION_RULES`  | B     | `inject_plain_notation_rules`  | text displayed without a maths renderer: maths in plain Unicode (`x²`, `√2`, `π`, `≤`, `H₂O`, `3 × 10⁸`), never `$` or a backslash command, no markdown emphasis |
+
+Services must inject them through the injectors, which are idempotent (injecting twice equals injecting once), and may append `narrative_field_exemption(...)` when one JSON object mixes Class A fields with spoken prose. `has_formatting_contract(prompt)` is true when any of the three blocks is present.
+
+Since 1.4.0 `LATEX_SYSTEM_RULES` also states: one span per whole expression, operators included; multiplication is `\times` (or `\cdot`), never a literal `*`; a maths fraction `a/b` is `\frac{a}{b}`; malformed commands are repaired (`|sqrt` / `\|sqrt` → `\sqrt{…}`, `\sqrt2` → `\sqrt{2}`, `\sqrt[x]` as a radicand → `\sqrt{x}`, `[…]` grouping → braces); plain numbers and money are never wrapped in `$…$` (a dollar amount is `\$5`, `₹ 45,00,000` is plain text); and only the listed standard commands are used, never invented ones.
+
+The consumer CI check `tools/check_prompt_parity.py` fails when a service carries a diverged copy of a block, whether assigned to a name ending in the block's name or pasted inside a larger prompt string. It also lists (without failing) hand-written rules the library now carries: `TODO(pupiltree-latex): move to LATEX_SYSTEM_RULES` comments and strings that forbid LaTeX while showing Unicode sub/superscripts.
 
 ## 7. Versioning
 

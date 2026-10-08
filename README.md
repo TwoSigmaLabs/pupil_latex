@@ -31,7 +31,7 @@ fix("Cost $5 and \\(\\theta\\) with \x0crac{1}{2} and π and H₂O")
 | `to_plain(text, style)` | LaTeX → Unicode text for PDFs (`pdf`), canvases and reports (`text`), speech (`tts`), answer matching (`compare`)   | lossy by design    | PDF, canvas, TTS, answer matching                    |
 | `audit(text)`           | Detect what is still broken (12 finding kinds), never mutates                                                       | read-only          | logs, CI, editor hints                               |
 
-Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums, and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`).
+Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums, and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`, `PLAIN_NOTATION_RULES`).
 
 ## Install
 
