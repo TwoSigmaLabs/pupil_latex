@@ -181,6 +181,39 @@ for path, finding in audit_deep(doc):
 
 A good backend pattern: `fix_deep` the model output, `audit_deep` the result, and ask the model again if any finding is an error.
 
+## Special fields and helpers (1.4.0)
+
+**Narration in the same document.** Podcast and story scripts are read aloud and must stay plain (CONTRACT §2). List their keys and `fix_deep` repairs them losslessly instead of adding LaTeX:
+
+```python
+doc = fix_deep(doc, narrative_keys=["story_script", "story_sections", "transcript", "script@transcript"])
+# "script@transcript": a `script` next to a `transcript` is narration; a lesson `script` elsewhere is fixed as usual
+```
+
+**Answer options.** `normalize_option_text` is `fix` plus the clean-ups an option field needs:
+
+```python
+from pupiltree_latex import normalize_option_text
+normalize_option_text(r"$\text{Coulomb}$")   # 'Coulomb'
+normalize_option_text(r"$\text{H_{2}O}$")    # '$\\text{H}_{2}\\text{O}$'
+normalize_option_text(r"$50 \text{ %}$")     # '$50 \\%$'
+```
+
+**Money.** `currency_spans` lists every amount with its position, so you can protect amounts (for example before sending text to a model) without your own regex:
+
+```python
+from pupiltree_latex import currency_spans
+[s["text"] for s in currency_spans(r"Rs $5, \$10 and ₹ 45,00,000")]   # ['$5', '\\$10', '₹ 45,00,000']
+```
+
+**Does this text need `fix`?** `needs_fix(text)` is true when `fix` would add LaTeX (Unicode maths such as `H₂O`, `√2`, `π`, `x × y`, or a bare `\frac`) or repair a formula; it is false for plain prose and for text that is already clean.
+
+**Inline code as maths (opt-in).** Some content writes maths in backticks. `normalize(text, code_spans_as_math=True)` turns `` `x^2` `` into `$x^2$` when the code is clearly maths, and leaves real code such as `` `print(x)` `` alone. It is off by default.
+
+**Model JSON.** `loads_model_json(text)` is lenient by default: a backslash before an unknown letter (`\q`, `\alpha`) is read as a literal backslash instead of failing, and raw newlines inside strings are kept. Pass `lenient=False` for a strict parse.
+
+`fix` also repairs, since 1.4.0: a surplus closing brace (`$x}$` → `${x}$`), invented commands (`\fre{1}{2}`, `\frc{1}{2}` → `\frac{1}{2}`), doubled groups inside maths (`{{x}}` → `{x}`), a lone formula dollar (`What is $x + 1 equal to?` → `What is x + 1 equal to?`; money such as `costs $5`, `US$ 5` or `5$ per kg` is never touched), an escaped opening dollar (`\$1.56 \text{ m}$` → `$1.56 \text{ m}$`) and `\AA` (→ `Å`). `audit` reports a deleted character (DEL) as `control_char` and a command that lost its first letter (`$rac{1}{2}$`, `$2 imes 3$`) as `lost_escape`.
+
 ## Same names in every language
 
 | Task                    | Python                  | JavaScript                  | Dart                      |
@@ -190,6 +223,12 @@ A good backend pattern: `fix_deep` the model output, `audit_deep` the result, an
 | Parse model JSON safely | `loads_latex_aware(s)`  | `loadsLatexAware(s)`        | `loadsLatexAware(s)`      |
 | LaTeX to plain text     | `to_plain(text, style)` | `toPlain(text, style)`      | `toPlain(text, style: …)` |
 | Find what is broken     | `audit(text)`           | `audit(text)`               | `audit(text)`             |
+| Clean an answer option  | `normalize_option_text(text)` | `normalizeOptionText(text)` | `normalizeOptionText(text)` |
+| Find amounts of money   | `currency_spans(text)`  | `currencySpans(text)`       | `currencySpans(text)`     |
+| Would `fix` add LaTeX?  | `needs_fix(text)`       | `needsFix(text)`            | `needsFix(text)`          |
+| Keep narration plain    | `fix_deep(doc, narrative_keys=[…])` | `fixDeep(doc, { narrativeKeys })` | `fixDeep(doc, narrativeKeys: […])` |
+| Code spans as maths     | `normalize(t, code_spans_as_math=True)` | `normalize(t, { codeSpansAsMath: true })` | `normalize(t, codeSpansAsMath: true)` |
+| Strict model JSON       | `loads_model_json(s, lenient=False)` | `loadsModelJson(s, { lenient: false })` | `loadsModelJson(s, lenient: false)` |
 | Render                  | none                    | `<MathText>`, `typesetMath` | `MathText` widget         |
 
 Every function gives the same output in all three languages for the same input. A shared set of about 3,900 test cases checks this in CI.

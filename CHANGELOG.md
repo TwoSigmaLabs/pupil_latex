@@ -2,6 +2,28 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
+## Unreleased — 1.4.0
+
+### Group B: `fix` / `repair` / `audit` / `segment` / helpers
+
+Requests from the 9-project migration (`TODO(pupiltree-latex)` markers). New corpus cases are tagged `v140-b<n>`; every change is in Python, JavaScript and Dart, and the three agree on the whole corpus, on 8,702 production-derived strings and on 4,000 fuzzed strings.
+
+**Changed expectations.** No existing corpus expectation changed. Two harvested Backend cases that 1.3.0 rejected now pass and moved from `corpus/review/` into `corpus/canonicalize.json` (`backend-latex-escape-fix-0001` `\$1.56 \text{ meters}$` → `$1.56 \text{ meters}$`, `backend-latex-escape-fix-0010` `orphan $x` → `orphan x`). Behaviour tests that list the audit kinds now include `lost_escape` (Python `test_api.py`, JS `api.test.mjs`, Dart `api_test.dart`: 13 kinds). The React test "a formula KaTeX throws on shows its source" now nests `{a` 50,000 times instead of `{` (`fix` collapses `{{…{x}…}}` to `{x}` since B2, which would make the old input render).
+
+- **B1 surplus closing brace** (canonicalize step 10c `openSurplusBraces`): `$x}$` → `${x}$`, `$a+b}$` → `${a+b}$`; `$x}{y$` stays. Backend `sanitize_latex_option` can drop its brace prepend.
+- **B2 invented commands and broken dollars**: `\fre{…}` / `\frc{…}` → `\frac{…}` (step 8a, `COMMAND_TYPOS`); `{{x}}` → `{x}` inside maths (step 10d, one linear pass); a lone formula dollar is dropped (step 10f: `What is $x + 1 equal to?` → `What is x + 1 equal to?`, `costs \$5 and x^2$` → `costs \$5 and $x^2$` instead of 1.3.0's `$x^2$$`), never money (`costs $5`, `Pay $ 5`, `5$ per kg`, `US$ 5`), a word (`in $ terms`), a string-initial dollar (`$\ldots`, `$×5`, tag audit2-lone-dollar) or one of several; an escaped opening dollar before a number and maths gets its span back (step 3a: `\$1.56 \text{ m}$` → `$1.56 \text{ m}$`; `\$50` stays). Backend `fix_common_latex_errors` can go.
+- **B3 `\AA`** (step 10e): `\AA` and `\text{\AA}` → `Å` in prose, a span that is only the sign → `Å`, `\text{Å}` elsewhere in maths. `to_plain` already gave `Å` (now pinned). Backend `literal_angstrom` can go.
+- **B4 `normalize_option_text`** (new, API §10.1): `fix` plus option clean-ups: `$\text{Coulomb}$` / `$Coulomb$` → `Coulomb`, `$\text{H_{2}O}$` → `$\text{H}_{2}\text{O}$`, `$5 \text{ m^{2}}$` → `$5 \text{ m}^{2}$`, `$50 \text{ %}$` → `$50 \%$`, `\{A, B\}` → `{A, B}`; chemistry (`$\text{NaCl}$`), units and variables stay.
+- **B5 `narrative_keys`** on `fix_deep` / `canonicalize_deep` (JS `narrativeKeys`, Dart `narrativeKeys:`): listed keys get `repair_deep` only; `script@transcript` matches `script` beside `transcript`. Backend `_fix_walk` becomes one call.
+- **B6 `currency_spans`** (new, API §10.2): `$5` read as money, `\$5`, `₹ € £ ¥` + amount (`₹ 45,00,000`), with positions.
+- **B7 `repair`**: the closed-span rule ignores dollars that `normalize` reads as money, so `costs $5.<LF>angle ABC costs $10` keeps its line break (was `\rangle`) with `guess_whitespace=True`; `$x <LF>ightarrow y$` is still repaired.
+- **B8 `audit`**: DEL (U+007F) is a `control_char`; new kind `lost_escape` (`LOST_ESCAPE_RUNS`) for a command that lost its first letter (`$rac{1}{2}$`, `$2 imes 3$`, `ext{H}_2O`); not an error kind; a run still behind its control character is reported as `control_char` only.
+- **B9 `needs_fix`** (new, API §10.3): `fix(text) != normalize(text)`, with an ASCII fast path.
+- **B10 `is_plain_prose`**: false for a gpt_markdown radio button `(x) ` / `( ) ` (the Flutter `MathText` uses it, so it takes the markdown path).
+- **B11 `normalize(text, code_spans_as_math=True)`** (opt-in; default unchanged): `` `x^2` `` → `$x^2$` when the code is clearly maths; `` `print(x)` ``, `` `my_var` `` stay.
+- **B12 `loads_model_json(text, lenient=True)`** in all three languages: lenient (default) doubles stray backslashes (`\q`) and keeps raw newlines; `lenient=False` is a strict parse.
+
+`fix` and `canonicalize` run the B1/B2/B3 span repairs once more after the wrapping steps (and `fix` before merging), so one pass still equals two; on a fuzz of 4,000 adversarial strings the number of non-idempotent inputs went down (152 in 1.3.0 → 126). On the production-derived strings, `fix` changes 7 of 8,702 outputs, all intended repairs (a lone formula dollar dropped ×4, two of which let the bare script after it render as maths; a doubled group; an escaped opener; `\AA`); `normalize` and `to_plain` change none, and no new audit finding appears.
 ## 1.3.0 (2026-10-08)
 
 Bugs found while migrating Fillers, Backend, pupiltree-agents, script_editor and worksheet.ai to 1.2.0 (audit rounds 5 and 6). New corpus cases are tagged `audit5-<n>` and `audit6-<n>`; every fix is in Python, JavaScript and Dart.

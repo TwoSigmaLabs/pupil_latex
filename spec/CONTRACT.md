@@ -39,7 +39,7 @@ Markdown emphasis (`**bold**`, `*italic*`) is allowed in prose and must not appe
 ## 2. Two content classes
 
 - **Class A: renderable math text.** Questions, options, explanations, remedies, AHS content, lesson scripts, assessments. Canonical form applies. Generated through prompts that carry `LATEX_SYSTEM_RULES`.
-- **Class B: plain narrative or plain Unicode.** Podcast and story scripts (narration read by TTS), and period plans / in-class questions produced by the master-plan generators, which use Unicode subscripts and arrows on purpose. Prompts carry `NARRATIVE_PROSE_RULES` or a "no LaTeX" notation rule. The library must never "upgrade" Class B text to LaTeX. `canonicalize` is only called at Class A write chokepoints.
+- **Class B: plain narrative or plain Unicode.** Podcast and story scripts (narration read by TTS), and period plans / in-class questions produced by the master-plan generators, which use Unicode subscripts and arrows on purpose. Prompts carry `NARRATIVE_PROSE_RULES` or a "no LaTeX" notation rule. The library must never "upgrade" Class B text to LaTeX. `canonicalize` is only called at Class A write chokepoints. When one document carries both classes, the write chokepoint lists the Class B keys: `fix_deep(doc, narrative_keys=[…])` (and `canonicalize_deep`) give their values the lossless `repair` only (`name@sibling` matches `name` only beside `sibling`, e.g. `script@transcript`).
 
 ## 3. Where each function may run
 

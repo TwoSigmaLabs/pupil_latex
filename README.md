@@ -29,9 +29,9 @@ fix("Cost $5 and \\(\\theta\\) with \x0crac{1}{2} and π and H₂O")
 | `canonicalize(text)`    | Full write-time sanitiser: everything above plus Unicode → LaTeX, bare `\frac`/`H_{2}O`/`π` wrapping, brace fixes   | no (heuristic)     | **only** at the generation chokepoint, never on read |
 | `segment(text)`         | The one tokenizer: prose / inline math / display math, escape- and brace-aware, currency-safe                       | yes                | every renderer                                       |
 | `to_plain(text, style)` | LaTeX → Unicode text for PDFs (`pdf`), canvases and reports (`text`), speech (`tts`), answer matching (`compare`)   | lossy by design    | PDF, canvas, TTS, answer matching                    |
-| `audit(text)`           | Detect what is still broken (12 finding kinds), never mutates                                                       | read-only          | logs, CI, editor hints                               |
+| `audit(text)`           | Detect what is still broken (13 finding kinds), never mutates                                                       | read-only          | logs, CI, editor hints                               |
 
-Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums, and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`).
+Plus `escape_latex_for_json` / `loads_latex_aware` / `loads_model_json` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums (and keep listed narration keys plain), helpers for option fields (`normalize_option_text`), money (`currency_spans`) and render decisions (`needs_fix`, `is_plain_prose`), and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`).
 
 ## Install
 
