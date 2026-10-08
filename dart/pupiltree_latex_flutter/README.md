@@ -15,8 +15,8 @@ source in grey italic.
 dependencies:
   pupiltree_latex_flutter:
     git:
-      url: <this repository's git URL>
-      ref: v1.1.1
+      url: https://github.com/TwoSigmaLabs/pupil_latex
+      ref: v1.2.0
       path: dart/pupiltree_latex_flutter
 ```
 

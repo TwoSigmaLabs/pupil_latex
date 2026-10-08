@@ -2,11 +2,11 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
-## 1.1.1 (2026-10-08)
+## 1.2.0 (2026-10-08)
 
 Regressions found when the library was compared with the projects' own LaTeX code (audit round 4). New corpus cases are tagged `audit4-<n>`; every fix is in Python, JavaScript and Dart.
 
-**Versioning note.** Two curated `to_plain` expectations change (below), so by CONTRACT §7 this is strictly a minor change; it ships as 1.1.1 as requested for the regression release. Consumers that compare `to_plain` output literally must re-check fractions.
+**Versioning note.** This release was prepared as 1.1.1, but two curated `to_plain` expectations change (below), and CONTRACT §7 makes any change to a corpus expectation a minor bump, so it ships as 1.2.0. There is no 1.1.1 tag. Consumers that compare `to_plain` output literally must re-check fractions.
 
 ### Fixed in every language
 

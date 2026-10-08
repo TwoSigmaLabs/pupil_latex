@@ -1685,7 +1685,7 @@ MUST_NOT_CHANGE += [
 
 
 # ---------------------------------------------------------------------------
-# Audit round 4 (2026-10-08, v1.1.1): regressions found when the library was
+# Audit round 4 (2026-10-08, v1.2.0): regressions found when the library was
 # compared with the projects' own LaTeX code. Tags `audit4-<n>`, one per
 # item of the comparison report. `fix` cases live in tools/curated_fix.py.
 # ---------------------------------------------------------------------------
@@ -1841,7 +1841,7 @@ TO_PLAIN += [
         {},
     ),
     # The harvested Backend cases below expected `(a)/(b)` and moved to
-    # corpus/review/; these pin the same inputs under the 1.1.1 rule.
+    # corpus/review/; these pin the same inputs under the 1.2.0 rule.
     (
         "audit4-3-root-over-number",
         "$\\frac{\\sqrt{3}}{2}$",

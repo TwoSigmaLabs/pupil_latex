@@ -559,7 +559,7 @@ FIX += [
 ]
 
 
-# Audit round 4 (2026-10-08, v1.1.1). See build_corpus.py for the other
+# Audit round 4 (2026-10-08, v1.2.0). See build_corpus.py for the other
 # functions' `audit4-<n>` cases.
 FIX += [
     # audit4-1

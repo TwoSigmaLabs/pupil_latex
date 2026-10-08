@@ -2991,4 +2991,4 @@ const List<String> kDeclarationCommands = [
 ];
 
 /// Version of the tables (and of the contract they belong to).
-const String kVersion = '1.1.1';
+const String kVersion = '1.2.0';
