@@ -739,6 +739,382 @@ String _closeUnbalancedBraces(String text) {
 }
 
 // ---------------------------------------------------------------------------
+// 1.4.0 repairs (tags v140-b1, v140-b2, v140-b3)
+// ---------------------------------------------------------------------------
+
+/// Apply [transform] to the content of every `$…$` / `$$…$$` math segment;
+/// text segments and `\(…\)` are copied.
+String _mapMathSegments(String text, String Function(String body) transform) {
+  final out = StringBuffer();
+  for (final seg in segment(text)) {
+    var raw = seg.raw;
+    if (seg.isMath && raw.startsWith(r'$')) {
+      final k = raw.startsWith(r'$$') ? 2 : 1;
+      final body = raw.substring(k, raw.length - k);
+      final next = transform(body);
+      if (next != body) {
+        raw = raw.substring(0, k) + next + raw.substring(raw.length - k);
+      }
+    }
+    out.write(raw);
+  }
+  return out.toString();
+}
+
+/// `x}` → `{x}`: prepend the `{` a span needs when its braces go below zero
+/// and end there, so the prepended braces leave it balanced (`x}{y` stays).
+String _surplusOpen(String content) {
+  var depth = 0;
+  var lowest = 0;
+  for (var i = 0; i < content.length; i++) {
+    final ch = content[i];
+    if (ch == r'\') {
+      i++;
+      continue;
+    }
+    if (ch == '{') {
+      depth++;
+    } else if (ch == '}') {
+      depth--;
+      if (depth < lowest) lowest = depth;
+    }
+  }
+  if (lowest >= 0 || depth != lowest) return content;
+  return '{' * -lowest + content;
+}
+
+/// `$x}$` → `${x}$`, `$a+b}$` → `${a+b}$` (tag `v140-b1`).
+String openSurplusBraces(String text) {
+  if (!text.contains('}') || !text.contains(r'$')) return text;
+  return _mapMathSegments(text, _surplusOpen);
+}
+
+/// True when an odd run of backslashes ends right before [i].
+bool _isEscapedAt(String text, int i) {
+  var k = i - 1;
+  while (k >= 0 && text[k] == r'\') {
+    k--;
+  }
+  return (i - 1 - k).isOdd;
+}
+
+bool _isAsciiLetter(String c) {
+  if (c.isEmpty) return false;
+  final u = c.codeUnitAt(0);
+  return (u >= 0x41 && u <= 0x5A) || (u >= 0x61 && u <= 0x7A);
+}
+
+/// `{{x}}` → `{x}`, `{{{x}}}` → `{x}`: the innermost redundant pairs around
+/// a body with no braces collapse to one. A `{` after an odd run of
+/// backslashes is a literal brace. One linear pass.
+String _collapseDoubleGroupsInMath(String content) {
+  if (!content.contains('{{')) return content;
+  final out = StringBuffer();
+  final n = content.length;
+  var i = 0;
+  while (i < n) {
+    final ch = content[i];
+    if (ch == r'\') {
+      out.write(content.substring(i, i + 2 > n ? n : i + 2));
+      i += 2;
+      continue;
+    }
+    if (ch != '{') {
+      out.write(ch);
+      i++;
+      continue;
+    }
+    var j = i;
+    while (j < n && content[j] == '{') {
+      j++;
+    }
+    final opens = j - i;
+    var k = j;
+    var ok = true;
+    while (k < n && content[k] != '{' && content[k] != '}') {
+      if (content[k] == r'\') {
+        if (k + 1 >= n || content[k + 1] == '{' || content[k + 1] == '}') {
+          ok = false;
+          break;
+        }
+        if (_isAsciiLetter(content[k + 1])) {
+          k += 2;
+          while (k < n && _isAsciiLetter(content[k])) {
+            k++;
+          }
+          continue;
+        }
+        k += 2;
+        continue;
+      }
+      k++;
+    }
+    if (!ok || k >= n || content[k] != '}') {
+      out.write(content.substring(i, j));
+      i = j;
+      continue;
+    }
+    var e = k;
+    while (e < n && content[e] == '}') {
+      e++;
+    }
+    final closes = e - k;
+    final pairs = opens < closes ? opens : closes;
+    if (pairs < 2) {
+      out.write(content.substring(i, e));
+    } else {
+      out
+        ..write('{' * (opens - pairs))
+        ..write('{')
+        ..write(content.substring(j, k))
+        ..write('}')
+        ..write('}' * (closes - pairs));
+    }
+    i = e;
+  }
+  return out.toString();
+}
+
+/// `${{x}}$` → `${x}$` inside math only (tag `v140-b2`).
+String collapseDoubleGroups(String text) {
+  if (!text.contains('{{') || !text.contains(r'$')) return text;
+  return _mapMathSegments(text, _collapseDoubleGroupsInMath);
+}
+
+/// Invented commands with one reading, when an argument follows.
+const Map<String, String> kCommandTypos = {'fre': 'frac', 'frc': 'frac'};
+final _commandTypo = RegExp(r'\\(fre|frc)(?=[ \t]*\{)');
+
+/// `\fre{1}{2}` / `\frc{1}{2}` → `\frac{1}{2}` (tag `v140-b2`).
+String _fixCommandTypos(String text) {
+  if (!text.contains(r'\fr')) return text;
+  return text.replaceAllMapped(
+    _commandTypo,
+    (m) => _isEscapedAt(text, m.start) ? m[0]! : '\\${kCommandTypos[m[1]!]}',
+  );
+}
+
+// `\AA` (Ångström): KaTeX accepts it in text mode only and flutter_math not
+// at all, so it becomes the literal sign (tag `v140-b3`).
+final _angstromTextGroup =
+    RegExp('\\\\(?:text|mathrm|textrm)$pyS*\\{[ \\t]*\\\\AA[ \\t]*\\}');
+final _angstrom = RegExp(r'\\AA(?![A-Za-z])');
+final _angstromOnlySpan = RegExp(
+  '^[ \\t]*(?:\\\\AA|\\\\(?:text|mathrm|textrm)$pyS*\\{[ \\t]*(?:\\\\AA|Å)[ \\t]*\\})[ \\t]*\$',
+);
+final _textFamilyOpen = RegExp(
+  '\\\\(?:text|textbf|textit|textrm|textsf|texttt|textnormal|textup|mbox|hbox)$pyS*\\{',
+);
+
+String _replaceUnescaped(String s, RegExp re, String by) =>
+    s.replaceAllMapped(re, (m) => _isEscapedAt(s, m.start) ? m[0]! : by);
+
+String _angstromInMath(String content) {
+  final out = StringBuffer();
+  final n = content.length;
+  var i = 0;
+  while (i < n) {
+    final m = _textFamilyOpen.matchAsPrefix(content, i);
+    if (m != null && !_isEscapedAt(content, i)) {
+      // Copy the text group, turning `\AA` inside it into the sign.
+      var depth = 0;
+      var j = m.end - 1;
+      while (j < n) {
+        final ch = content[j];
+        if (ch == r'\') {
+          j += 2;
+          continue;
+        }
+        if (ch == '{') {
+          depth++;
+        } else if (ch == '}') {
+          depth--;
+          if (depth == 0) {
+            j++;
+            break;
+          }
+        }
+        j++;
+      }
+      if (j > n) j = n;
+      out.write(_replaceUnescaped(content.substring(i, j), _angstrom, 'Å'));
+      i = j;
+      continue;
+    }
+    final a = _angstrom.matchAsPrefix(content, i);
+    if (a != null && !_isEscapedAt(content, i)) {
+      out.write(r'\text{Å}');
+      i = a.end;
+      continue;
+    }
+    out.write(content[i]);
+    i++;
+  }
+  return out.toString();
+}
+
+/// `\AA` → `Å` in prose and inside `\text{…}`, `\text{Å}` in other maths; a
+/// span that is only the sign becomes the sign.
+String _replaceAngstrom(String text) {
+  if (!text.contains(r'\AA')) return text;
+  final out = StringBuffer();
+  for (final seg in segment(text)) {
+    var raw = seg.raw;
+    if (seg.isMath && raw.startsWith(r'$')) {
+      final k = raw.startsWith(r'$$') ? 2 : 1;
+      final body = raw.substring(k, raw.length - k);
+      if (body.contains(r'\AA')) {
+        if (k == 1 && _angstromOnlySpan.hasMatch(body)) {
+          raw = 'Å';
+        } else {
+          raw = raw.substring(0, k) +
+              _angstromInMath(body) +
+              raw.substring(raw.length - k);
+        }
+      }
+    } else if (!seg.isMath && raw.contains(r'\AA')) {
+      raw = _replaceUnescaped(raw, _angstromTextGroup, 'Å');
+      raw = _replaceUnescaped(raw, _angstrom, 'Å');
+    }
+    out.write(raw);
+  }
+  return out.toString();
+}
+
+List<int> _unescapedDollarPositions(String text) => [
+      for (var i = 0; i < text.length; i++)
+        if (text[i] == r'$' && !_dollarEscaped(text, i)) i,
+    ];
+
+bool _isUpperAscii(String c) {
+  final u = c.codeUnitAt(0);
+  return u >= 0x41 && u <= 0x5A;
+}
+
+bool _isAsciiDigitChar(String c) {
+  if (c.isEmpty) return false;
+  final u = c.codeUnitAt(0);
+  return u >= 0x30 && u <= 0x39;
+}
+
+/// `US$`, `R$`, `NZ$`: one to three capitals glued to the dollar.
+bool _currencyPrefixBefore(String text, int k) {
+  var j = k;
+  while (j > 0 && _isUpperAscii(text[j - 1])) {
+    j--;
+  }
+  return k - j >= 1 && k - j <= 3 && (j == 0 || !isAlnum(text[j - 1]));
+}
+
+/// Unescaped `{`/`}` pair up (a backslash skips the next character).
+bool _bracesBalanced(String text) {
+  var depth = 0;
+  for (var i = 0; i < text.length; i++) {
+    final ch = text[i];
+    if (ch == r'\') {
+      i++;
+      continue;
+    }
+    if (ch == '{') {
+      depth++;
+    } else if (ch == '}') {
+      depth--;
+      if (depth < 0) return false;
+    }
+  }
+  return depth == 0;
+}
+
+/// `What is $x + 1 equal to?` → `What is x + 1 equal to?` (tag `v140-b2`).
+/// Only when the text has exactly one unescaped `$` and that dollar is not
+/// money and not a word (see the Python docstring for each rule).
+String _dropOrphanDollar(String text) {
+  if (!text.contains(r'$')) return text;
+  final positions = _unescapedDollarPositions(text);
+  if (positions.length != 1) return text;
+  final k = positions.first;
+  final n = text.length;
+  final after = k + 1 < n ? text[k + 1] : '';
+  final before = k > 0 ? text[k - 1] : '';
+  if (k == 0 || after == r'$' || before == r'$') return text;
+  final line = text.substring(text.lastIndexOf('\n', k - 1) + 1, k);
+  for (final esc in [_escapedDollarSentinel, r'\$']) {
+    var p = line.indexOf(esc);
+    while (p != -1) {
+      final q = p + esc.length;
+      if (q >= line.length || !_isAsciiDigitChar(line[q])) return text;
+      p = line.indexOf(esc, q);
+    }
+  }
+  // The dollar must be an opener (after a space or `(`, before a non-space)
+  // or a closer (after a non-space, before a space, the end or `.,;:!?)`).
+  final opener =
+      (isSpace(before) || before == '(') && after.isNotEmpty && !isSpace(after);
+  final closer =
+      (after.isEmpty || isSpace(after) || '.,;:!?)'.contains(after)) &&
+          !isSpace(before);
+  if (!(opener || closer)) return text;
+  var j = k + 1;
+  while (j < n && (text[j] == ' ' || text[j] == '\t')) {
+    j++;
+  }
+  if (j < n && _isAsciiDigitChar(text[j])) return text;
+  if (_isAsciiDigitChar(before)) {
+    j = k - 1;
+    while (j >= 0 &&
+        (text[j] == '.' || text[j] == ',' || _isAsciiDigitChar(text[j]))) {
+      j--;
+    }
+    if (j < 0 || ' \t\n('.contains(text[j])) return text;
+  }
+  if (_currencyPrefixBefore(text, k)) return text;
+  // Broken braces around it (`\text{5$`): dropping the dollar alone would
+  // not mend the text.
+  if (!_bracesBalanced(text)) return text;
+  return text.substring(0, k) + text.substring(k + 1);
+}
+
+// `\$1.56 \text{ m}$`: an escaped OPENING dollar before a number whose span
+// goes on with maths and has its closer (Backend #1416).
+final _escapedOpener = RegExp(r'\\\$([0-9]+(?:[.,][0-9]+)*)([^$\n]*)\$');
+final _mathStart = RegExp(r'^[ \t]*(?:\\[A-Za-z]|[\^_])');
+
+/// `\$1.56 \text{ m}$` → `$1.56 \text{ m}$` (tag `v140-b2`).
+String _unescapeMathOpener(String text) {
+  if (!text.contains(r'\$') || _unescapedDollarPositions(text).length.isEven) {
+    return text;
+  }
+  for (final m in _escapedOpener.allMatches(text)) {
+    final start = m.start;
+    if (_isEscapedAt(text, start)) continue;
+    final rest = m[2]!;
+    final close = m.end - 1;
+    if (!_mathStart.hasMatch(rest) || pyStrip(rest).isEmpty) continue;
+    if ((rest.isNotEmpty && isSpace(rest[rest.length - 1])) ||
+        (close + 1 < text.length && isDigit(codePointAt(text, close + 1)))) {
+      continue;
+    }
+    if (_dollarEscaped(text, close)) continue;
+    final core = _stripBlanks(rest);
+    final probe = '\$${m[1]}$rest\$';
+    if (detectCommandMissingArgument(probe).isNotEmpty ||
+        detectFracMissingArgs(probe).isNotEmpty) {
+      continue;
+    }
+    var words = core.replaceAll(_textBrace, '');
+    words = words.replaceAll(_anyLatexCmd, '');
+    if (_proseWord.hasMatch(words)) continue;
+    if (_shortWord
+        .allMatches(words)
+        .any((w) => _proseStopwords.contains(w[0]!.toLowerCase()))) {
+      continue;
+    }
+    return text.substring(0, start) + text.substring(start + 1);
+  }
+  return text;
+}
+
+// ---------------------------------------------------------------------------
 // Pipeline
 // ---------------------------------------------------------------------------
 
@@ -782,17 +1158,23 @@ String canonicalize(String text, {bool chemistry = true}) {
   if (text.contains('://')) text = text.replaceAllMapped(_embeddedUrl, stash);
 
   text = repair(text);
+  text = _unescapeMathOpener(text);
   text = _stashEscapedDollars(text);
   text = _escapeCurrency(text);
   text = _stashEscapedDollars(text);
   text = fixMojibakeTable(text);
   text = normalizeHomoglyphs(text);
   text = _collapseDoubleBackslashes(text);
+  text = _fixCommandTypos(text);
   text = _fixLeftRightBraces(text);
   text = _parenInline.replaceAllMapped(text, (m) => '\$${m[1]}\$');
   text = _bracketDisplay.replaceAllMapped(text, (m) => '\$\$${m[1]}\$\$');
   text = trimPaddedSpansInText(text);
   text = _closeUnbalancedBraces(text);
+  text = openSurplusBraces(text);
+  text = collapseDoubleGroups(text);
+  text = _replaceAngstrom(text);
+  text = _dropOrphanDollar(text);
   text = _normalizeBraces(text);
   text = unicodeMathToLatex(text);
   text = convertCombiningVec(text);
@@ -811,6 +1193,12 @@ String canonicalize(String text, {bool chemistry = true}) {
   // Running those two steps once more makes one pass equal to two.
   text = _normalizeBraces(text);
   text = unicodeMathToLatex(text);
+  // The same for the 1.4.0 repairs: the wrapping steps can give a typo its
+  // argument or put a surplus brace, a doubled group or `\AA` in a span.
+  text = _fixCommandTypos(text);
+  text = openSurplusBraces(text);
+  text = collapseDoubleGroups(text);
+  text = _replaceAngstrom(text);
   text = text.replaceAll(_escapedDollarSentinel, r'\$');
   // Restore last-stashed first: a URL stashed after an image marker may
   // contain that marker's token (`gs://{{IMAGE:x}}`).
@@ -823,12 +1211,15 @@ String canonicalize(String text, {bool chemistry = true}) {
 /// [canonicalize] over every content string in a JSON-like document.
 ///
 /// Skips non-content keys and URL-shaped values (CONTRACT §5); list items
-/// inherit the parent key. Anything that is not a string, map or list is
+/// inherit the parent key. Values under [narrativeKeys] (Class B narration,
+/// tag `v140-b5`; `name@sibling` matches `name` beside `sibling`) get
+/// [repairDeep] only. Anything that is not a string, map or list is
 /// returned as is.
 Object? canonicalizeDeep(
   Object? obj, {
   String keyHint = '',
   bool chemistry = true,
+  Iterable<String>? narrativeKeys,
 }) {
   if (obj is String) {
     if (isNonContentKey(keyHint) || isUrlOrPathString(obj)) return obj;
@@ -839,17 +1230,25 @@ Object? canonicalizeDeep(
       obj,
       // A non-string key is never a non-content key (Python passes it to
       // `is_non_content_key`, which answers False).
-      (k, v) => canonicalizeDeep(
-        v,
-        keyHint: k is String ? k : '',
-        chemistry: chemistry,
-      ),
+      (k, v) => isNarrativeKey(k, obj, narrativeKeys)
+          ? repairDeep(v)
+          : canonicalizeDeep(
+              v,
+              keyHint: k is String ? k : '',
+              chemistry: chemistry,
+              narrativeKeys: narrativeKeys,
+            ),
     );
   }
   if (obj is List) {
     return <Object?>[
       for (final v in obj)
-        canonicalizeDeep(v, keyHint: keyHint, chemistry: chemistry)
+        canonicalizeDeep(
+          v,
+          keyHint: keyHint,
+          chemistry: chemistry,
+          narrativeKeys: narrativeKeys,
+        )
     ];
   }
   return obj;

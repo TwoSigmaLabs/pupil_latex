@@ -27,6 +27,28 @@ bool isUrlOrPathString(Object? value) {
   return kFileExtensions.any(lower.endsWith);
 }
 
+/// True when `parent[key]` is Class B narration (tag `v140-b5`).
+/// [narrativeKeys] lists key names (exact match) and `name@sibling` entries
+/// that match `name` only in a map that also has a `sibling` key
+/// (`script@transcript`: a podcast's `script` sits beside its `transcript`).
+bool isNarrativeKey(
+  Object? key,
+  Object? parent,
+  Iterable<String>? narrativeKeys,
+) {
+  if (narrativeKeys == null || key is! String) return false;
+  for (final entry in narrativeKeys) {
+    final at = entry.indexOf('@');
+    final name = at == -1 ? entry : entry.substring(0, at);
+    final sibling = at == -1 ? '' : entry.substring(at + 1);
+    if (key == name &&
+        (sibling.isEmpty || (parent is Map && parent.containsKey(sibling)))) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /// True for fields that hold the model's raw output or our own prompts:
 /// kept for provenance, never rendered, so `auditDeep` skips them.
 bool isNotRenderedKey(Object? key) {

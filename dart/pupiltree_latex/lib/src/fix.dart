@@ -24,6 +24,7 @@ library;
 import 'canonicalize.dart';
 import 'guarded_regexp.dart';
 import 'normalize.dart';
+import 'repair.dart' show repairDeep;
 import 'segment.dart';
 import 'tables.g.dart';
 import 'text_util.dart';
@@ -467,13 +468,24 @@ String fix(String text, {bool chemistry = true}) {
   text = wrapUnicodeChemistry(text);
   text = wrapUnicodeScripts(text);
   text = escapeTextSpecials(text);
+  // Spans created after `canonicalize` get its span repairs too (tags
+  // v140-b1, v140-b2), before merging, which joins balanced spans only.
+  text = openSurplusBraces(text);
+  text = collapseDoubleGroups(text);
   return mergeAdjacentMath(text);
 }
 
 /// [fix] over every content string of a JSON-like document, skipping
 /// non-content keys and URL-shaped values (CONTRACT §5); list items inherit
-/// the parent key.
-Object? fixDeep(Object? obj, {String keyHint = '', bool chemistry = true}) {
+/// the parent key. Values under [narrativeKeys] (Class B narration, tag
+/// `v140-b5`; `name@sibling` matches `name` beside `sibling`) get
+/// [repairDeep] only.
+Object? fixDeep(
+  Object? obj, {
+  String keyHint = '',
+  bool chemistry = true,
+  Iterable<String>? narrativeKeys,
+}) {
   if (obj is String) {
     if (isNonContentKey(keyHint) || isUrlOrPathString(obj)) return obj;
     return fix(obj, chemistry: chemistry);
@@ -481,13 +493,40 @@ Object? fixDeep(Object? obj, {String keyHint = '', bool chemistry = true}) {
   if (obj is Map) {
     return mapValuesWithKey(
       obj,
-      (k, v) => fixDeep(v, keyHint: k is String ? k : '', chemistry: chemistry),
+      (k, v) => isNarrativeKey(k, obj, narrativeKeys)
+          ? repairDeep(v)
+          : fixDeep(
+              v,
+              keyHint: k is String ? k : '',
+              chemistry: chemistry,
+              narrativeKeys: narrativeKeys,
+            ),
     );
   }
   if (obj is List) {
     return <Object?>[
-      for (final v in obj) fixDeep(v, keyHint: keyHint, chemistry: chemistry),
+      for (final v in obj)
+        fixDeep(
+          v,
+          keyHint: keyHint,
+          chemistry: chemistry,
+          narrativeKeys: narrativeKeys,
+        ),
     ];
   }
   return obj;
+}
+
+final _needsFixHint = RegExp(r'[\\^_${}%`]');
+final _nonAscii = RegExp(r'[^\x00-\x7F]');
+
+/// True when [fix] would change more than [normalize] does: it would add
+/// LaTeX for Unicode or bare maths (`H₂O`, `√2`, `π`, `x × y`,
+/// `\frac{1}{2}` in prose) or repair a formula (tag `v140-b9`).
+bool needsFix(String text, {bool chemistry = true}) {
+  if (text.isEmpty) return false;
+  if (!_nonAscii.hasMatch(text) && !_needsFixHint.hasMatch(text)) {
+    return false;
+  }
+  return fix(text, chemistry: chemistry) != normalize(text);
 }

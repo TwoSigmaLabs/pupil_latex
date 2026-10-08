@@ -38,8 +38,10 @@ export 'src/audit.dart'
         countByKind,
         errorKinds,
         isError,
+        kLostEscapeRuns,
         makeSnippet;
-export 'src/canonicalize.dart' show canonicalize, canonicalizeDeep;
+export 'src/canonicalize.dart'
+    show canonicalize, canonicalizeDeep, kCommandTypos;
 export 'src/commands.dart';
 export 'src/fix.dart'
     show
@@ -47,6 +49,7 @@ export 'src/fix.dart'
         fix,
         fixDeep,
         mergeAdjacentMath,
+        needsFix,
         wrapBareSymbolCommands,
         wrapUnicodeChemistry,
         wrapUnicodeScripts;
@@ -55,11 +58,15 @@ export 'src/json_transport.dart'
 export 'src/mojibake.dart' show fixMojibakeTable, unescapeHtmlEntities;
 export 'src/normalize.dart'
     show
+        CurrencySpan,
+        currencySpans,
         decodeEscapesOutsideMath,
         escapeCurrency,
+        kCurrencySymbols,
         normalize,
         normalizeDelimiters,
         stripOrphanDelimiters;
+export 'src/option_text.dart' show normalizeOptionText;
 export 'src/repair.dart' show repair, repairDeep;
 export 'src/segment.dart' show Segment, containsMath, isPlainProse, segment;
 export 'src/spans.dart' show mathMask, mathRanges;
@@ -72,4 +79,4 @@ export 'src/unicode_math.dart'
         unicodeMathToLatex,
         wrapBareUnicodeMath;
 export 'src/walk.dart'
-    show isNonContentKey, isNotRenderedKey, isUrlOrPathString;
+    show isNarrativeKey, isNonContentKey, isNotRenderedKey, isUrlOrPathString;

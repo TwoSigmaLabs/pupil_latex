@@ -247,7 +247,8 @@ void main() {
       'legacy_delimiter',
       'unbalanced_dollar'
     ]);
-    expect(allKinds.length, 12);
+    expect(allKinds.length, 13);
+    expect(allKinds.last, 'lost_escape');
     expect(errorKinds, {'control_char'});
   });
 
