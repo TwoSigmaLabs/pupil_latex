@@ -2962,5 +2962,33 @@ const List<String> kGreekUnitSymbols = [
   'mol',
 ];
 
+/// `corpus/tables/declaration_commands.json`.
+const List<String> kDeclarationCommands = [
+  'bf',
+  'it',
+  'rm',
+  'sf',
+  'tt',
+  'cal',
+  'sl',
+  'em',
+  'mit',
+  'color',
+  'displaystyle',
+  'textstyle',
+  'scriptstyle',
+  'scriptscriptstyle',
+  'tiny',
+  'scriptsize',
+  'footnotesize',
+  'small',
+  'normalsize',
+  'large',
+  'Large',
+  'LARGE',
+  'huge',
+  'Huge',
+];
+
 /// Version of the tables (and of the contract they belong to).
-const String kVersion = '1.1.0';
+const String kVersion = '1.1.1';

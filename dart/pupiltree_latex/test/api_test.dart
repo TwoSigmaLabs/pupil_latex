@@ -293,7 +293,7 @@ void main() {
     expect(toPlain(r'$\hat{i}$', style: 'pdf'), '\u00ee');
     expect(toPlain(r'$x^2$', style: 'tts'), 'x squared');
     expect(latexToPlain(r'$\alpha$', markAccents: true), '\u03b1');
-    expect(styles, ['text', 'pdf', 'tts']);
+    expect(styles, ['text', 'pdf', 'tts', 'compare']);
     expect(() => toPlain(r'$x$', style: 'html'), throwsArgumentError);
   });
 
@@ -664,7 +664,7 @@ void main() {
     expect(toPlain(r'$\pmatrix$', style: 'tts'), 'pmatrix');
     final deep = '${'{' * 600}x${'}' * 600}';
     expect(toPlain('\$$deep\$'), 'x');
-    expect(toPlain(r'$\frac{a}{b}$'), '(a)/(b)'); // the guard resets
+    expect(toPlain(r'$\frac{a}{b}$'), 'a/b'); // the guard resets
   });
 
   test('audit no longer whitelists the model emissions (R9)', () {
@@ -691,7 +691,7 @@ void main() {
   });
 
   test('exported tables are populated and versioned', () {
-    expect(kVersion, '1.1.0');
+    expect(kVersion, '1.1.1');
     expect(kKatexCommands, contains('frac'));
     expect(kJsonWhitespaceCollisionCommands, contains('nu'));
     expect(kLatexCommandsBehindJsonEscapes, contains('theta'));

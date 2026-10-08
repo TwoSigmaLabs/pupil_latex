@@ -58,10 +58,7 @@ void main() {
         ceToLatex(r'\ce{A ->[heat][-H2O] B}'),
         r'{\mathrm{A} \xrightarrow[- \mathrm{H}_{2}\mathrm{O}]{\mathrm{heat}} \mathrm{B}}',
       );
-      expect(
-        ceToLatex(r'\ce{NaCl(aq)}'),
-        r'{\mathrm{NaCl}(\mathrm{aq})}',
-      );
+      expect(ceToLatex(r'\ce{NaCl(aq)}'), r'{\mathrm{NaCl}(\mathrm{aq})}');
       expect(
         ceToLatex(r'\ce{H2O(l) -> H2O(g)}'),
         r'{\mathrm{H}_{2}\mathrm{O}(\mathrm{l}) \rightarrow \mathrm{H}_{2}\mathrm{O}(\mathrm{g})}',
@@ -74,10 +71,7 @@ void main() {
         ceToLatex(r'\ce{CuSO4·5H2O}'),
         r'{\mathrm{CuSO}_{4} \cdot 5\mathrm{H}_{2}\mathrm{O}}',
       );
-      expect(
-        ceToLatex(r'\ce{Ca(OH)2}'),
-        r'{\mathrm{Ca}(\mathrm{OH})_{2}}',
-      );
+      expect(ceToLatex(r'\ce{Ca(OH)2}'), r'{\mathrm{Ca}(\mathrm{OH})_{2}}');
       expect(
         ceToLatex(r'\ce{[Cu(NH3)4]^2+}'),
         r'{[\mathrm{Cu}(\mathrm{NH}_{3})_{4}]^{2+}}',
@@ -248,6 +242,35 @@ void main() {
       );
     });
 
+    testWidgets('a multiplication star between operands is drawn', (
+      tester,
+    ) async {
+      const input = '7/5 * (-3/12) + 7/5 * (5/12)';
+      await tester.pumpWidget(_app(const MathText(input)));
+      await tester.pumpAndSettle();
+      final buffer = StringBuffer();
+      final spans = <TextSpan>[];
+      for (final rt in tester.widgetList<RichText>(find.byType(RichText))) {
+        buffer.write(rt.text.toPlainText());
+        rt.text.visitChildren((s) {
+          if (s is TextSpan) spans.add(s);
+          return true;
+        });
+      }
+      final shown = buffer.toString();
+      expect('*'.allMatches(shown).length, 2, reason: shown);
+      expect(shown, contains('7/5 * (-3/12) + 7/5 * (5/12)'));
+      expect(spans.any((s) => s.style?.fontStyle == FontStyle.italic), isFalse);
+    });
+
+    test('operator stars are protected only in prose', () {
+      expect(
+        toMarkdownSource(r'2 * 3 and $a * b$ and *note* and **key**'),
+        '2 $operatorStar 3 and \\(a * b\\) and *note* and **key**',
+      );
+      expect(toMarkdownSource('* item\n  * nested'), '* item\n  * nested');
+    });
+
     testWidgets('a formula inside italics is still drawn', (tester) async {
       final maths = await _render(tester, r'*see $x^2$ here*');
       expect(maths, hasLength(1));
@@ -266,7 +289,7 @@ void main() {
       expect(md.inlineComponents, isNull);
       // ignore: deprecated_member_use
       expect(md.components, isNull);
-      expect(md.inlinePatterns, [inlineMathPattern]);
+      expect(md.inlinePatterns, [inlineMathPattern, operatorStarPattern]);
     });
   });
 }

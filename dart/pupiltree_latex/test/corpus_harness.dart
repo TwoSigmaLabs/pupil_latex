@@ -68,6 +68,12 @@ class ParseError implements Exception {
   String toString() => 'ParseError: $message';
 }
 
+/// The `opts.chemistry` call option of a case (default true).
+bool _chemistryOpt(Case c) {
+  final opts = c['opts'];
+  return opts is Map ? (opts['chemistry'] as bool? ?? true) : true;
+}
+
 /// The implementation's output for [c] (throws [ParseError] on failure).
 Object? run(String function, Case c) {
   final inp = c['input'] as String;
@@ -77,9 +83,9 @@ Object? run(String function, Case c) {
     case 'normalize':
       return normalize(inp);
     case 'canonicalize':
-      return canonicalize(inp);
+      return canonicalize(inp, chemistry: _chemistryOpt(c));
     case 'fix':
-      return fix(inp);
+      return fix(inp, chemistry: _chemistryOpt(c));
     case 'segment':
       return [for (final s in segment(inp)) s.toJson()];
     case 'to_plain':

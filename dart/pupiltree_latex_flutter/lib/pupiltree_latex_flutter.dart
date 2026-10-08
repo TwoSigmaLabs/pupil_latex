@@ -50,6 +50,75 @@ String toBracketDelimiters(String text) {
   return out.toString();
 }
 
+/// Stand-in for a prose multiplication `*` until it is drawn (a private-use
+/// character gpt_markdown has no syntax for).
+const operatorStar = '\uE02A';
+
+/// [toBracketDelimiters], then every prose `*` that stands alone between
+/// spaces with an operand on each side (`7/5 * (-3/12) + 7/5 * (5/12)`) is
+/// replaced by [operatorStar]. gpt_markdown 1.3.0 has no `\*` escape and
+/// paired two such stars as `*italic*`, swallowing both; [operatorStarPattern]
+/// draws the stand-in as a literal `*`. A star at a line start (a list
+/// marker), a star touching a word (`*note*`) and a `**` run are untouched,
+/// and so is everything inside a formula.
+String toMarkdownSource(String text) {
+  final pieces = <(String, bool)>[]; // (text, isProse)
+  if (!text.contains(r'$')) {
+    pieces.add((text, true));
+  } else {
+    for (final seg in segment(text)) {
+      if (!seg.isMath) {
+        pieces.add((seg.value, true));
+      } else if (seg.display) {
+        pieces.add(('\\[${seg.value}\\]', false));
+      } else {
+        pieces.add(('\\(${seg.value}\\)', false));
+      }
+    }
+  }
+  final s = pieces.map((p) => p.$1).join();
+  if (!s.contains('*')) return s;
+  final prose = <bool>[
+    for (final p in pieces)
+      for (var k = 0; k < p.$1.length; k++) p.$2,
+  ];
+  bool blank(int k) => s[k] == ' ' || s[k] == '\t';
+  final out = StringBuffer();
+  final n = s.length;
+  for (var i = 0; i < n; i++) {
+    if (s[i] != '*' ||
+        !prose[i] ||
+        (i > 0 && s[i - 1] == '*') ||
+        (i + 1 < n && s[i + 1] == '*')) {
+      out.write(s[i]);
+      continue;
+    }
+    var j = i - 1;
+    while (j >= 0 && blank(j)) {
+      j--;
+    }
+    var k = i + 1;
+    while (k < n && blank(k)) {
+      k++;
+    }
+    final spacedOperator =
+        j < i - 1 &&
+        j >= 0 &&
+        s[j] != '\n' &&
+        k > i + 1 &&
+        k < n &&
+        s[k] != '\n';
+    out.write(spacedOperator ? operatorStar : '*');
+  }
+  return out.toString();
+}
+
+/// Draws [operatorStar] as a literal `*` (see [toMarkdownSource]).
+final InlinePattern operatorStarPattern = InlinePattern(
+  pattern: RegExp(operatorStar),
+  builder: (context, match, style) => TextSpan(text: '*', style: style),
+);
+
 /// An inline `\(…\)` formula, claimed before gpt_markdown parses emphasis.
 ///
 /// The parser pairs `*` delimiters by scanning for the next star run, so in
@@ -135,8 +204,9 @@ class MathText extends StatelessWidget {
       mode == MathTextMode.fix || canonical ? fix(text) : normalize(text);
 
   /// The string handed to the renderer: [_shown], trimmed, with `$`
-  /// delimiters rewritten to `\(…\)` / `\[…\]`.
-  String get processed => toBracketDelimiters(_shown).trim();
+  /// delimiters rewritten to `\(…\)` / `\[…\]` and prose operator stars
+  /// protected ([toMarkdownSource]).
+  String get processed => toMarkdownSource(_shown).trim();
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +239,7 @@ class MathText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       useDollarSignsForLatex: false,
-      inlinePatterns: [inlineMathPattern],
+      inlinePatterns: [inlineMathPattern, operatorStarPattern],
       latexBuilder:
           (context, tex, textStyle, inline) =>
               mathWidget(tex, textStyle, inline: inline),

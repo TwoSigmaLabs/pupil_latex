@@ -29,6 +29,9 @@ final _alphaRun = RegExp(r'[A-Za-z]+');
 // Every C0 control except TAB, LF, CR — plus DEL.
 final _otherControl = RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]');
 final _anyControl = RegExp(r'[\x00-\x1F\x7F]');
+// A whole ANSI CSI sequence (terminal colour/bold codes copied from a log):
+// ESC `[`, parameter bytes, intermediate bytes, one final byte.
+final _ansiCsi = RegExp(r'\x1B\[[0-?]*[ -/]*[@-~]');
 
 /// Positions of the unescaped `$` in [text].
 List<int> _dollarPositions(String text) => [
@@ -53,6 +56,7 @@ List<int> _dollarPositions(String text) => [
 String repair(String text, {bool guessWhitespace = true}) {
   if (text.isEmpty) return text;
   if (!_anyControl.hasMatch(text)) return text;
+  if (text.contains('\x1B[')) text = text.replaceAll(_ansiCsi, '');
   final out = StringBuffer();
   final n = text.length;
   List<int>? dollars; // positions of unescaped `$`, on demand
