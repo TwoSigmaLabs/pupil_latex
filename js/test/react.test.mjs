@@ -88,8 +88,9 @@ test("a formula KaTeX rejects shows its grey source, not red error text", () => 
 
 test("a formula KaTeX throws on shows its source", () => {
   // Nesting past the JS stack is not a ParseError either; it also lands in
-  // the catch.
-  const deep = "{".repeat(50000) + "x" + "}".repeat(50000);
+  // the catch. (Each level holds a letter: `fix` collapses `{{x}}` to `{x}`
+  // since 1.4.0, which would make a bare `{{{…x…}}}` render.)
+  const deep = "{a".repeat(50000) + "}".repeat(50000);
   assert.strictEqual(renderMath(deep, false), null);
   const html = render({ text: `see $${deep}$ end` });
   assert.ok(html.includes('<code class="pt-math-source">'));

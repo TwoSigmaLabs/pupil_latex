@@ -17,7 +17,12 @@
  * stored content served back to other apps (CONTRACT §3).
  */
 
-import { canonicalize, mapContentStrings } from "./canonicalize.js";
+import {
+  canonicalize,
+  collapseDoubleGroups,
+  mapContentStrings,
+  openSurplusBraces,
+} from "./canonicalize.js";
 import type { CanonicalizeOptions } from "./canonicalize.js";
 import { isAsciiDigit, matchAt } from "./chars.js";
 import { padSpan, wrapUnicodeChemistry } from "./chemistry.js";
@@ -431,6 +436,10 @@ export function fix(text: unknown, options: CanonicalizeOptions = {}): unknown {
   out = wrapUnicodeChemistry(out);
   out = wrapUnicodeScripts(out);
   out = escapeTextSpecials(out);
+  // Spans created after `canonicalize` get its span repairs too (tags
+  // v140-b1, v140-b2), before merging, which joins balanced spans only.
+  out = openSurplusBraces(out);
+  out = collapseDoubleGroups(out);
   return mergeAdjacentMath(out);
 }
 
@@ -438,9 +447,27 @@ export function fix(text: unknown, options: CanonicalizeOptions = {}): unknown {
  * `fix` over every content string of a JSON-like document, skipping
  * non-content keys and URL-shaped values (CONTRACT §5). Unlike
  * `canonicalizeDeep`, a `Date` passes through unchanged (as in Python).
+ * Values under `options.narrativeKeys` (Class B narration, tag `v140-b5`)
+ * get `repairDeep` only; `name@sibling` matches `name` beside `sibling`.
  */
 export function fixDeep<T>(obj: T, options: CanonicalizeOptions = {}): T {
   return mapContentStrings(obj, (s: string) => fix(s, options), {
     convertDates: false,
+    narrativeKeys: options.narrativeKeys,
   });
+}
+
+/**
+ * True when `fix` would change more than `normalize` does: it would add
+ * LaTeX for Unicode or bare maths (`H₂O`, `√2`, `π`, `x × y`, `\frac{1}{2}`
+ * in prose) or repair a formula (tag `v140-b9`). `false` for non-strings
+ * and for text `fix` leaves as `normalize` does.
+ */
+export function needsFix(
+  text: unknown,
+  options: CanonicalizeOptions = {},
+): boolean {
+  if (typeof text !== "string" || !text) return false;
+  if (/^[\x00-\x7f]*$/.test(text) && !/[\\^_${}%`]/.test(text)) return false;
+  return fix(text, options) !== normalize(text);
 }

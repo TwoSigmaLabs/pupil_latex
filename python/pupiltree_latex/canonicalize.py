@@ -695,7 +695,7 @@ def _surplus_open(content: str) -> str:
     return "{" * (-lowest) + content
 
 
-def _open_surplus_braces(text: str) -> str:
+def open_surplus_braces(text: str) -> str:
     """``$x}$`` \u2192 ``${x}$``, ``$a+b}$`` \u2192 ``${a+b}$`` (tag ``v140-b1``)."""
     if "}" not in text or "$" not in text:
         return text
@@ -710,29 +710,67 @@ def _is_escaped_at(text: str, i: int) -> bool:
     return (i - 1 - k) % 2 == 1
 
 
-# `{{x}}` inside math: a doubled group around a body with no braces (a
-# command name or any other escaped character may appear in it).
-_DOUBLE_GROUP_RE = re.compile(r"\{\{((?:[^{}\\]|\\[A-Za-z]+|\\[^A-Za-z{}])*)\}\}")
 
 
 def _collapse_double_groups_in_math(content: str) -> str:
-    while "{{" in content:
-        out: list[str] = []
-        last = 0
-        for m in _DOUBLE_GROUP_RE.finditer(content):
-            if _is_escaped_at(content, m.start()):
+    """``{{x}}`` → ``{x}``, ``{{{x}}}`` → ``{x}``: the innermost redundant
+    pairs around a body with no braces (a command name or other escaped
+    character may appear in it) collapse to one. A ``{`` after an odd run of
+    backslashes is a literal brace, not a group. One linear pass."""
+    if "{{" not in content:
+        return content
+    out: list[str] = []
+    n = len(content)
+    i = 0
+    while i < n:
+        ch = content[i]
+        if ch == "\\":
+            out.append(content[i : i + 2])
+            i += 2
+            continue
+        if ch != "{":
+            out.append(ch)
+            i += 1
+            continue
+        j = i
+        while j < n and content[j] == "{":
+            j += 1
+        opens = j - i
+        k = j
+        ok = True
+        while k < n and content[k] not in "{}":
+            if content[k] == "\\":
+                if k + 1 >= n or content[k + 1] in "{}":
+                    ok = False
+                    break
+                if content[k + 1].isascii() and content[k + 1].isalpha():
+                    k += 2
+                    while k < n and content[k].isascii() and content[k].isalpha():
+                        k += 1
+                    continue
+                k += 2
                 continue
-            out.append(content[last : m.start()])
-            out.append("{" + m.group(1) + "}")
-            last = m.end()
-        if not out:
-            break
-        out.append(content[last:])
-        content = "".join(out)
-    return content
+            k += 1
+        if not ok or k >= n or content[k] != "}":
+            out.append(content[i:j])
+            i = j
+            continue
+        e = k
+        while e < n and content[e] == "}":
+            e += 1
+        closes = e - k
+        pairs = min(opens, closes)
+        if pairs < 2:
+            out.append(content[i:e])
+        else:
+            out.append(
+                "{" * (opens - pairs) + "{" + content[j:k] + "}" + "}" * (closes - pairs)
+            )
+        i = e
+    return "".join(out)
 
 
-def _collapse_double_groups(text: str) -> str:
+def collapse_double_groups(text: str) -> str:
     """``${{x}}$`` \u2192 ``${x}$`` inside math only (tag ``v140-b2``)."""
     if "{{" not in text or "$" not in text:
         return text
@@ -895,7 +933,15 @@ def _drop_orphan_dollar(text: str) -> str:
             if q >= len(line) or not ("0" <= line[q] <= "9"):
                 return text
             p = line.find(esc, q)
-    if (not after or after.isspace()) and before.isspace():
+    # The dollar must be an opener (after a space or `(`, before a non-space)
+    # or a closer (after a non-space, before a space, the end or `.,;:!?)`).
+    # Whitespace on both sides is a word (`in $ terms`); glued on both sides
+    # (`US$H`, `}$\Omega`) is not a delimiter we can read.
+    opener = (before.isspace() or before == "(") and after != "" and not after.isspace()
+    closer = (
+        not after or after.isspace() or after in ".,;:!?)"
+    ) and not before.isspace()
+    if not (opener or closer):
         return text
     j = k + 1
     while j < n and text[j] in " \t":
@@ -910,7 +956,31 @@ def _drop_orphan_dollar(text: str) -> str:
             return text
     if _currency_prefix_before(text, k):
         return text
+    # Broken braces around it (`\text{5$`): the text is damaged in more than
+    # one way and dropping the dollar alone would not mend it.
+    if not _braces_balanced(text):
+        return text
     return text[:k] + text[k + 1 :]
+
+
+def _braces_balanced(text: str) -> bool:
+    """Unescaped ``{``/``}`` pair up (a backslash skips the next character)."""
+    depth = 0
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == "\\":
+            i += 2
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth < 0:
+                return False
+        i += 1
+    return depth == 0
 
 
 # `\$1.56 \text{ m}$`: an escaped OPENING dollar before a number whose span
@@ -1013,8 +1083,8 @@ def canonicalize(text: Any, *, chemistry: bool = True) -> Any:
     text = _BRACKET_DISPLAY_RE.sub(lambda m: f"$${m.group(1)}$$", text)
     text = _trim_padded_spans(text)
     text = _close_unbalanced_braces(text)
-    text = _open_surplus_braces(text)
-    text = _collapse_double_groups(text)
+    text = open_surplus_braces(text)
+    text = collapse_double_groups(text)
     text = _replace_angstrom(text)
     text = _drop_orphan_dollar(text)
     text = _normalize_braces(text)
@@ -1036,6 +1106,12 @@ def canonicalize(text: Any, *, chemistry: bool = True) -> Any:
     # equal to two.
     text = _normalize_braces(text)
     text = unicode_math_to_latex(text, inside_math_only=True)
+    # The same for the 1.4.0 repairs: the wrapping steps can give a typo its
+    # argument or put a surplus brace, a doubled group or `\AA` in a span.
+    text = _fix_command_typos(text)
+    text = open_surplus_braces(text)
+    text = collapse_double_groups(text)
+    text = _replace_angstrom(text)
     text = text.replace(_ESCAPED_DOLLAR_SENTINEL, r"\$")
     # Restore last-stashed first: a URL stashed after an image marker may
     # contain that marker's sentinel (`gs://{{IMAGE:x}}`).

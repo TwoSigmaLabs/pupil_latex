@@ -30,7 +30,7 @@ from __future__ import annotations
 import re
 from typing import Any, Callable, Iterable
 
-from .canonicalize import canonicalize
+from .canonicalize import canonicalize, collapse_double_groups, open_surplus_braces
 from .normalize import normalize
 from .repair import repair_deep
 from .segment import Segment, segment
@@ -489,6 +489,10 @@ def fix(text: Any, *, chemistry: bool = True) -> Any:
     text = wrap_unicode_chemistry(text)
     text = wrap_unicode_scripts(text)
     text = escape_text_specials(text)
+    # Spans created after `canonicalize` get its span repairs too (tags
+    # v140-b1, v140-b2), before merging, which joins balanced spans only.
+    text = open_surplus_braces(text)
+    text = collapse_double_groups(text)
     return merge_adjacent_math(text)
 
 

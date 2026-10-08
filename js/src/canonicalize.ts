@@ -36,7 +36,7 @@ import {
 import { after, afterCodePoint, replaceAfter } from "./lookbehind.js";
 import { fixMojibakeTable } from "./mojibake.js";
 import { isFormula } from "./normalize.js";
-import { isPlainObject, repair } from "./repair.js";
+import { isPlainObject, repair, repairDeep } from "./repair.js";
 import { segment } from "./segment.js";
 import { mathMask, mathRanges } from "./spans.js";
 import {
@@ -46,7 +46,7 @@ import {
   unicodeMathToLatex,
   wrapBareUnicodeMath,
 } from "./unicodeMath.js";
-import { isNonContentKey, isUrlOrPathString } from "./walk.js";
+import { isNarrativeKey, isNonContentKey, isUrlOrPathString } from "./walk.js";
 
 // ---------------------------------------------------------------------------
 // Delimiter rewrites
@@ -754,6 +754,372 @@ function closeUnbalancedBraces(text: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// 1.4.0 repairs (tags v140-b1, v140-b2, v140-b3)
+// ---------------------------------------------------------------------------
+
+/**
+ * Apply `transform(content)` to the content of every `$…$` / `$$…$$` math
+ * segment; text segments and `\(…\)` are copied.
+ */
+function mapMathSegments(
+  text: string,
+  transform: (body: string) => string,
+): string {
+  const out: string[] = [];
+  for (const seg of segment(text)) {
+    let raw = seg.raw;
+    if (seg.kind === "math" && raw.startsWith("$")) {
+      const k = raw.startsWith("$$") ? 2 : 1;
+      const body = raw.slice(k, raw.length - k);
+      const next = transform(body);
+      if (next !== body)
+        raw = raw.slice(0, k) + next + raw.slice(raw.length - k);
+    }
+    out.push(raw);
+  }
+  return out.join("");
+}
+
+/**
+ * `x}` → `{x}`: prepend the `{` a span needs when its braces go below zero
+ * and end there, so the prepended braces leave it balanced (`x}{y` stays).
+ */
+function surplusOpen(content: string): string {
+  let depth = 0;
+  let lowest = 0;
+  for (let i = 0; i < content.length; i++) {
+    const ch = content[i];
+    if (ch === "\\") {
+      i++;
+      continue;
+    }
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      lowest = Math.min(lowest, depth);
+    }
+  }
+  if (lowest >= 0 || depth !== lowest) return content;
+  return "{".repeat(-lowest) + content;
+}
+
+/** `$x}$` → `${x}$`, `$a+b}$` → `${a+b}$` (tag `v140-b1`). */
+export function openSurplusBraces(text: string): string {
+  if (!text.includes("}") || !text.includes("$")) return text;
+  return mapMathSegments(text, surplusOpen);
+}
+
+/** True when an odd run of backslashes ends right before `i`. */
+function isEscapedAt(text: string, i: number): boolean {
+  let k = i - 1;
+  while (k >= 0 && text[k] === "\\") k--;
+  return (i - 1 - k) % 2 === 1;
+}
+
+const isAsciiLetter = (c: string): boolean =>
+  (c >= "A" && c <= "Z") || (c >= "a" && c <= "z");
+
+/**
+ * `{{x}}` → `{x}`, `{{{x}}}` → `{x}`: the innermost redundant pairs around a
+ * body with no braces (a command name or other escaped character may appear
+ * in it) collapse to one. A `{` after an odd run of backslashes is a literal
+ * brace, not a group. One linear pass.
+ */
+function collapseDoubleGroupsInMath(content: string): string {
+  if (!content.includes("{{")) return content;
+  const out: string[] = [];
+  const n = content.length;
+  let i = 0;
+  while (i < n) {
+    const ch = content[i];
+    if (ch === "\\") {
+      out.push(content.slice(i, i + 2));
+      i += 2;
+      continue;
+    }
+    if (ch !== "{") {
+      out.push(ch);
+      i++;
+      continue;
+    }
+    let j = i;
+    while (j < n && content[j] === "{") j++;
+    const opens = j - i;
+    let k = j;
+    let ok = true;
+    while (k < n && content[k] !== "{" && content[k] !== "}") {
+      if (content[k] === "\\") {
+        if (k + 1 >= n || content[k + 1] === "{" || content[k + 1] === "}") {
+          ok = false;
+          break;
+        }
+        if (isAsciiLetter(content[k + 1])) {
+          k += 2;
+          while (k < n && isAsciiLetter(content[k])) k++;
+          continue;
+        }
+        k += 2;
+        continue;
+      }
+      k++;
+    }
+    if (!ok || k >= n || content[k] !== "}") {
+      out.push(content.slice(i, j));
+      i = j;
+      continue;
+    }
+    let e = k;
+    while (e < n && content[e] === "}") e++;
+    const closes = e - k;
+    const pairs = Math.min(opens, closes);
+    if (pairs < 2) out.push(content.slice(i, e));
+    else
+      out.push(
+        "{".repeat(opens - pairs) +
+          "{" +
+          content.slice(j, k) +
+          "}" +
+          "}".repeat(closes - pairs),
+      );
+    i = e;
+  }
+  return out.join("");
+}
+
+/** `${{x}}$` → `${x}$` inside math only (tag `v140-b2`). */
+export function collapseDoubleGroups(text: string): string {
+  if (!text.includes("{{") || !text.includes("$")) return text;
+  return mapMathSegments(text, collapseDoubleGroupsInMath);
+}
+
+/** Invented commands with one reading, when an argument follows. */
+export const COMMAND_TYPOS: Readonly<Record<string, string>> = {
+  fre: "frac",
+  frc: "frac",
+};
+const COMMAND_TYPO_RE = /\\(fre|frc)(?=[ \t]*\{)/g;
+
+/** `\fre{1}{2}` / `\frc{1}{2}` → `\frac{1}{2}` (tag `v140-b2`). */
+function fixCommandTypos(text: string): string {
+  if (!text.includes("\\fr")) return text;
+  return text.replace(
+    COMMAND_TYPO_RE,
+    (m: string, name: string, offset: number) =>
+      isEscapedAt(text, offset) ? m : "\\" + COMMAND_TYPOS[name],
+  );
+}
+
+// `\AA` (Ångström): KaTeX accepts it in text mode only and flutter_math not
+// at all, so it becomes the literal sign (tag `v140-b3`).
+const ANGSTROM_TEXT_GROUP_RE =
+  /\\(?:text|mathrm|textrm)\s*\{[ \t]*\\AA[ \t]*\}/g;
+const ANGSTROM_RE = /\\AA(?![A-Za-z])/g;
+const ANGSTROM_AT_RE = /\\AA(?![A-Za-z])/y;
+const ANGSTROM_ONLY_SPAN_RE =
+  /^[ \t]*(?:\\AA|\\(?:text|mathrm|textrm)\s*\{[ \t]*(?:\\AA|Å)[ \t]*\})[ \t]*$/;
+const TEXT_FAMILY_OPEN_RE =
+  /\\(?:text|textbf|textit|textrm|textsf|texttt|textnormal|textup|mbox|hbox)\s*\{/y;
+
+function replaceUnescaped(s: string, re: RegExp, by: string): string {
+  return s.replace(re, (m: string, offset: number) =>
+    isEscapedAt(s, offset) ? m : by,
+  );
+}
+
+function angstromInMath(content: string): string {
+  const out: string[] = [];
+  const n = content.length;
+  let i = 0;
+  while (i < n) {
+    const m = matchAt(TEXT_FAMILY_OPEN_RE, content, i);
+    if (m && !isEscapedAt(content, i)) {
+      // Copy the text group, turning `\AA` inside it into the sign.
+      let depth = 0;
+      let j = i + m[0].length - 1;
+      while (j < n) {
+        const ch = content[j];
+        if (ch === "\\") {
+          j += 2;
+          continue;
+        }
+        if (ch === "{") depth++;
+        else if (ch === "}") {
+          depth--;
+          if (depth === 0) {
+            j++;
+            break;
+          }
+        }
+        j++;
+      }
+      out.push(replaceUnescaped(content.slice(i, j), ANGSTROM_RE, "Å"));
+      i = j;
+      continue;
+    }
+    const a = matchAt(ANGSTROM_AT_RE, content, i);
+    if (a && !isEscapedAt(content, i)) {
+      out.push("\\text{Å}");
+      i += a[0].length;
+      continue;
+    }
+    out.push(content[i]);
+    i++;
+  }
+  return out.join("");
+}
+
+/**
+ * `\AA` → `Å` in prose and inside `\text{…}`, `\text{Å}` in other maths; a
+ * span that is only the sign becomes the sign.
+ */
+function replaceAngstrom(text: string): string {
+  if (!text.includes("\\AA")) return text;
+  const out: string[] = [];
+  for (const seg of segment(text)) {
+    let raw = seg.raw;
+    if (seg.kind === "math" && raw.startsWith("$")) {
+      const k = raw.startsWith("$$") ? 2 : 1;
+      const body = raw.slice(k, raw.length - k);
+      if (body.includes("\\AA")) {
+        if (k === 1 && ANGSTROM_ONLY_SPAN_RE.test(body)) raw = "Å";
+        else
+          raw =
+            raw.slice(0, k) + angstromInMath(body) + raw.slice(raw.length - k);
+      }
+    } else if (seg.kind === "text" && raw.includes("\\AA")) {
+      raw = replaceUnescaped(raw, ANGSTROM_TEXT_GROUP_RE, "Å");
+      raw = replaceUnescaped(raw, ANGSTROM_RE, "Å");
+    }
+    out.push(raw);
+  }
+  return out.join("");
+}
+
+function dollarPositions(text: string): number[] {
+  const out: number[] = [];
+  for (let i = 0; i < text.length; i++)
+    if (text[i] === "$" && !dollarEscaped(text, i)) out.push(i);
+  return out;
+}
+
+/** `US$`, `R$`, `NZ$`: one to three capitals glued to the dollar. */
+function currencyPrefixBefore(text: string, k: number): boolean {
+  let j = k;
+  while (j > 0 && text[j - 1] >= "A" && text[j - 1] <= "Z") j--;
+  return k - j >= 1 && k - j <= 3 && (j === 0 || !isAlnum(text[j - 1]));
+}
+
+/**
+ * `What is $x + 1 equal to?` → `What is x + 1 equal to?` (tag `v140-b2`).
+ * Only when the text has exactly one unescaped `$` and that dollar is not
+ * money and not a word (see the Python docstring for each rule).
+ */
+function dropOrphanDollar(text: string): string {
+  if (!text.includes("$")) return text;
+  const positions = dollarPositions(text);
+  if (positions.length !== 1) return text;
+  const k = positions[0];
+  const n = text.length;
+  const afterCh = k + 1 < n ? text[k + 1] : "";
+  const beforeCh = k > 0 ? text[k - 1] : "";
+  if (k === 0 || afterCh === "$" || beforeCh === "$") return text;
+  const line = text.slice(text.lastIndexOf("\n", k - 1) + 1, k);
+  for (const esc of [ESCAPED_DOLLAR_SENTINEL, "\\$"]) {
+    let p = line.indexOf(esc);
+    while (p !== -1) {
+      const q = p + esc.length;
+      if (q >= line.length || !isAsciiDigit(line[q])) return text;
+      p = line.indexOf(esc, q);
+    }
+  }
+  // The dollar must be an opener (after a space or `(`, before a non-space)
+  // or a closer (after a non-space, before a space, the end or `.,;:!?)`).
+  const opener =
+    (isSpace(beforeCh) || beforeCh === "(") &&
+    afterCh !== "" &&
+    !isSpace(afterCh);
+  const closer =
+    (!afterCh || isSpace(afterCh) || ".,;:!?)".includes(afterCh)) &&
+    !isSpace(beforeCh);
+  if (!(opener || closer)) return text;
+  let j = k + 1;
+  while (j < n && (text[j] === " " || text[j] === "\t")) j++;
+  if (j < n && isAsciiDigit(text[j])) return text;
+  if (isAsciiDigit(beforeCh)) {
+    j = k - 1;
+    while (
+      j >= 0 &&
+      (text[j] === "." || text[j] === "," || isAsciiDigit(text[j]))
+    )
+      j--;
+    if (j < 0 || " \t\n(".includes(text[j])) return text;
+  }
+  if (currencyPrefixBefore(text, k)) return text;
+  // Broken braces around it (`\text{5$`): dropping the dollar alone would
+  // not mend the text.
+  if (!bracesBalanced(text)) return text;
+  return text.slice(0, k) + text.slice(k + 1);
+}
+
+/** Unescaped `{`/`}` pair up (a backslash skips the next character). */
+function bracesBalanced(text: string): boolean {
+  let depth = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === "\\") {
+      i++;
+      continue;
+    }
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      if (depth < 0) return false;
+    }
+  }
+  return depth === 0;
+}
+
+// `\$1.56 \text{ m}$`: an escaped OPENING dollar before a number whose span
+// goes on with maths and has its closer (Backend #1416).
+const ESCAPED_OPENER_RE = /\\\$([0-9]+(?:[.,][0-9]+)*)([^$\n]*)\$/g;
+const MATH_START_RE = /^[ \t]*(?:\\[A-Za-z]|[\^_])/;
+
+/** `\$1.56 \text{ m}$` → `$1.56 \text{ m}$` (tag `v140-b2`). */
+function unescapeMathOpener(text: string): string {
+  if (!text.includes("\\$") || dollarPositions(text).length % 2 === 0)
+    return text;
+  ESCAPED_OPENER_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = ESCAPED_OPENER_RE.exec(text)) !== null) {
+    const start = m.index;
+    if (isEscapedAt(text, start)) continue;
+    const rest = m[2];
+    const close = start + m[0].length - 1;
+    if (!MATH_START_RE.test(rest) || !pyStrip(rest)) continue;
+    if (
+      isSpace(rest.slice(-1)) ||
+      (close + 1 < text.length && isDigit(charAt(text, close + 1)))
+    )
+      continue;
+    if (dollarEscaped(text, close)) continue;
+    const core = stripSpacesTabs(rest);
+    const probe = "$" + m[1] + rest + "$";
+    if (
+      detectCommandMissingArgument(probe).length > 0 ||
+      detectFracMissingArgs(probe).length > 0
+    )
+      continue;
+    let words = core.replace(TEXT_BRACE_RE, "");
+    words = words.replace(ANY_LATEX_CMD_RE, "");
+    if (PROSE_WORD_RE.test(words)) continue;
+    if (shortWords(words).some((w) => PROSE_STOPWORDS.has(w.toLowerCase())))
+      continue;
+    return text.slice(0, start) + text.slice(start + 1);
+  }
+  return text;
+}
+
+// ---------------------------------------------------------------------------
 // Pipeline
 // ---------------------------------------------------------------------------
 
@@ -778,6 +1144,13 @@ export interface CanonicalizeOptions {
    * renderers without KaTeX's mhchem extension. Default `true`.
    */
   chemistry?: boolean;
+  /**
+   * Deep walkers only (tag `v140-b5`): values under these keys are Class B
+   * narration (CONTRACT §2) and get the lossless `repairDeep` only. An entry
+   * `name@sibling` matches `name` only in an object that also has a
+   * `sibling` key (`script@transcript`).
+   */
+  narrativeKeys?: readonly string[];
 }
 
 /** Normalize a fresh model string to the canonical form (spec §3). */
@@ -802,12 +1175,14 @@ export function canonicalize(
   if (out.includes("://")) out = out.replace(EMBEDDED_URL_RE, stash);
 
   out = repair(out);
+  out = unescapeMathOpener(out);
   out = stashEscapedDollars(out);
   out = escapeCurrencyOddOnly(out);
   out = stashEscapedDollars(out);
   out = fixMojibakeTable(out);
   out = normalizeHomoglyphs(out);
   out = collapseDoubleBackslashes(out);
+  out = fixCommandTypos(out);
   out = fixLeftRightBraces(out);
   out = replaceAfter(
     out,
@@ -823,6 +1198,10 @@ export function canonicalize(
   );
   out = trimPaddedSpans(out);
   out = closeUnbalancedBraces(out);
+  out = openSurplusBraces(out);
+  out = collapseDoubleGroups(out);
+  out = replaceAngstrom(out);
+  out = dropOrphanDollar(out);
   out = normalizeBraces(out);
   out = unicodeMathToLatex(out, true);
   out = convertCombiningVec(out);
@@ -840,6 +1219,12 @@ export function canonicalize(
   // once more makes one pass equal to two.
   out = normalizeBraces(out);
   out = unicodeMathToLatex(out, true);
+  // The same for the 1.4.0 repairs: the wrapping steps can give a typo its
+  // argument or put a surplus brace, a doubled group or `\AA` in a span.
+  out = fixCommandTypos(out);
+  out = openSurplusBraces(out);
+  out = collapseDoubleGroups(out);
+  out = replaceAngstrom(out);
   out = out.split(ESCAPED_DOLLAR_SENTINEL).join("\\$");
   // Restore last-stashed first: a URL stashed after an image marker may
   // contain that marker's sentinel (`gs://{{IMAGE:x}}`).
@@ -859,7 +1244,9 @@ export function canonicalizeDeep<T>(
   obj: T,
   options: CanonicalizeOptions = {},
 ): T {
-  return mapContentStrings(obj, (s: string) => canonicalize(s, options));
+  return mapContentStrings(obj, (s: string) => canonicalize(s, options), {
+    narrativeKeys: options.narrativeKeys,
+  });
 }
 
 /**
@@ -871,9 +1258,15 @@ export function canonicalizeDeep<T>(
 export function mapContentStrings<T>(
   obj: T,
   fn: (text: string) => string,
-  options: { convertDates?: boolean } = {},
+  options: { convertDates?: boolean; narrativeKeys?: readonly string[] } = {},
 ): T {
-  return mapContentAny(obj, "", fn, options.convertDates ?? true) as T;
+  return mapContentAny(
+    obj,
+    "",
+    fn,
+    options.convertDates ?? true,
+    options.narrativeKeys,
+  ) as T;
 }
 
 function mapContentAny(
@@ -881,17 +1274,22 @@ function mapContentAny(
   keyHint: string,
   fn: (text: string) => string,
   convertDates: boolean,
+  narrativeKeys?: readonly string[],
 ): unknown {
   if (typeof obj === "string") {
     if (isNonContentKey(keyHint) || isUrlOrPathString(obj)) return obj;
     return fn(obj);
   }
   if (Array.isArray(obj))
-    return obj.map((item) => mapContentAny(item, keyHint, fn, convertDates));
+    return obj.map((item) =>
+      mapContentAny(item, keyHint, fn, convertDates, narrativeKeys),
+    );
   if (isPlainObject(obj)) {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(obj))
-      out[k] = mapContentAny(v, k, fn, convertDates);
+      out[k] = isNarrativeKey(k, obj, narrativeKeys)
+        ? repairDeep(v)
+        : mapContentAny(v, k, fn, convertDates, narrativeKeys);
     return out;
   }
   if (convertDates && obj instanceof Date) return obj.toISOString();

@@ -314,6 +314,7 @@ test("all kinds are produced by some detector", () => {
       "bare_unicode_math",
       "unicode_chemistry",
       "bare_left_brace",
+      "lost_escape",
     ]),
   );
   assert.strictEqual(DETECTORS.length, L.ALL_KINDS.length);

@@ -15,10 +15,14 @@ import "katex/contrib/mhchem";
 import {
   auditKinds,
   canonicalize,
+  currencySpans,
   fix,
+  isPlainProse,
   loadsLatexAware,
   loadsModelJson,
+  needsFix,
   normalize,
+  normalizeOptionText,
   repair,
   segment,
   toPlain,
@@ -39,6 +43,10 @@ const FUNCTIONS = [
   "to_plain",
   "audit",
   "json_transport",
+  "normalize_option_text",
+  "needs_fix",
+  "currency_spans",
+  "is_plain_prose",
 ];
 const STRING_FUNCTIONS = new Set([
   "repair",
@@ -46,7 +54,16 @@ const STRING_FUNCTIONS = new Set([
   "normalize",
   "canonicalize",
   "to_plain",
+  "normalize_option_text",
 ]);
+
+/** The corpus `opts` (snake_case, as in Python) as JS options. */
+function jsOptions(opts) {
+  const out = {};
+  for (const [k, v] of Object.entries(opts ?? {}))
+    out[k.replace(/_([a-z])/g, (_m, c) => c.toUpperCase())] = v;
+  return out;
+}
 const PREDICATE_KEYS = [
   "contains",
   "not_contains",
@@ -73,7 +90,7 @@ function run(fn, c) {
     case "repair":
       return repair(inp, c.variant !== "hard");
     case "normalize":
-      return normalize(inp);
+      return normalize(inp, jsOptions(c.opts));
     case "fix":
       return fix(inp, c.opts ?? {});
     case "canonicalize":
@@ -87,12 +104,20 @@ function run(fn, c) {
     case "json_transport":
       try {
         if (String(c.via ?? "").includes("loads_model_json"))
-          return loadsModelJson(inp);
+          return loadsModelJson(inp, jsOptions(c.opts));
         return loadsLatexAware(inp);
       } catch (err) {
         if (err instanceof SyntaxError) throw new ParseError(err.message);
         throw err;
       }
+    case "normalize_option_text":
+      return normalizeOptionText(inp, jsOptions(c.opts));
+    case "needs_fix":
+      return needsFix(inp, jsOptions(c.opts));
+    case "currency_spans":
+      return currencySpans(inp).map((s) => s.text);
+    case "is_plain_prose":
+      return isPlainProse(inp);
     default:
       throw new Error(`unknown function ${fn}`);
   }
