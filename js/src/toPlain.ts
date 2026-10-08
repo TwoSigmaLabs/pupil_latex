@@ -1437,6 +1437,18 @@ function spokenProseSubscripts(text: string): string {
   );
 }
 
+// Bare `50^\circ C` / `50^{\circ}C` in prose (tag `v140-a8`).
+const PROSE_DEGREES_RE = /\^[ \t]*\{?[ \t]*\\circ(?![A-Za-z])[ \t]*\}?/g;
+
+function spokenProseDegrees(text: string): string {
+  if (!text.includes("\\circ")) return text;
+  return text.replace(
+    PROSE_DEGREES_RE,
+    (m: string, offset: number) =>
+      " degrees" + (isAlnum(charAt(text, offset + m.length)) ? " " : ""),
+  );
+}
+
 function toSpoken(text: string): string {
   const parts: string[] = [];
   for (const seg of segment(text)) {
@@ -1447,7 +1459,15 @@ function toSpoken(text: string): string {
       );
       continue;
     }
-    const value = spokenProseSubscripts(seg.value);
+    let value = seg.value;
+    // `$50^\circ$C`: a degrees span runs into a unit (tag `v140-a8`).
+    if (
+      parts.length > 0 &&
+      parts[parts.length - 1].endsWith("degrees") &&
+      isAlnum(charAt(value, 0))
+    )
+      value = " " + value;
+    value = spokenProseDegrees(spokenProseSubscripts(value));
     // Bare LaTeX in prose (`\frac{1}{2}` never wrapped): fractions, roots,
     // wrappers and environments are read the same way.
     parts.push(value.includes("\\") ? spokenStructures(value, true) : value);
@@ -1475,6 +1495,7 @@ const COMPARE_OPERATOR_SPACE_RE = / ?([+\-*/=<>^_(),{}[\]]) ?/g;
 // One leading option label (tag `v140-a4`): `A)`, `(B)`, `C.`, `D:`, `a)` —
 // a letter A–H in either case — followed by whitespace and an answer.
 const OPTION_LABEL_RE = /^\s*(?:\([A-Ha-h]\)|[A-Ha-h][).:])\s+(?=\S)/u;
+const LONE_LETTER_RE = /^[A-Za-z]\s*$/u;
 
 function isAsciiDigitChar(ch: string): boolean {
   return ch.length === 1 && ch >= "0" && ch <= "9";
@@ -1515,7 +1536,12 @@ function applyCompareFold(text: string): string {
  * around operators and brackets.
  */
 function foldForCompare(text: string): string {
-  let out = applyCompareFold(text.replace(OPTION_LABEL_RE, ""));
+  // Never strip when a lone letter would remain: `a: b` must not compare as
+  // the option letter `b` (tag `v140-a4`).
+  const label = OPTION_LABEL_RE.exec(text);
+  if (label && !LONE_LETTER_RE.test(text.slice(label[0].length)))
+    text = text.slice(label[0].length);
+  let out = applyCompareFold(text);
   out = out.replace(
     SUPERSCRIPT_RUN_RE,
     (m) => "^" + translate(m, SUPERSCRIPT_TO_ASCII),
