@@ -23,30 +23,30 @@ Things it never guesses: a formula with a missing piece, such as `$\frac{1}{$`. 
 
 ## Install
 
-Pin a release tag. All three packages share one version number.
-
-The repository `TwoSigmaLabs/pupil_latex` is private. pip and Flutter download it through git, so they work anywhere git can already reach TwoSigmaLabs: your machine, or a CI job with a GitHub token.
+Pin a release tag. All three packages share one version number. The repository `TwoSigmaLabs/pupil_latex` is public, so no GitHub token is needed anywhere.
 
 **Python** (Backend, pupiltree-agents, Fillers, worksheet.ai backend):
 
 ```bash
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.1.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.2.0#subdirectory=python"
+```
+
+That line needs `git`. Slim Docker images do not have it, so for Docker builds install the wheel attached to the release instead (recommended). In `requirements.txt`:
+
+```text
+pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree_latex-1.2.0-py3-none-any.whl
 ```
 
 The `[ftfy]` extra gives the best repair of garbled characters. Without it the library uses its built-in table, which covers the common cases.
 
 **JavaScript and React** (worksheet.ai, pupil-assessment-ui):
 
-The repository is private, so npm cannot download from it directly. Download the release file with the GitHub CLI (`gh`), install it from that file, and commit it:
-
 ```bash
-gh release download v1.1.0 -R TwoSigmaLabs/pupil_latex -p "*.tgz" -D vendor
-npm install ./vendor/pupiltree-latex-1.1.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree-latex-1.2.0.tgz
 npm install katex        # needed for rendering; react too if you use <MathText>
-git add vendor/pupiltree-latex-1.1.0.tgz package.json package-lock.json
 ```
 
-Because the file is committed, `npm ci` on CI servers and in Docker builds works without GitHub access.
+`package.json` then lists `"@pupiltree/latex": "https://github.com/.../pupiltree-latex-1.2.0.tgz"`. No `vendor/` folder is needed.
 
 **Flutter** (script_editor, tutor frontend), in `pubspec.yaml`:
 
@@ -55,13 +55,21 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.1.0
+      ref: v1.2.0
       path: dart/pupiltree_latex_flutter
 ```
 
 Add only the Flutter package. It brings in the core `pupiltree_latex` package for you. Listing both with the same tag makes `flutter pub get` fail.
 
-**Plain HTML pages with no bundler** (Fillers): copy `js/dist/pupiltree-latex.iife.js` from the release next to your KaTeX files.
+**Plain HTML pages with no bundler** (Fillers): load the bundle from jsDelivr, pinned to the tag, after KaTeX:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.2.0/js/dist/pupiltree-latex.iife.js"></script>
+```
+
+To serve it yourself instead, download `pupiltree-latex.iife.js` from the v1.2.0 release and put it next to your KaTeX files.
+
+**Upgrading**: when a new version is released, every consumer that already pins the library gets a `chore: bump pupiltree-latex to vX.Y.Z` pull request. Read the CHANGELOG section it links, let CI run, and merge.
 
 ## Backend: one call before you save
 
