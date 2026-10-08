@@ -21,6 +21,7 @@ from .audit import (
 )
 from .canonicalize import canonicalize, canonicalize_deep
 from .fix import (
+    DECLARATION_COMMANDS,
     SINGLE_LETTER_UNITS,
     UNIT_BASES,
     escape_text_specials,
@@ -135,4 +136,5 @@ __all__ = [
     "SINGLE_LETTER_UNITS",
     "GREEK_MATH_LETTERS",
     "GREEK_UNIT_SYMBOLS",
+    "DECLARATION_COMMANDS",
 ]

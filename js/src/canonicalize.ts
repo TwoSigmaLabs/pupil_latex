@@ -35,6 +35,7 @@ import {
 } from "./commands.js";
 import { after, afterCodePoint, replaceAfter } from "./lookbehind.js";
 import { fixMojibakeTable } from "./mojibake.js";
+import { isFormula } from "./normalize.js";
 import { isPlainObject, repair } from "./repair.js";
 import { segment } from "./segment.js";
 import { mathMask, mathRanges } from "./spans.js";
@@ -330,13 +331,19 @@ function hasDollarInsideBraces(text: string): boolean {
   return false;
 }
 
-function wrapPureMathShortStrings(text: string): string {
+// `\ce` / `\pu` need KaTeX's mhchem extension.
+const CHEMISTRY_CMD_RE = /\\(?:ce|pu)(?![A-Za-z])/;
+
+function wrapPureMathShortStrings(text: string, chemistry = true): string {
   if (codePointLength(text) > 200 || text.includes("$$")) return text;
   ANY_LATEX_CMD_RE.lastIndex = 0;
   const commands = [...text.matchAll(ANY_LATEX_CMD_RE)];
   if (commands.length === 0) return text;
   if (hasDollarInsideBraces(text)) return text;
   if (SCRIPT_LABEL_RE.test(text)) return text;
+  // A renderer without mhchem (Fillers: KaTeX core) asks for
+  // `chemistry: false`: the command stays prose instead of a red error.
+  if (!chemistry && CHEMISTRY_CMD_RE.test(text)) return text;
   // An unpaired `$` means the author's spans are broken; stripping and
   // re-wrapping would not converge (`$ H₂` → `$ $…$` → …).
   if (countUnescapedDollars(text) % 2 === 1) return text;
@@ -401,6 +408,9 @@ function looksLikeIdentifier(s: string): boolean {
   const base = s.slice(0, first);
   const rest = s.slice(first + 1);
   if (base.length >= 3) return true;
+  // A two-letter lowercase base is a word or an id prefix (`lo_0` gap
+  // titles), not a variable (`x_0`, `v_1`, `a_n`; chemistry is capitals).
+  if (/^[a-z]{2}$/.test(base)) return true;
   // A class name: digits, underscore, 1–4 capital letters (`10_A`, `6_B`,
   // `12_PCM`). Math never writes a numeric base with a capital subscript.
   if (/^[0-9]+$/.test(base) && /^[A-Z]{1,4}$/.test(rest)) return true;
@@ -572,7 +582,7 @@ function trimPaddedLine(line: string): string {
     if (
       !core ||
       core === inner ||
-      !looksLikePaddedMath(core) ||
+      !(looksLikePaddedMath(core) || isFormula(core)) ||
       // A dollar glued to a word or number outside the pair (`$x = $y`,
       // `wait$ … $now`) reads as currency or a typo.
       (b + 1 < line.length && isAlnum(charAt(line, b + 1))) ||
@@ -761,9 +771,21 @@ function stashToken(idx: number): string {
   return "" + String.fromCharCode(STASH_BASE + idx) + "";
 }
 
+/** Options of `canonicalize`, `fix` and their deep walkers. */
+export interface CanonicalizeOptions {
+  /**
+   * `false` never puts a bare `\ce{…}` / `\pu{…}` into a new math span, for
+   * renderers without KaTeX's mhchem extension. Default `true`.
+   */
+  chemistry?: boolean;
+}
+
 /** Normalize a fresh model string to the canonical form (spec §3). */
-export function canonicalize<T>(text: T): T;
-export function canonicalize(text: unknown): unknown {
+export function canonicalize<T>(text: T, options?: CanonicalizeOptions): T;
+export function canonicalize(
+  text: unknown,
+  options: CanonicalizeOptions = {},
+): unknown {
   if (typeof text !== "string" || !text) return text;
   if (URL_RE.test(text)) return text;
 
@@ -807,7 +829,7 @@ export function canonicalize(text: unknown): unknown {
   out = wrapBareUnicodeMath(out);
   out = wrapBareLatexCommands(out);
   out = wrapBareScripts(out);
-  out = wrapPureMathShortStrings(out);
+  out = wrapPureMathShortStrings(out, options.chemistry !== false);
   // Step 14 left the symbols inside bare script / command argument groups
   // (`e^{iπ}`, `\frac{π}{2}`) to steps 15–17, which put the whole group in
   // one span. A group none of them took is prose; its symbols are wrapped
@@ -833,8 +855,11 @@ export function canonicalize(text: unknown): unknown {
  * inherit the parent key. A `Date` becomes its ISO-8601 string so a
  * document can be handed straight to a JSON response.
  */
-export function canonicalizeDeep<T>(obj: T): T {
-  return mapContentStrings(obj, canonicalize);
+export function canonicalizeDeep<T>(
+  obj: T,
+  options: CanonicalizeOptions = {},
+): T {
+  return mapContentStrings(obj, (s: string) => canonicalize(s, options));
 }
 
 /**

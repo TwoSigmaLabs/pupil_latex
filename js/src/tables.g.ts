@@ -2934,3 +2934,30 @@ export const GREEK_UNIT_SYMBOLS: readonly string[] = [
   "mol",
 ];
 
+export const DECLARATION_COMMANDS: readonly string[] = [
+  "bf",
+  "it",
+  "rm",
+  "sf",
+  "tt",
+  "cal",
+  "sl",
+  "em",
+  "mit",
+  "color",
+  "displaystyle",
+  "textstyle",
+  "scriptstyle",
+  "scriptscriptstyle",
+  "tiny",
+  "scriptsize",
+  "footnotesize",
+  "small",
+  "normalsize",
+  "large",
+  "Large",
+  "LARGE",
+  "huge",
+  "Huge",
+];
+

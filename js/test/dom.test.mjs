@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { JSDOM } from "jsdom";
+import katex from "katex";
 import renderMathInElement from "katex/contrib/auto-render";
 import "katex/contrib/mhchem";
 
@@ -11,6 +12,7 @@ import {
   auditRawMath,
   ESC_DOLLAR_CLASS,
   ESC_DOLLAR_SENTINEL,
+  hasMhchem,
   maskEscapedDollars,
   MATH_DELIMITERS,
   typesetMath,
@@ -168,4 +170,48 @@ test("maskEscapedDollars mirrors auto-render's split", () => {
   assert.strictEqual(maskEscapedDollars("no dollars"), "no dollars");
   assert.strictEqual(MATH_DELIMITERS[0].left, "$$");
   assert.strictEqual(MATH_DELIMITERS.length, 4);
+});
+
+// audit4-8: a page with KaTeX core only (no mhchem) must not get `$\ce{…}$`.
+const noMhchem = () => {
+  throw new Error("Undefined control sequence: \\ce");
+};
+
+test("hasMhchem detects the extension", () => {
+  assert.strictEqual(hasMhchem(katex.renderToString), true);
+  assert.strictEqual(hasMhchem(noMhchem), false);
+});
+
+test("without mhchem a bare \\ce stays text instead of a red error", () => {
+  const root = makeRoot("\\ce{H2O}");
+  silenced(() =>
+    typesetMath(root, {
+      katex: { renderMathInElement, renderToString: noMhchem },
+    }),
+  );
+  assert.strictEqual(root.querySelectorAll(".katex").length, 0);
+  assert.strictEqual(root.querySelectorAll(".katex-error").length, 0);
+  assert.strictEqual(root.textContent, "\\ce{H2O}");
+});
+
+test("with mhchem a bare \\ce is typeset", () => {
+  const root = makeRoot("\\ce{H2O}");
+  silenced(() =>
+    typesetMath(root, {
+      katex: { renderMathInElement, renderToString: katex.renderToString },
+    }),
+  );
+  assert.strictEqual(root.querySelectorAll(".katex").length, 1);
+  assert.strictEqual(root.querySelectorAll(".katex-error").length, 0);
+});
+
+test("the chemistry option overrides detection", () => {
+  const root = makeRoot("\\ce{H2O}");
+  silenced(() =>
+    typesetMath(root, {
+      katex: { renderMathInElement, renderToString: katex.renderToString },
+      chemistry: false,
+    }),
+  );
+  assert.strictEqual(root.querySelectorAll(".katex").length, 0);
 });

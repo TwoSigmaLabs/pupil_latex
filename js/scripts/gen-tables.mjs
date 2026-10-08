@@ -100,6 +100,7 @@ const names = {
   single_letter_units: "charset",
   greek_math_letters: "charset",
   greek_unit_symbols: "array",
+  declaration_commands: "array",
 };
 
 const docs = Object.fromEntries(Object.keys(names).map((n) => [n, load(n)]));

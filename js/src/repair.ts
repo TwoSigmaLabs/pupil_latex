@@ -24,6 +24,8 @@ const ALPHA_RUN_RE = /[A-Za-z]+/y;
 // Every C0 control except TAB, LF, CR — plus DEL.
 const OTHER_CONTROL_RE = /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g;
 const ANY_CONTROL_RE = /[\x00-\x1f\x7f]/;
+// ESC `[`, parameter bytes, intermediate bytes, one final byte.
+const ANSI_CSI_RE = /\x1b\[[0-?]*[ -/]*[@-~]/g;
 
 /**
  * The one letter in n/t/r for which `letter + run` is a KaTeX command, or
@@ -56,6 +58,7 @@ function dollarPositions(text: string): number[] {
  *   (odd count of unescaped `$` before and one after) with three or more
  *   letters — a command under exactly one of the three letters; otherwise
  *   they are kept.
+ * - An ANSI CSI sequence (`ESC [ … m`) is removed whole.
  * - Any other C0 control and DEL is removed.
  *
  * `guessWhitespace=false` is the read-path form (Backend #1595): stored bytes
@@ -63,9 +66,14 @@ function dollarPositions(text: string): number[] {
  * non-strings are returned unchanged.
  */
 export function repair<T>(text: T, guessWhitespace?: boolean): T;
-export function repair(text: unknown, guessWhitespace = true): unknown {
-  if (typeof text !== "string" || !text) return text;
-  if (!ANY_CONTROL_RE.test(text)) return text;
+export function repair(input: unknown, guessWhitespace = true): unknown {
+  if (typeof input !== "string" || !input) return input;
+  if (!ANY_CONTROL_RE.test(input)) return input;
+  // A whole ANSI CSI sequence (terminal colour/bold codes) goes at once:
+  // removing only the ESC left `[1mRecall Prompt 1:[0m` behind.
+  const text = input.includes("\u001b[")
+    ? input.replace(ANSI_CSI_RE, "")
+    : input;
   const out: string[] = [];
   const n = text.length;
   let dollars: number[] | null = null;

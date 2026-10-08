@@ -75,9 +75,9 @@ function run(fn, c) {
     case "normalize":
       return normalize(inp);
     case "fix":
-      return fix(inp);
+      return fix(inp, c.opts ?? {});
     case "canonicalize":
-      return canonicalize(inp);
+      return canonicalize(inp, c.opts ?? {});
     case "segment":
       return segment(inp);
     case "to_plain":

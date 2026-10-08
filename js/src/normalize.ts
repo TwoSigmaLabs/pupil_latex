@@ -92,6 +92,27 @@ function escapedAt(s: string, i: number): boolean {
   return i > 0 && s[i - 1] === "\\";
 }
 
+const FORMULA_CHARS_RE = /^[0-9A-Za-z+\-*/=<>().,^_ \t]+$/;
+const FORMULA_OPERATOR_RE = /[+\-*/=<>^_]/;
+const FORMULA_COMMAND_RE = /\\[A-Za-z]+/g;
+const TWO_LETTERS_RE = /[A-Za-z]{2,}/;
+
+/**
+ * True when the content of `$<digit>… $` (space before the closer) is
+ * clearly a formula, not prose between two amounts: after removing command
+ * names it is only digits, letters, operators, brackets and spaces, has an
+ * operator and a letter or command, and no two letters in a row.
+ */
+export function isFormula(content: string): boolean {
+  const core = content.replace(/[ \t]+$/, "");
+  if (!core) return false;
+  const hasCommand = /\\[A-Za-z]/.test(core);
+  const bare = core.replace(FORMULA_COMMAND_RE, " ");
+  if (!FORMULA_CHARS_RE.test(bare) || TWO_LETTERS_RE.test(bare)) return false;
+  if (!FORMULA_OPERATOR_RE.test(bare) && !hasCommand) return false;
+  return hasCommand || /[A-Za-z]/.test(bare);
+}
+
 function escapeCurrencyInLine(line: string): string {
   if (!line.includes("$")) return line;
   const out: string[] = [];
@@ -135,7 +156,11 @@ function escapeCurrencyInLine(line: string): string {
         // A `$` right after the closer is the NEXT span's opener
         // (`$1$$\\gamma$`), not a display delimiter: only whitespace
         // before and a digit after invalidate a closer.
-        closerValid = !spaceAt(line, j - 1) && !digitAt(line, j + 1);
+        closerValid =
+          !digitAt(line, j + 1) &&
+          // `Compute $2x + 3 $.`: the renderers pair a closer after a
+          // space, so a formula keeps its dollars.
+          (!spaceAt(line, j - 1) || isFormula(line.slice(i + 1, j)));
         break;
       }
       j++;
