@@ -1,6 +1,6 @@
 {
  "function": "to_plain",
- "version": "1.2.0",
+ "version": "1.2.1",
  "cases": [
   {
    "id": "curated-frac-and-script",
@@ -859,6 +859,209 @@
    "style": "pdf"
   },
   {
+   "id": "curated-audit5-1-two-amounts",
+   "input": "Rs $5 and $10",
+   "expected": "Rs $5 and $10",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-1-two-amounts-pdf",
+   "input": "Rs $5 and $10",
+   "expected": "Rs $5 and $10",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-1"
+   ],
+   "style": "pdf"
+  },
+  {
+   "id": "curated-audit5-1-amount-range",
+   "input": "$5-$10",
+   "expected": "$5-$10",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-1-amount-then-span",
+   "input": "Rs $5 and $x^2$",
+   "expected": "Rs $5 and x²",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-1-amounts-around-span",
+   "input": "Pay $5, then $\\frac{1}{2}$ of $10.",
+   "expected": "Pay $5, then 1/2 of $10.",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-2-lone-amount",
+   "input": "$5",
+   "expected": "$5",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-2"
+   ]
+  },
+  {
+   "id": "curated-audit5-2-lone-amount-pdf",
+   "input": "$5",
+   "expected": "$5",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-2"
+   ],
+   "style": "pdf"
+  },
+  {
+   "id": "curated-audit5-2-amount-in-sentence",
+   "input": "costs $5.",
+   "expected": "costs $5.",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-2"
+   ]
+  },
+  {
+   "id": "curated-audit5-2-amount-with-decimals",
+   "input": "It costs $1,200.50 now",
+   "expected": "It costs $1,200.50 now",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-2"
+   ]
+  },
+  {
+   "id": "curated-audit5-2-compare-keeps-amount",
+   "input": "costs $5.",
+   "expected": "costs $5.",
+   "tags": [
+    "B3",
+    "B8",
+    "audit5-2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-audit5-2-cut-off-span-dropped",
+   "input": "$45m",
+   "expected": "45m",
+   "tags": [
+    "B8",
+    "audit5-2"
+   ],
+   "note": "a stored answer that kept only its opening delimiter"
+  },
+  {
+   "id": "curated-audit5-2-cut-off-command-span-dropped",
+   "input": "$4\\sqrt{3}s",
+   "expected": "4√3s",
+   "tags": [
+    "B8",
+    "audit5-2"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-form-feed-frac",
+   "input": "Area \frac{1}{2}",
+   "expected": "Area 1/2",
+   "tags": [
+    "B1",
+    "B8",
+    "audit5-3"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-tab-times",
+   "input": "3 \times 4",
+   "expected": "3 × 4",
+   "tags": [
+    "B1",
+    "B8",
+    "audit5-3"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-lf-rightarrow-in-span",
+   "input": "$x \nightarrow y$",
+   "expected": "x → y",
+   "tags": [
+    "B1",
+    "B8",
+    "audit5-3"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-backspace-beta",
+   "input": "\beta = 2",
+   "expected": "β = 2",
+   "tags": [
+    "B1",
+    "B8",
+    "audit5-3"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-backspace-beta-tts",
+   "input": "$\beta$",
+   "expected": "beta",
+   "tags": [
+    "B1",
+    "B8",
+    "audit5-3"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-audit5-3-ambiguous-newline-kept",
+   "input": "Line one\nuse it",
+   "expected": "Line one\nuse it",
+   "tags": [
+    "B1",
+    "B7",
+    "audit5-3"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-mid-line-label-text",
+   "input": "Pick students (\tool: timer)",
+   "expected": "Pick students (\\tool: timer)",
+   "tags": [
+    "B1",
+    "B8",
+    "audit5-3"
+   ]
+  },
+  {
+   "id": "curated-audit5-3-mid-line-label-pdf",
+   "input": "Pick students (\\tool: timer 5min)",
+   "expected": "Pick students (tool: timer 5min)",
+   "tags": [
+    "B8",
+    "audit5-3"
+   ],
+   "style": "pdf"
+  },
+  {
    "id": "backend-latex-to-plain-0001",
    "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
    "via": "latex_to_plain",
@@ -1186,6 +1389,18 @@
    "via": "latex_to_plain",
    "input": "costs \\$5 and $x$",
    "expected": "costs $5 and x",
+   "style": "text",
+   "tags": [
+    "B8",
+    "backend#1599"
+   ]
+  },
+  {
+   "id": "backend-latex-to-plain-r2-0005",
+   "source": "Backend/tests/unit/test_latex_to_plain_r2.py::test_probe_cases",
+   "via": "latex_to_plain",
+   "input": "\\$50",
+   "expected": "$50",
    "style": "text",
    "tags": [
     "B8",

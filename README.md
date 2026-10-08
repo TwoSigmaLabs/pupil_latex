@@ -39,22 +39,22 @@ Every consumer pins a release tag. There is no package registry: installs come f
 
 ```bash
 # Python (Backend, pupiltree-agents, Fillers, worksheet.ai backend), through git
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.2.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.2.1#subdirectory=python"
 
 # Python without git (recommended for Docker builds: slim images have no git)
-pip install "pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree_latex-1.2.0-py3-none-any.whl"
+pip install "pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.1/pupiltree_latex-1.2.1-py3-none-any.whl"
 # requirements.txt:
-# pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree_latex-1.2.0-py3-none-any.whl
+# pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.1/pupiltree_latex-1.2.1-py3-none-any.whl
 ```
 
 ```bash
 # JavaScript (worksheet.ai, pupil-assessment-ui): package.json keeps this URL
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.0/pupiltree-latex-1.2.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.2.1/pupiltree-latex-1.2.1.tgz
 ```
 
 ```html
 <!-- Plain <script> pages (Fillers), next to KaTeX; Safari/iOS 14+, Chrome/Edge 80+, Firefox 78+ -->
-<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.2.0/js/dist/pupiltree-latex.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.2.1/js/dist/pupiltree-latex.iife.js"></script>
 ```
 
 ```yaml
@@ -65,7 +65,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.2.0
+      ref: v1.2.1
       path: dart/pupiltree_latex_flutter
 ```
 
@@ -75,11 +75,11 @@ dependencies:
   pupiltree_latex:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.2.0
+      ref: v1.2.1
       path: dart/pupiltree_latex
 ```
 
-Releasing: push a `v*` tag. CI runs every suite, then attaches `pupiltree_latex-X.Y.Z-py3-none-any.whl`, `pupiltree-latex-X.Y.Z.tgz` and `pupiltree-latex.iife.js` to the GitHub release. Publishing the release runs `.github/workflows/propagate.yml`, which opens a `chore: bump pupiltree-latex to vX.Y.Z` pull request in every consumer that already pins the library (it needs the `PUPIL_LATEX_BUMP_TOKEN` secret; see the workflow header).
+Releasing: push a `v*` tag. CI runs every suite, then attaches `pupiltree_latex-X.Y.Z-py3-none-any.whl`, `pupiltree-latex-X.Y.Z.tgz` and `pupiltree-latex.iife.js` to the GitHub release. Publishing the release runs `.github/workflows/propagate.yml`, which opens a `chore: bump pupiltree-latex to vX.Y.Z` pull request in every consumer that already pins the library (it needs the `PUPIL_LATEX_BUMP_TOKEN` secret with contents and pull-request write on every consumer, all under TwoSigmaLabs including `TwoSigmaLabs/worksheet.ai`; see the workflow header). Without the secret the release still goes green and the run carries a warning; re-run propagate by hand once the secret is set.
 
 ## Use
 

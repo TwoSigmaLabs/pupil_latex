@@ -1,6 +1,6 @@
 {
  "function": "json_transport",
- "version": "1.2.0",
+ "version": "1.2.1",
  "cases": [
   {
    "id": "curated-frac-in-string",

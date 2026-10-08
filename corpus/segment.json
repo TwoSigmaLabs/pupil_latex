@@ -1,6 +1,6 @@
 {
  "function": "segment",
- "version": "1.2.0",
+ "version": "1.2.1",
  "cases": [
   {
    "id": "curated-mixed",
@@ -227,6 +227,50 @@
     "audit4-6"
    ],
    "note": "segment keeps the pandoc rule (no closer after a space); fix trims the padding instead"
+  },
+  {
+   "id": "curated-audit5-1-two-amounts-are-text",
+   "input": "Rs $5 and $10",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Rs $5 and $10",
+     "raw": "Rs $5 and $10"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit5-1"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-empty-padded-pair-then-span",
+   "input": "a $ $\\nu$ b",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "a $ ",
+     "raw": "a $ "
+    },
+    {
+     "kind": "math",
+     "display": false,
+     "value": "\\nu",
+     "raw": "$\\nu$"
+    },
+    {
+     "kind": "text",
+     "display": false,
+     "value": " b",
+     "raw": " b"
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit5-8"
+   ]
   },
   {
    "id": "worksheet-MathText-test-0001",

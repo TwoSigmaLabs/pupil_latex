@@ -1,6 +1,6 @@
 {
  "function": "normalize",
- "version": "1.2.0",
+ "version": "1.2.1",
  "cases": [
   {
    "id": "curated-paren-inline",
@@ -453,6 +453,51 @@
    "tags": [
     "B3",
     "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-empty-padded-pair-keeps-nu",
+   "input": "a $ $\\nu$ b",
+   "expected": "a $ $\\nu$ b",
+   "tags": [
+    "B5",
+    "audit5-8"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-malformed-keeps-nu",
+   "input": "$\\nu = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+   "expected": "$\\nu = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+   "tags": [
+    "B5",
+    "audit5-8"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-second-pass-keeps-nu",
+   "input": "$ $\\nu$ = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+   "expected": "$ $\\nu$ = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+   "tags": [
+    "B5",
+    "audit5-8"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-padded-span-keeps-ne",
+   "input": "$ x \\ne y $",
+   "expected": "$ x \\ne y $",
+   "tags": [
+    "B5",
+    "audit5-8"
+   ]
+  },
+  {
+   "id": "curated-audit5-8-prose-escape-still-decoded",
+   "input": "a $ $\\nu$ b\\nNext",
+   "expected": "a $ $\\nu$ b\nNext",
+   "tags": [
+    "B5",
+    "audit5-8"
    ]
   },
   {

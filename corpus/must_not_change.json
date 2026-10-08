@@ -1,6 +1,6 @@
 {
  "function": "must_not_change",
- "version": "1.2.0",
+ "version": "1.2.1",
  "cases": [
   {
    "id": "curated-identifier-caps",

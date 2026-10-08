@@ -2,6 +2,26 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
+## 1.2.1 (2026-10-08)
+
+Bugs found while migrating Fillers, Backend and pupiltree-agents to 1.2.0 (audit round 5). New corpus cases are tagged `audit5-<n>`; every fix is in Python, JavaScript and Dart. No existing corpus expectation changes (CONTRACT §7: patch).
+
+### Fixed in every language
+
+- **`to_plain` pairs math the way `segment` does (audit5-1).** `Rs $5 and $10` was `Rs 5 and 10`: the delimiter strip paired two amounts as a span. A dollar that `normalize`'s currency rule reads as money (the closer is followed by a digit, or there is no closer), outside every `segment` math span and followed by an amount, is now a literal dollar: `Rs $5 and $10`, `$5-$10`, `Rs $5 and $x^2$` → `Rs $5 and x²`.
+- **Unpaired amounts keep their dollar (audit5-2).** `$5` and `costs $5.` were `5` / `costs 5.`; they stay `$5` / `costs $5.` in `text`, `pdf` and `compare` (`compare` already kept `\$5`, so a stored amount and a typed one still compare equal). A cut-off span keeps the old behaviour: `$45m` → `45m`, `$4\sqrt{3}s` → `4√3s`.
+- **`to_plain` repairs first (audit5-3).** Every style runs `repair` with `guessWhitespace=true`, as `fix` does: `Area <FF>rac{1}{2}` → `Area 1/2`, `3 <TAB>imes 4` → `3 × 4`, `$x <LF>ightarrow y$` → `x → y`, `<BS>eta` → `β`, and ANSI colour codes are removed. A `\name:` whose name is in `SCRIPT_LABELS` is a label anywhere in a line, so a repaired `(<TAB>ool: timer)` reads `(\tool: timer)` (`text`) / `(tool: timer)` (`pdf`), not `(→ol: timer)`.
+- **`fix` idempotency on `$ $` shapes (audit5-8).** `a $ $\nu$ b` became `a $ <LF>u$ b` in `normalize`, and `$\nu = $\frac{c}{\lambd$a^{{2}$}$}$` lost its `\nu` on a second `fix`: the prose-escape decoder paired `$ $` with a regex while `segment` renders `$\nu$`. A position is now protected when either `segment` or the regex calls it math (decoding is lossy, and a padded `$ x \ne y $` must survive until `canonicalize` trims it).
+
+### Release tooling
+
+- `propagate.yml`: worksheet.ai moved to `TwoSigmaLabs/worksheet.ai` (base `main`); every consumer now uses the one `PUPIL_LATEX_BUMP_TOKEN` secret (the `PUPIL_LATEX_BUMP_TOKEN_PUPILTREE` fallback is gone). A missing secret is a `::warning::` plus a run summary from a new `token` job and no bump job runs; on a tag run (called from `ci.yml`) the `resolve` and `bump` jobs are `continue-on-error`, so a consumer that cannot be bumped is an `::error::` on its own job and the release run stays green. Manual and `release`-event runs still fail.
+- `tools/bump_consumer.py` (kind `fillers`): a `README*` next to a vendored `pupiltree-latex.iife.js` gets its `Version: X.Y.Z` line and `pupil_latex/releases/tag/vX.Y.Z` link rewritten (Fillers `frontend/static/vendor/pupiltree-latex/README.md`).
+
+### Not in this release
+
+- `normalize` trimming a padded span (`Compute $2x + 3 $.` → `$2x + 3$`, as `canonicalize` does) would change two `must_not_change` expectations (`audit4-6-space-before-closer`, `audit4-6-space-before-closer-power`, both via `normalize`), so it is a minor change and waits for 1.3.0.
+
 ## 1.2.0 (2026-10-08)
 
 Regressions found when the library was compared with the projects' own LaTeX code (audit round 4). New corpus cases are tagged `audit4-<n>`; every fix is in Python, JavaScript and Dart.
