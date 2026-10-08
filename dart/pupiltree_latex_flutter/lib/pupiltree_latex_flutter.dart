@@ -240,6 +240,10 @@ class MathText extends StatelessWidget {
       overflow: overflow,
       useDollarSignsForLatex: false,
       inlinePatterns: [inlineMathPattern, operatorStarPattern],
+      // gpt_markdown 1.3.4 deprecates latexBuilder in favour of
+      // inlineLatexBuilder/blockLatexBuilder, which 1.3.0 (our lower bound)
+      // does not have. Keep the one builder that works across the range.
+      // ignore: deprecated_member_use
       latexBuilder:
           (context, tex, textStyle, inline) =>
               mathWidget(tex, textStyle, inline: inline),
