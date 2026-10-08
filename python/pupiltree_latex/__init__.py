@@ -28,6 +28,7 @@ from .fix import (
     fix,
     fix_deep,
     merge_adjacent_math,
+    needs_fix,
     wrap_bare_symbol_commands,
     wrap_unicode_chemistry,
     wrap_unicode_scripts,
@@ -42,12 +43,15 @@ from .commands import (
 from .json_transport import escape_latex_for_json, loads_latex_aware, loads_model_json
 from .mojibake import HTML_ENTITIES, MOJIBAKE_TABLE, fix_mojibake_ftfy, fix_mojibake_table, unescape_html_entities
 from .normalize import (
+    CurrencySpan,
+    currency_spans,
     decode_escapes_outside_math,
     escape_currency,
     normalize,
     normalize_delimiters,
     strip_orphan_delimiters,
 )
+from .option_text import normalize_option_text
 from .prompt_rules import (
     LATEX_SYSTEM_RULES,
     NARRATIVE_PROSE_RULES,
@@ -77,6 +81,10 @@ __all__ = [
     "VERSION",
     "fix",
     "fix_deep",
+    "needs_fix",
+    "normalize_option_text",
+    "currency_spans",
+    "CurrencySpan",
     "wrap_unicode_chemistry",
     "wrap_bare_symbol_commands",
     "merge_adjacent_math",

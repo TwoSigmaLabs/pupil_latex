@@ -24,10 +24,14 @@ from typing import Any
 from . import (
     audit_kinds,
     canonicalize,
+    currency_spans,
     fix,
+    is_plain_prose,
     loads_latex_aware,
     loads_model_json,
+    needs_fix,
     normalize,
+    normalize_option_text,
     repair,
     segment,
     to_plain,
@@ -42,8 +46,19 @@ FUNCTIONS = (
     "to_plain",
     "audit",
     "json_transport",
+    "normalize_option_text",
+    "needs_fix",
+    "currency_spans",
+    "is_plain_prose",
 )
-STRING_FUNCTIONS = ("repair", "normalize", "canonicalize", "fix", "to_plain")
+STRING_FUNCTIONS = (
+    "repair",
+    "normalize",
+    "canonicalize",
+    "fix",
+    "to_plain",
+    "normalize_option_text",
+)
 
 
 class ParseError(Exception):
@@ -55,9 +70,9 @@ def run(function: str, case: dict) -> Any:
     inp = case["input"]
     if function == "repair":
         return repair(inp, guess_whitespace=case.get("variant") != "hard")
-    if function == "normalize":
-        return normalize(inp)
     options = case.get("opts") or {}
+    if function == "normalize":
+        return normalize(inp, **options)
     if function == "canonicalize":
         return canonicalize(inp, **options)
     if function == "fix":
@@ -71,10 +86,18 @@ def run(function: str, case: dict) -> Any:
     if function == "json_transport":
         try:
             if "loads_model_json" in str(case.get("via", "")):
-                return loads_model_json(inp)
+                return loads_model_json(inp, **options)
             return loads_latex_aware(inp)
         except ValueError as exc:
             raise ParseError(str(exc)) from exc
+    if function == "normalize_option_text":
+        return normalize_option_text(inp, **options)
+    if function == "needs_fix":
+        return needs_fix(inp, **options)
+    if function == "currency_spans":
+        return [s["text"] for s in currency_spans(inp)]
+    if function == "is_plain_prose":
+        return is_plain_prose(inp)
     raise KeyError(function)
 
 

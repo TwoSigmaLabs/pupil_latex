@@ -1129,6 +1129,24 @@
    ]
   },
   {
+   "id": "curated-v140-b3-angstrom-text-group",
+   "input": "$1.5\\,\\text{\\AA}$",
+   "expected": "1.5 Å",
+   "tags": [
+    "B8",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-bare",
+   "input": "1.5 \\AA",
+   "expected": "1.5 Å",
+   "tags": [
+    "B8",
+    "v140-b3"
+   ]
+  },
+  {
    "id": "backend-latex-to-plain-0001",
    "source": "Backend/tests/unit/test_latex_to_plain.py::test_latex_to_plain_strips_known_constructs",
    "via": "latex_to_plain",

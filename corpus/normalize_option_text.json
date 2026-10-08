@@ -1,0 +1,168 @@
+{
+ "function": "normalize_option_text",
+ "version": "1.3.0",
+ "cases": [
+  {
+   "id": "curated-v140-b4-text-word-span",
+   "input": "$\\text{Coulomb}$",
+   "expected": "Coulomb",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-text-word-bare",
+   "input": "\\text{Coulomb}",
+   "expected": "Coulomb",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-plain-word-span",
+   "input": "$Coulomb$",
+   "expected": "Coulomb",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-text-words-span",
+   "input": "$\\text{New Delhi}$",
+   "expected": "New Delhi",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-text-word-before-math",
+   "input": "\\text{rises} when $x > 0$",
+   "expected": "rises when $x > 0$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-script-in-text",
+   "input": "$\\text{H_{2}O}$",
+   "expected": "$\\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B6",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-unit-power-in-text",
+   "input": "$5 \\text{ m^{2}}$",
+   "expected": "$5 \\text{ m}^{2}$",
+   "tags": [
+    "B6",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-double-superscript-merged",
+   "input": "$3 \\text{ m s^{-}^{1}}$",
+   "expected": "$3 \\text{ m s}^{-1}$",
+   "tags": [
+    "B6",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-percent-in-text",
+   "input": "$50 \\text{ %}$",
+   "expected": "$50 \\%$",
+   "tags": [
+    "B4",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-command-in-text",
+   "input": "$5 \\text{ \\Omega}$",
+   "expected": "$5 \\Omega$",
+   "tags": [
+    "B4",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-escaped-braces",
+   "input": "\\{A, B\\}",
+   "expected": "{A, B}",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-chemistry-stays",
+   "input": "$\\text{H}_{2}\\text{O}$",
+   "expected": "$\\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-element-stays",
+   "input": "$\\text{NaCl}$",
+   "expected": "$\\text{NaCl}$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-unit-stays",
+   "input": "$10.0 \\text{ J}$",
+   "expected": "$10.0 \\text{ J}$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-variable-stays",
+   "input": "$x$",
+   "expected": "$x$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-capitals-stay",
+   "input": "$ABCD$",
+   "expected": "$ABCD$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-runs-fix",
+   "input": "H₂O",
+   "expected": "$\\text{H}_{2}\\text{O}$",
+   "tags": [
+    "B6",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-plain-option",
+   "input": "Newton",
+   "expected": "Newton",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  }
+ ]
+}

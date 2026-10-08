@@ -1,0 +1,60 @@
+{
+ "function": "is_plain_prose",
+ "version": "1.3.0",
+ "cases": [
+  {
+   "id": "curated-v140-b10-radio-checked",
+   "input": "(x) The force opposes the displacement.",
+   "expected": false,
+   "tags": [
+    "B2",
+    "v140-b10"
+   ]
+  },
+  {
+   "id": "curated-v140-b10-radio-empty",
+   "input": "( ) The force",
+   "expected": false,
+   "tags": [
+    "B2",
+    "v140-b10"
+   ]
+  },
+  {
+   "id": "curated-v140-b10-radio-capital",
+   "input": "(X) The force",
+   "expected": false,
+   "tags": [
+    "B2",
+    "v140-b10"
+   ]
+  },
+  {
+   "id": "curated-v140-b10-parentheses-are-prose",
+   "input": "Plain sentence (with parens) here.",
+   "expected": true,
+   "tags": [
+    "B2",
+    "v140-b10"
+   ]
+  },
+  {
+   "id": "curated-v140-b10-plain",
+   "input": "Water boils at 100 degrees.",
+   "expected": true,
+   "tags": [
+    "B2",
+    "v140-b10"
+   ]
+  },
+  {
+   "id": "curated-v140-b10-math",
+   "input": "Water is $H_2O$",
+   "expected": false,
+   "tags": [
+    "B2",
+    "v140-b10"
+   ]
+  }
+ ]
+}

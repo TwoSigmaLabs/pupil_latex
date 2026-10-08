@@ -1,0 +1,97 @@
+{
+ "function": "needs_fix",
+ "version": "1.3.0",
+ "cases": [
+  {
+   "id": "curated-v140-b9-chemistry",
+   "input": "H₂O",
+   "expected": true,
+   "tags": [
+    "B6",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-radical",
+   "input": "√2",
+   "expected": true,
+   "tags": [
+    "B6",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-greek",
+   "input": "π",
+   "expected": true,
+   "tags": [
+    "B6",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-times",
+   "input": "x × y",
+   "expected": true,
+   "tags": [
+    "B6",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-bare-script",
+   "input": "x_0",
+   "expected": true,
+   "tags": [
+    "B6",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-bare-command",
+   "input": "Area \\frac{1}{2}",
+   "expected": true,
+   "tags": [
+    "B6",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-plain-prose",
+   "input": "plain words",
+   "expected": false,
+   "tags": [
+    "B7",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-already-math",
+   "input": "$x^2$",
+   "expected": false,
+   "tags": [
+    "B7",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-amount",
+   "input": "costs $5",
+   "expected": false,
+   "tags": [
+    "B3",
+    "B7",
+    "v140-b9"
+   ]
+  },
+  {
+   "id": "curated-v140-b9-padded-span",
+   "input": "Solve $ x + 1 = 0 $",
+   "expected": false,
+   "tags": [
+    "B7",
+    "v140-b9"
+   ]
+  }
+ ]
+}

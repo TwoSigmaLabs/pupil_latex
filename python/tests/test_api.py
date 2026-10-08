@@ -224,6 +224,7 @@ def test_all_kinds_are_produced_by_some_detector():
         "bare_unicode_math",
         "unicode_chemistry",
         "bare_left_brace",
+        "lost_escape",
     }
     assert len(DETECTORS) == len(ALL_KINDS)
 

@@ -167,6 +167,7 @@ _NOT_PLAIN_RE = re.compile(
     r"|--"  # rule / em-dash marker
     r"|(?:^|\n)[ \t]+\S"  # leading indentation
     r"|(?:^|\n)(?:[-*+] |\d+[.)] )"  # list marker
+    r"|\([xX ]\) "  # gpt_markdown radio button `(x) ` / `( ) ` (tag v140-b10)
 )
 
 

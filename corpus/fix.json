@@ -1026,6 +1026,481 @@
     "B3",
     "audit6-1"
    ]
+  },
+  {
+   "id": "curated-v140-b1-surplus-brace",
+   "input": "$x}$",
+   "expected": "${x}$",
+   "tags": [
+    "B4",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b1-surplus-brace-sum",
+   "input": "$a+b}$",
+   "expected": "${a+b}$",
+   "tags": [
+    "B4",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b1-surplus-brace-in-prose",
+   "input": "The answer is $x}$ here",
+   "expected": "The answer is ${x}$ here",
+   "tags": [
+    "B4",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b1-surplus-after-group",
+   "input": "$x^{2}}$",
+   "expected": "${x^{2}}$",
+   "tags": [
+    "B4",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b1-surplus-display",
+   "input": "$$x}$$",
+   "expected": "$${x}$$",
+   "tags": [
+    "B4",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b1-escaped-braces-balanced",
+   "input": "$\\left\\{x\\right\\}$",
+   "expected": "$\\left\\{x\\right\\}$",
+   "tags": [
+    "B7",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b1-unbalanced-both-ways-stays",
+   "input": "$x}{y$",
+   "expected": "$x}{y$",
+   "tags": [
+    "B7",
+    "v140-b1"
+   ],
+   "note": "a } before a { cannot be balanced by prepending: left as written"
+  },
+  {
+   "id": "curated-v140-b2-fre",
+   "input": "$\\fre{1}{2}$",
+   "expected": "$\\frac{1}{2}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-frc",
+   "input": "$\\frc{1}{2}$",
+   "expected": "$\\frac{1}{2}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-frc-bare",
+   "input": "Half is \\frc{1}{2}",
+   "expected": "Half is $\\frac{1}{2}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-typo-needs-argument",
+   "input": "see \\french fries",
+   "expected": "see \\french fries",
+   "tags": [
+    "B7",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-double-group",
+   "input": "${{x}}$",
+   "expected": "${x}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-double-group-script",
+   "input": "$x^{{2}}$",
+   "expected": "$x^{2}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-double-group-argument",
+   "input": "$\\frac{{1}}{2}$",
+   "expected": "$\\frac{1}{2}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-double-group-prose-stays",
+   "input": "Use {{name}} here",
+   "expected": "Use {{name}} here",
+   "tags": [
+    "B7",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-escaped-brace-group-stays",
+   "input": "$\\{{x}\\}$",
+   "expected": "$\\{{x}\\}$",
+   "tags": [
+    "B7",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-orphan-dollar",
+   "input": "What is $x + 1 equal to?",
+   "expected": "What is x + 1 equal to?",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-orphan-dollar-then-command",
+   "input": "What is $\\frac{1}{2} of 4?",
+   "expected": "What is $\\frac{1}{2}$ of 4?",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-orphan-closer",
+   "input": "x$ ok",
+   "expected": "x ok",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-orphan-after-amount",
+   "input": "costs \\$5 and x^2$",
+   "expected": "costs \\$5 and $x^2$",
+   "tags": [
+    "B3",
+    "B4",
+    "v140-b2"
+   ],
+   "note": "1.3.0 gave `costs \\$5 and $x^2$$`"
+  },
+  {
+   "id": "curated-v140-b2-currency-not-orphan",
+   "input": "costs $5",
+   "expected": "costs \\$5",
+   "tags": [
+    "B3",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-currency-prefix-not-orphan",
+   "input": "Price: US$ 5 only",
+   "expected": "Price: US$ 5 only",
+   "tags": [
+    "B3",
+    "B7",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-spaced-amount-not-orphan",
+   "input": "Pay $ 5 now",
+   "expected": "Pay $ 5 now",
+   "tags": [
+    "B3",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-suffix-amount-not-orphan",
+   "input": "It is 5$ per kg",
+   "expected": "It is 5$ per kg",
+   "tags": [
+    "B3",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-word-dollar-not-orphan",
+   "input": "in $ terms",
+   "expected": "in $ terms",
+   "tags": [
+    "B7",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-several-dollars-not-guessed",
+   "input": "$x^2$ and $y",
+   "expected": "$x^2$ and $y",
+   "tags": [
+    "B7",
+    "v140-b2"
+   ],
+   "note": "three dollars: which one is the orphan is a guess"
+  },
+  {
+   "id": "curated-v140-b2-escaped-opener",
+   "input": "\\$1.56 \\text{ m}$",
+   "expected": "$1.56 \\text{ m}$",
+   "tags": [
+    "B3",
+    "B4",
+    "v140-b2",
+    "backend#1416"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-escaped-opener-command",
+   "input": "\\$5\\times10^{3}$",
+   "expected": "$5\\times10^{3}$",
+   "tags": [
+    "B3",
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-escaped-amount-stays",
+   "input": "\\$50",
+   "expected": "\\$50",
+   "tags": [
+    "B3",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-escaped-amount-then-prose-stays",
+   "input": "Pay \\$5 or more in $x$",
+   "expected": "Pay \\$5 or more in $x$",
+   "tags": [
+    "B3",
+    "B7",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-span",
+   "input": "$\\AA$",
+   "expected": "Å",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-bare",
+   "input": "5 \\AA",
+   "expected": "5 Å",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-text",
+   "input": "\\text{\\AA}",
+   "expected": "Å",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-in-text-group",
+   "input": "$5\\text{\\AA}$",
+   "expected": "$5\\text{Å}$",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-in-math",
+   "input": "$d = 2\\,\\AA$",
+   "expected": "$d = 2\\,\\text{Å}$",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-double-backslash",
+   "input": "1.5 \\\\AA",
+   "expected": "1.5 Å",
+   "tags": [
+    "B1",
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-inside-text-words",
+   "input": "$\\text{1.5 \\AA}$",
+   "expected": "$\\text{1.5 Å}$",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b-idempotent-0",
+   "input": "$x}$ and $y}}$",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-1",
+   "input": "$\\frac{1}{2}}$ then ${{a}}$",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-2",
+   "input": "Is $x}$ more than \\$5?",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-3",
+   "input": "What is $x}{y equal to",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-4",
+   "input": "\\$2.5 \\times 10^{3}$ and $5",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-5",
+   "input": "Find $\\fre {a}{b}}$",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-6",
+   "input": "$x^2$ and \\frc{1}{2} and $",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-7",
+   "input": "a $ b and $\\AA$ and \\$1.5\\,\\AA$",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-8",
+   "input": "{{x}} and ${{{y}}}$ and $\\{{z}\\}$",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-9",
+   "input": "costs $5.\nangle ABC costs $10",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-10",
+   "input": "$x \nightarrow y}$",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
+  },
+  {
+   "id": "curated-v140-b-idempotent-11",
+   "input": "US$ 5 and $x",
+   "expected": null,
+   "tags": [
+    "B5",
+    "v140-b1",
+    "v140-b2"
+   ],
+   "property": "idempotent"
   }
  ]
 }

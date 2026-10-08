@@ -262,6 +262,120 @@
    ]
   },
   {
+   "id": "curated-v140-b8-del",
+   "input": "ab",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-lost-frac",
+   "input": "$rac{1}{2}$",
+   "expected": [
+    "lost_escape"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-lost-frac-prose",
+   "input": "Half is rac{1}{2}",
+   "expected": [
+    "lost_escape"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-lost-times",
+   "input": "$2 imes 3$",
+   "expected": [
+    "lost_escape"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-lost-theta",
+   "input": "$\\theta = heta$",
+   "expected": [
+    "lost_escape"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-lost-text",
+   "input": "ext{H}_2O",
+   "expected": [
+    "lost_escape"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-word-angle-is-prose",
+   "input": "the angle ABC",
+   "expected": [],
+   "tags": [
+    "B7",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-real-commands",
+   "input": "$\\angle ABC + \\eta + \\frac{1}{2}$",
+   "expected": [],
+   "tags": [
+    "B7",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-inside-text-group",
+   "input": "$\\text{heta}$",
+   "expected": [],
+   "tags": [
+    "B7",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-not-a-word-start",
+   "input": "practice rac",
+   "expected": [],
+   "tags": [
+    "B7",
+    "v140-b8"
+   ]
+  },
+  {
+   "id": "curated-v140-b8-form-feed-is-control-char",
+   "input": "Area \frac{1}{2}",
+   "expected": [
+    "control_char"
+   ],
+   "tags": [
+    "B1",
+    "v140-b8"
+   ],
+   "note": "the control character is still there: one finding, not two"
+  },
+  {
    "id": "backend-latex-rules-0023",
    "source": "Backend/tests/unit/test_latex_rules.py::test_validate_returns_empty_for_clean_input",
    "via": "validate_latex_text",

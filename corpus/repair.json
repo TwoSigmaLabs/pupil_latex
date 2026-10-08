@@ -339,6 +339,46 @@
    ]
   },
   {
+   "id": "curated-v140-b7-currency-is-not-a-span",
+   "input": "costs $5.\nangle ABC costs $10",
+   "expected": "costs $5.\nangle ABC costs $10",
+   "tags": [
+    "B1",
+    "B3",
+    "B7",
+    "v140-b7"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-currency-is-not-a-span-tab",
+   "input": "costs $5 and\tightarrow\there $10",
+   "expected": "costs $5 and\tightarrow\there $10",
+   "tags": [
+    "B1",
+    "B3",
+    "B7",
+    "v140-b7"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-span-still-repaired",
+   "input": "$x \nightarrow y$ costs $5",
+   "expected": "$x \\rightarrow y$ costs $5",
+   "tags": [
+    "B1",
+    "v140-b7"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-span-from-a-digit-still-repaired",
+   "input": "$5 + x \nightarrow y$",
+   "expected": "$5 + x \\rightarrow y$",
+   "tags": [
+    "B1",
+    "v140-b7"
+   ]
+  },
+  {
    "id": "backend-read-path-byte-identical-a8-0001",
    "source": "Backend/tests/unit/test_read_path_byte_identical_a8.py::test_read_path_is_byte_identical[sqrt]",
    "via": "sanitize_db_response",

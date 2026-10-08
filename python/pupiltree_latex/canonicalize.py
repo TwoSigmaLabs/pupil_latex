@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import datetime
 import re
-from typing import Any
+from typing import Any, Iterable
 
 from .audit import _detect_command_missing_argument, _detect_frac_missing_args
 from .commands import (
@@ -25,7 +25,7 @@ from .commands import (
 )
 from .mojibake import fix_mojibake_ftfy
 from .normalize import is_formula
-from .repair import repair
+from .repair import repair, repair_deep
 from .segment import segment
 from .unicode_math import (
     UNICODE_MATH,
@@ -35,7 +35,7 @@ from .unicode_math import (
     wrap_bare_unicode_math,
 )
 from .spans import math_mask, math_ranges
-from .walk import is_non_content_key, is_url_or_path_string
+from .walk import is_narrative_key, is_non_content_key, is_url_or_path_string
 
 # ---------------------------------------------------------------------------
 # Delimiter rewrites
@@ -643,6 +643,318 @@ def _close_unbalanced_braces(text: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# 1.4.0 repairs (tags v140-b1, v140-b2, v140-b3)
+# ---------------------------------------------------------------------------
+
+
+def _map_math_segments(text: str, transform: Any) -> str:
+    """Apply ``transform(content)`` to the content of every ``$\u2026$`` /
+    ``$$\u2026$$`` math segment; text segments and ``\\(\u2026\\)`` are copied."""
+    out: list[str] = []
+    for seg in segment(text):
+        raw = seg["raw"]
+        if seg["kind"] == "math" and raw.startswith("$"):
+            k = 2 if raw.startswith("$$") else 1
+            body = raw[k : len(raw) - k]
+            new = transform(body)
+            if new != body:
+                raw = raw[:k] + new + raw[len(raw) - k :]
+        out.append(raw)
+    return "".join(out)
+
+
+def _map_text_segments(text: str, transform: Any) -> str:
+    out: list[str] = []
+    for seg in segment(text):
+        out.append(transform(seg["raw"]) if seg["kind"] == "text" else seg["raw"])
+    return "".join(out)
+
+
+def _surplus_open(content: str) -> str:
+    """``x}`` \u2192 ``{x}``: prepend the ``{`` a span needs when its braces
+    never go above zero again (KaTeX reads the closer at depth \u2264 0, so
+    ``$x}$`` is a span that no renderer parses). Only when the prepended
+    braces leave it balanced (``x}{y`` stays)."""
+    depth = 0
+    lowest = 0
+    i = 0
+    n = len(content)
+    while i < n:
+        ch = content[i]
+        if ch == "\\":
+            i += 2
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            lowest = min(lowest, depth)
+        i += 1
+    if lowest >= 0 or depth != lowest:
+        return content
+    return "{" * (-lowest) + content
+
+
+def _open_surplus_braces(text: str) -> str:
+    """``$x}$`` \u2192 ``${x}$``, ``$a+b}$`` \u2192 ``${a+b}$`` (tag ``v140-b1``)."""
+    if "}" not in text or "$" not in text:
+        return text
+    return _map_math_segments(text, _surplus_open)
+
+
+def _is_escaped_at(text: str, i: int) -> bool:
+    """True when an odd run of backslashes ends right before ``i``."""
+    k = i - 1
+    while k >= 0 and text[k] == "\\":
+        k -= 1
+    return (i - 1 - k) % 2 == 1
+
+
+# `{{x}}` inside math: a doubled group around a body with no braces (a
+# command name or any other escaped character may appear in it).
+_DOUBLE_GROUP_RE = re.compile(r"\{\{((?:[^{}\\]|\\[A-Za-z]+|\\[^A-Za-z{}])*)\}\}")
+
+
+def _collapse_double_groups_in_math(content: str) -> str:
+    while "{{" in content:
+        out: list[str] = []
+        last = 0
+        for m in _DOUBLE_GROUP_RE.finditer(content):
+            if _is_escaped_at(content, m.start()):
+                continue
+            out.append(content[last : m.start()])
+            out.append("{" + m.group(1) + "}")
+            last = m.end()
+        if not out:
+            break
+        out.append(content[last:])
+        content = "".join(out)
+    return content
+
+
+def _collapse_double_groups(text: str) -> str:
+    """``${{x}}$`` \u2192 ``${x}$`` inside math only (tag ``v140-b2``)."""
+    if "{{" not in text or "$" not in text:
+        return text
+    return _map_math_segments(text, _collapse_double_groups_in_math)
+
+
+# Invented commands with one reading, when an argument follows.
+COMMAND_TYPOS: dict[str, str] = {"fre": "frac", "frc": "frac"}
+_COMMAND_TYPO_RE = re.compile(
+    r"\\(" + "|".join(sorted(COMMAND_TYPOS, key=len, reverse=True)) + r")(?=[ \t]*\{)"
+)
+
+
+def _fix_command_typos(text: str) -> str:
+    """``\\fre{1}{2}`` / ``\\frc{1}{2}`` \u2192 ``\\frac{1}{2}`` (tag ``v140-b2``)."""
+    if "\\fr" not in text:
+        return text
+
+    def replace(m: re.Match[str]) -> str:
+        if _is_escaped_at(text, m.start()):
+            return m.group(0)
+        return "\\" + COMMAND_TYPOS[m.group(1)]
+
+    return _COMMAND_TYPO_RE.sub(replace, text)
+
+
+# `\AA` (\u00c5ngstr\u00f6m): KaTeX accepts it in text mode only and flutter_math not
+# at all, so it becomes the literal sign (tag `v140-b3`).
+_ANGSTROM_TEXT_GROUP_RE = re.compile(r"\\(?:text|mathrm|textrm)\s*\{[ \t]*\\AA[ \t]*\}")
+_ANGSTROM_RE = re.compile(r"\\AA(?![A-Za-z])")
+_ANGSTROM_ONLY_SPAN_RE = re.compile(
+    r"[ \t]*(?:\\AA|\\(?:text|mathrm|textrm)\s*\{[ \t]*(?:\\AA|\u00c5)[ \t]*\})[ \t]*"
+)
+_TEXT_FAMILY_OPEN_RE = re.compile(
+    r"\\(?:text|textbf|textit|textrm|textsf|texttt|textnormal|textup|mbox|hbox)\s*\{"
+)
+
+
+def _angstrom_in_math(content: str) -> str:
+    out: list[str] = []
+    i = 0
+    n = len(content)
+    while i < n:
+        m = _TEXT_FAMILY_OPEN_RE.match(content, i)
+        if m and not _is_escaped_at(content, i):
+            # Copy the text group, turning `\AA` inside it into the sign.
+            depth = 0
+            j = m.end() - 1
+            while j < n:
+                ch = content[j]
+                if ch == "\\":
+                    j += 2
+                    continue
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        j += 1
+                        break
+                j += 1
+            group = content[i:j]
+            out.append(
+                _ANGSTROM_RE.sub(
+                    lambda g: (
+                        g.group(0) if _is_escaped_at(group, g.start()) else "\u00c5"
+                    ),
+                    group,
+                )
+            )
+            i = j
+            continue
+        a = _ANGSTROM_RE.match(content, i)
+        if a and not _is_escaped_at(content, i):
+            out.append("\\text{\u00c5}")
+            i = a.end()
+            continue
+        out.append(content[i])
+        i += 1
+    return "".join(out)
+
+
+def _angstrom_in_text(raw: str) -> str:
+    raw = _ANGSTROM_TEXT_GROUP_RE.sub(
+        lambda m: m.group(0) if _is_escaped_at(raw, m.start()) else "\u00c5", raw
+    )
+    return _ANGSTROM_RE.sub(
+        lambda m: m.group(0) if _is_escaped_at(raw, m.start()) else "\u00c5", raw
+    )
+
+
+def _replace_angstrom(text: str) -> str:
+    """``\\AA`` \u2192 ``\u00c5`` in prose and inside ``\\text{\u2026}``, ``\\text{\u00c5}`` in
+    other maths; a span that is only the sign becomes the sign."""
+    if "\\AA" not in text:
+        return text
+    out: list[str] = []
+    for seg in segment(text):
+        raw = seg["raw"]
+        if seg["kind"] == "math" and raw.startswith("$"):
+            k = 2 if raw.startswith("$$") else 1
+            body = raw[k : len(raw) - k]
+            if "\\AA" in body:
+                if _ANGSTROM_ONLY_SPAN_RE.fullmatch(body) and k == 1:
+                    raw = "\u00c5"
+                else:
+                    raw = raw[:k] + _angstrom_in_math(body) + raw[len(raw) - k :]
+        elif seg["kind"] == "text" and "\\AA" in raw:
+            raw = _angstrom_in_text(raw)
+        out.append(raw)
+    return "".join(out)
+
+
+def _dollar_positions(text: str) -> list[int]:
+    return [
+        i for i, ch in enumerate(text) if ch == "$" and not _dollar_escaped(text, i)
+    ]
+
+
+def _currency_prefix_before(text: str, k: int) -> bool:
+    """``US$``, ``R$``, ``NZ$``: one to three capitals glued to the dollar."""
+    j = k
+    while j > 0 and text[j - 1].isupper() and text[j - 1].isascii():
+        j -= 1
+    return 1 <= k - j <= 3 and (j == 0 or not text[j - 1].isalnum())
+
+
+def _drop_orphan_dollar(text: str) -> str:
+    """``What is $x + 1 equal to?`` → ``What is x + 1 equal to?`` (tag
+    ``v140-b2``).
+
+    Only when the text has exactly one unescaped ``$`` (so which one is the
+    orphan is not a guess) and that dollar is not money and not a word:
+
+    - not at the very start (the closer may be what is missing: ``$\\ldots``
+      and ``$×5`` keep it, tag ``audit2-lone-dollar``) and not part of ``$$``;
+    - no escaped dollar before a non-digit earlier on the line (``\\$x^2$``:
+      the escaped one may be the intended opener);
+    - not whitespace (or the text edge) on both sides (``in $ terms``);
+    - not followed by a digit, or by spaces and a digit (``$5``, ``$ 5``);
+    - not after a number that stands on its own (``5$ per kg``; ``x^2$`` is
+      dropped);
+    - not glued to a currency prefix of one to three capitals (``US$``)."""
+    if "$" not in text:
+        return text
+    positions = _dollar_positions(text)
+    if len(positions) != 1:
+        return text
+    k = positions[0]
+    n = len(text)
+    after = text[k + 1] if k + 1 < n else ""
+    before = text[k - 1] if k > 0 else ""
+    if k == 0 or after == "$" or before == "$":
+        return text
+    line = text[text.rfind("\n", 0, k) + 1 : k]
+    for esc in (_ESCAPED_DOLLAR_SENTINEL, "\\$"):
+        p = line.find(esc)
+        while p != -1:
+            q = p + len(esc)
+            if q >= len(line) or not ("0" <= line[q] <= "9"):
+                return text
+            p = line.find(esc, q)
+    if (not after or after.isspace()) and before.isspace():
+        return text
+    j = k + 1
+    while j < n and text[j] in " \t":
+        j += 1
+    if j < n and "0" <= text[j] <= "9":
+        return text
+    if "0" <= before <= "9":
+        j = k - 1
+        while j >= 0 and (text[j] in ".," or "0" <= text[j] <= "9"):
+            j -= 1
+        if j < 0 or text[j] in " \t\n(":
+            return text
+    if _currency_prefix_before(text, k):
+        return text
+    return text[:k] + text[k + 1 :]
+
+
+# `\$1.56 \text{ m}$`: an escaped OPENING dollar before a number whose span
+# goes on with maths and has its closer (Backend #1416).
+_ESCAPED_OPENER_RE = re.compile(r"\\\$([0-9]+(?:[.,][0-9]+)*)([^$\n]*)\$")
+_MATH_START_RE = re.compile(r"[ \t]*(?:\\[A-Za-z]|[\^_])")
+
+
+def _unescape_math_opener(text: str) -> str:
+    """``\\$1.56 \\text{ m}$`` \u2192 ``$1.56 \\text{ m}$`` (tag ``v140-b2``).
+
+    Only when the unescaped ``$`` count is odd (the closer has no partner),
+    the escaped dollar is escaped by exactly one backslash, the number is
+    followed by maths (a command, ``^`` or ``_``) with no prose word, and
+    the closer is a valid one (no whitespace before it, no digit after)."""
+    if "\\$" not in text or len(_dollar_positions(text)) % 2 == 0:
+        return text
+    for m in _ESCAPED_OPENER_RE.finditer(text):
+        start = m.start()
+        if _is_escaped_at(text, start):
+            continue  # `\\$`: a line break followed by a real dollar
+        rest = m.group(2)
+        close = m.end() - 1
+        if not _MATH_START_RE.match(rest) or not rest.strip():
+            continue
+        if rest[-1:].isspace() or (close + 1 < len(text) and text[close + 1].isdigit()):
+            continue
+        if _dollar_escaped(text, close):
+            continue
+        core = rest.strip(" \t")
+        probe = "$" + m.group(1) + rest + "$"
+        if _detect_command_missing_argument(probe) or _detect_frac_missing_args(probe):
+            continue
+        words = _TEXT_BRACE_RE.sub("", core)
+        words = _ANY_LATEX_CMD_RE.sub("", words)
+        if re.search(r"[A-Za-z]{4,}", words) or any(
+            w.lower() in _PROSE_STOPWORDS for w in _SHORT_WORD_RE.findall(words)
+        ):
+            continue
+        return text[:start] + text[start + 1 :]
+    return text
+
+
+# ---------------------------------------------------------------------------
 # Pipeline
 # ---------------------------------------------------------------------------
 
@@ -688,17 +1000,23 @@ def canonicalize(text: Any, *, chemistry: bool = True) -> Any:
         text = _EMBEDDED_URL_RE.sub(_stash_image, text)
 
     text = repair(text)
+    text = _unescape_math_opener(text)
     text = _stash_escaped_dollars(text)
     text = _escape_currency(text)
     text = _stash_escaped_dollars(text)
     text = fix_mojibake_ftfy(text)
     text = normalize_homoglyphs(text)
     text = _collapse_double_backslashes(text)
+    text = _fix_command_typos(text)
     text = _fix_left_right_braces(text)
     text = _PAREN_INLINE_RE.sub(lambda m: f"${m.group(1)}$", text)
     text = _BRACKET_DISPLAY_RE.sub(lambda m: f"$${m.group(1)}$$", text)
     text = _trim_padded_spans(text)
     text = _close_unbalanced_braces(text)
+    text = _open_surplus_braces(text)
+    text = _collapse_double_groups(text)
+    text = _replace_angstrom(text)
+    text = _drop_orphan_dollar(text)
     text = _normalize_braces(text)
     text = unicode_math_to_latex(text, inside_math_only=True)
     text = convert_combining_vec(text)
@@ -726,26 +1044,43 @@ def canonicalize(text: Any, *, chemistry: bool = True) -> Any:
     return text
 
 
-def canonicalize_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
+def canonicalize_deep(
+    obj: Any,
+    _key_hint: str = "",
+    *,
+    chemistry: bool = True,
+    narrative_keys: Iterable[str] | None = None,
+) -> Any:
     """`canonicalize` over every content string in a JSON-like document.
 
     Skips non-content keys and URL-shaped values (CONTRACT §5); list items
-    inherit the parent key. Coerces datetime/date to ISO-8601 and
-    ``bson.ObjectId`` to str when bson is installed, so a Mongo document can
-    be handed straight to a JSON response.
+    inherit the parent key. Values under ``narrative_keys`` (Class B
+    narration, ``name@sibling`` as in `fix_deep`) get `repair_deep` only.
+    Coerces datetime/date to ISO-8601 and ``bson.ObjectId`` to str when bson
+    is installed, so a Mongo document can be handed straight to a JSON
+    response.
     """
+    keys = tuple(narrative_keys) if narrative_keys else ()
     if isinstance(obj, str):
         if is_non_content_key(_key_hint) or is_url_or_path_string(obj):
             return obj
         return canonicalize(obj, chemistry=chemistry)
     if isinstance(obj, dict):
         return {
-            k: canonicalize_deep(v, _key_hint=k, chemistry=chemistry)
+            k: (
+                repair_deep(v)
+                if is_narrative_key(k, obj, keys)
+                else canonicalize_deep(
+                    v, _key_hint=k, chemistry=chemistry, narrative_keys=keys
+                )
+            )
             for k, v in obj.items()
         }
     if isinstance(obj, list):
         return [
-            canonicalize_deep(item, _key_hint=_key_hint, chemistry=chemistry)
+            canonicalize_deep(
+                item, _key_hint=_key_hint, chemistry=chemistry, narrative_keys=keys
+            )
             for item in obj
         ]
     if isinstance(obj, datetime.datetime):

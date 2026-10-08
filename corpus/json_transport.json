@@ -153,6 +153,62 @@
    ]
   },
   {
+   "id": "curated-v140-b12-lenient-unknown-escape",
+   "input": "{\"q\": \"\\frac{1}{2} and \\q and \\alpha\"}",
+   "expected": {
+    "q": "\\frac{1}{2} and \\q and \\alpha"
+   },
+   "tags": [
+    "B1",
+    "v140-b12"
+   ],
+   "via": "loads_model_json"
+  },
+  {
+   "id": "curated-v140-b12-lenient-raw-newline",
+   "input": "{\"q\": \"line one\nline two\"}",
+   "expected": {
+    "q": "line one\nline two"
+   },
+   "tags": [
+    "B1",
+    "v140-b12"
+   ],
+   "via": "loads_model_json",
+   "opts": {
+    "lenient": true
+   }
+  },
+  {
+   "id": "curated-v140-b12-strict-raises",
+   "input": "{\"q\": \"\\q\"}",
+   "expected": null,
+   "tags": [
+    "B1",
+    "v140-b12"
+   ],
+   "via": "loads_model_json",
+   "opts": {
+    "lenient": false
+   },
+   "expected_error": true
+  },
+  {
+   "id": "curated-v140-b12-strict-plain-json",
+   "input": "{\"q\": \"A.\\nB.\"}",
+   "expected": {
+    "q": "A.\nB."
+   },
+   "tags": [
+    "B1",
+    "v140-b12"
+   ],
+   "via": "loads_model_json",
+   "opts": {
+    "lenient": false
+   }
+  },
+  {
    "id": "backend-latex-rules-0017",
    "source": "Backend/tests/unit/test_latex_rules.py::test_parse_json_preserves_frac_command",
    "via": "parse_json_with_latex",

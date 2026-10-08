@@ -634,6 +634,75 @@
    ]
   },
   {
+   "id": "curated-v140-b11-code-span-power",
+   "input": "Find `x^2` here",
+   "expected": "Find $x^2$ here",
+   "tags": [
+    "B4",
+    "v140-b11"
+   ],
+   "opts": {
+    "code_spans_as_math": true
+   }
+  },
+  {
+   "id": "curated-v140-b11-code-span-fraction",
+   "input": "`\\frac{1}{2}` of it",
+   "expected": "$\\frac{1}{2}$ of it",
+   "tags": [
+    "B4",
+    "v140-b11"
+   ],
+   "opts": {
+    "code_spans_as_math": true
+   }
+  },
+  {
+   "id": "curated-v140-b11-code-span-subscript",
+   "input": "the term `a_n` and `x_{12}`",
+   "expected": "the term $a_n$ and $x_{12}$",
+   "tags": [
+    "B4",
+    "v140-b11"
+   ],
+   "opts": {
+    "code_spans_as_math": true
+   }
+  },
+  {
+   "id": "curated-v140-b11-real-code-stays",
+   "input": "Call `print(x)` with `my_var`, `lo_0` and `CO_2`",
+   "expected": "Call `print(x)` with `my_var`, `lo_0` and `CO_2`",
+   "tags": [
+    "B7",
+    "v140-b11"
+   ],
+   "opts": {
+    "code_spans_as_math": true
+   }
+  },
+  {
+   "id": "curated-v140-b11-no-math-stays",
+   "input": "Set `x = 5` and ```x^2``` and `2^{10}`5",
+   "expected": "Set `x = 5` and ```x^2``` and `2^{10}`5",
+   "tags": [
+    "B7",
+    "v140-b11"
+   ],
+   "opts": {
+    "code_spans_as_math": true
+   }
+  },
+  {
+   "id": "curated-v140-b11-off-by-default",
+   "input": "Find `x^2` here",
+   "expected": "Find `x^2` here",
+   "tags": [
+    "B7",
+    "v140-b11"
+   ]
+  },
+  {
    "id": "script-editor-latex-preprocess-0001",
    "source": "script_editor/test/widgets/custom_frequent_widgets/latex_utils/latex_preprocess_test.dart::delimiter normalisation/\\(x^2\\) becomes $x^2$",
    "via": "normalizeMathDelimiters",

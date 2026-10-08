@@ -726,3 +726,223 @@ FIX += [
         {},
     ),
 ]
+
+# ---------------------------------------------------------------------------
+# 1.4.0 Group B (fix / repair / audit / segment / helpers), tags v140-b<n>
+# ---------------------------------------------------------------------------
+
+# v140-b1: a surplus closing brace in a span gets its opener
+# (Backend question_generation `sanitize_latex_option`).
+FIX += [
+    ("v140-b1-surplus-brace", "$x}$", "${x}$", ["B4", "v140-b1"], {}),
+    ("v140-b1-surplus-brace-sum", "$a+b}$", "${a+b}$", ["B4", "v140-b1"], {}),
+    (
+        "v140-b1-surplus-brace-in-prose",
+        "The answer is $x}$ here",
+        "The answer is ${x}$ here",
+        ["B4", "v140-b1"],
+        {},
+    ),
+    ("v140-b1-surplus-after-group", "$x^{2}}$", "${x^{2}}$", ["B4", "v140-b1"], {}),
+    ("v140-b1-surplus-display", "$$x}$$", "$${x}$$", ["B4", "v140-b1"], {}),
+    (
+        "v140-b1-escaped-braces-balanced",
+        "$\\left\\{x\\right\\}$",
+        "$\\left\\{x\\right\\}$",
+        ["B7", "v140-b1"],
+        {},
+    ),
+    (
+        "v140-b1-unbalanced-both-ways-stays",
+        "$x}{y$",
+        "$x}{y$",
+        ["B7", "v140-b1"],
+        {"note": "a } before a { cannot be balanced by prepending: left as written"},
+    ),
+]
+
+# v140-b2: invented commands, doubled groups, an orphan dollar and an
+# escaped opening dollar (Backend question_generation.py:664, #1662/#1416).
+FIX += [
+    ("v140-b2-fre", "$\\fre{1}{2}$", "$\\frac{1}{2}$", ["B4", "v140-b2"], {}),
+    ("v140-b2-frc", "$\\frc{1}{2}$", "$\\frac{1}{2}$", ["B4", "v140-b2"], {}),
+    (
+        "v140-b2-frc-bare",
+        "Half is \\frc{1}{2}",
+        "Half is $\\frac{1}{2}$",
+        ["B4", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-typo-needs-argument",
+        "see \\french fries",
+        "see \\french fries",
+        ["B7", "v140-b2"],
+        {},
+    ),
+    ("v140-b2-double-group", "${{x}}$", "${x}$", ["B4", "v140-b2"], {}),
+    ("v140-b2-double-group-script", "$x^{{2}}$", "$x^{2}$", ["B4", "v140-b2"], {}),
+    (
+        "v140-b2-double-group-argument",
+        "$\\frac{{1}}{2}$",
+        "$\\frac{1}{2}$",
+        ["B4", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-double-group-prose-stays",
+        "Use {{name}} here",
+        "Use {{name}} here",
+        ["B7", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-escaped-brace-group-stays",
+        "$\\{{x}\\}$",
+        "$\\{{x}\\}$",
+        ["B7", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-orphan-dollar",
+        "What is $x + 1 equal to?",
+        "What is x + 1 equal to?",
+        ["B4", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-orphan-dollar-then-command",
+        "What is $\\frac{1}{2} of 4?",
+        "What is $\\frac{1}{2}$ of 4?",
+        ["B4", "v140-b2"],
+        {},
+    ),
+    ("v140-b2-orphan-closer", "x$ ok", "x ok", ["B4", "v140-b2"], {}),
+    (
+        "v140-b2-orphan-after-amount",
+        "costs \\$5 and x^2$",
+        "costs \\$5 and $x^2$",
+        ["B3", "B4", "v140-b2"],
+        {"note": "1.3.0 gave `costs \\$5 and $x^2$$`"},
+    ),
+    ("v140-b2-currency-not-orphan", "costs $5", "costs \\$5", ["B3", "v140-b2"], {}),
+    (
+        "v140-b2-currency-prefix-not-orphan",
+        "Price: US$ 5 only",
+        "Price: US$ 5 only",
+        ["B3", "B7", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-spaced-amount-not-orphan",
+        "Pay $ 5 now",
+        "Pay $ 5 now",
+        ["B3", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-suffix-amount-not-orphan",
+        "It is 5$ per kg",
+        "It is 5$ per kg",
+        ["B3", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-word-dollar-not-orphan",
+        "in $ terms",
+        "in $ terms",
+        ["B7", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b2-several-dollars-not-guessed",
+        "$x^2$ and $y",
+        "$x^2$ and $y",
+        ["B7", "v140-b2"],
+        {"note": "three dollars: which one is the orphan is a guess"},
+    ),
+    (
+        "v140-b2-escaped-opener",
+        "\\$1.56 \\text{ m}$",
+        "$1.56 \\text{ m}$",
+        ["B3", "B4", "v140-b2", "backend#1416"],
+        {},
+    ),
+    (
+        "v140-b2-escaped-opener-command",
+        "\\$5\\times10^{3}$",
+        "$5\\times10^{3}$",
+        ["B3", "B4", "v140-b2"],
+        {},
+    ),
+    ("v140-b2-escaped-amount-stays", "\\$50", "\\$50", ["B3", "v140-b2"], {}),
+    (
+        "v140-b2-escaped-amount-then-prose-stays",
+        "Pay \\$5 or more in $x$",
+        "Pay \\$5 or more in $x$",
+        ["B3", "B7", "v140-b2"],
+        {},
+    ),
+]
+
+# v140-b3: `\AA` becomes the sign (Backend revision/cheat_sheet.py:29).
+FIX += [
+    ("v140-b3-angstrom-span", "$\\AA$", "Å", ["B6", "v140-b3"], {}),
+    ("v140-b3-angstrom-bare", "5 \\AA", "5 Å", ["B6", "v140-b3"], {}),
+    ("v140-b3-angstrom-text", "\\text{\\AA}", "Å", ["B6", "v140-b3"], {}),
+    (
+        "v140-b3-angstrom-in-text-group",
+        "$5\\text{\\AA}$",
+        "$5\\text{Å}$",
+        ["B6", "v140-b3"],
+        {},
+    ),
+    (
+        "v140-b3-angstrom-in-math",
+        "$d = 2\\,\\AA$",
+        "$d = 2\\,\\text{Å}$",
+        ["B6", "v140-b3"],
+        {},
+    ),
+    (
+        "v140-b3-angstrom-double-backslash",
+        "1.5 \\\\AA",
+        "1.5 Å",
+        ["B1", "B6", "v140-b3"],
+        {},
+    ),
+    (
+        "v140-b3-angstrom-inside-text-words",
+        "$\\text{1.5 \\AA}$",
+        "$\\text{1.5 Å}$",
+        ["B6", "v140-b3"],
+        {},
+    ),
+]
+
+# Idempotency around the new repairs (fix(fix(x)) == fix(x)).
+FIX += [
+    (
+        f"v140-b-idempotent-{n}",
+        text,
+        None,
+        ["B5", "v140-b1", "v140-b2"],
+        {"property": "idempotent"},
+    )
+    for n, text in enumerate(
+        [
+            "$x}$ and $y}}$",
+            "$\\frac{1}{2}}$ then ${{a}}$",
+            "Is $x}$ more than \\$5?",
+            "What is $x}{y equal to",
+            "\\$2.5 \\times 10^{3}$ and $5",
+            "Find $\\fre {a}{b}}$",
+            "$x^2$ and \\frc{1}{2} and $",
+            "a $ b and $\\AA$ and \\$1.5\\,\\AA$",
+            "{{x}} and ${{{y}}}$ and $\\{{z}\\}$",
+            "costs $5.\nangle ABC costs $10",
+            "$x \nightarrow y}$",
+            "US$ 5 and $x",
+        ]
+    )
+]

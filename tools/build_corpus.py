@@ -2659,6 +2659,328 @@ TO_PLAIN += [
 
 
 # ---------------------------------------------------------------------------
+# 1.4.0 Group B (fix / repair / audit / segment / helpers), tags v140-b<n>.
+# The `fix` cases are in tools/curated_fix.py.
+# ---------------------------------------------------------------------------
+
+CANONICALIZE += [
+    ("v140-b1-surplus-brace", "$x}$", "${x}$", ["B4", "v140-b1"], {}),
+    (
+        "v140-b2-typo-and-double-group",
+        "$\\frc{1}{{2}}$",
+        "$\\frac{1}{2}$",
+        ["B4", "v140-b2"],
+        {},
+    ),
+    (
+        "v140-b3-angstrom",
+        "Bond length 1.5 \\AA",
+        "Bond length 1.5 Å",
+        ["B6", "v140-b3"],
+        {},
+    ),
+]
+
+# v140-b3: `to_plain` already reads `\AA` (pinned here).
+TO_PLAIN += [
+    (
+        "v140-b3-angstrom-text-group",
+        "$1.5\\,\\text{\\AA}$",
+        "1.5 Å",
+        ["B8", "v140-b3"],
+        {},
+    ),
+    ("v140-b3-angstrom-bare", "1.5 \\AA", "1.5 Å", ["B8", "v140-b3"], {}),
+]
+
+# v140-b7: the closed-span rule of `repair` ignores currency dollars, so a
+# line break before "angle" between two amounts stays a line break.
+REPAIR += [
+    (
+        "v140-b7-currency-is-not-a-span",
+        "costs $5.\nangle ABC costs $10",
+        "costs $5.\nangle ABC costs $10",
+        ["B1", "B3", "B7", "v140-b7"],
+        {},
+    ),
+    (
+        "v140-b7-currency-is-not-a-span-tab",
+        "costs $5 and\tightarrow\there $10",
+        "costs $5 and\tightarrow\there $10",
+        ["B1", "B3", "B7", "v140-b7"],
+        {},
+    ),
+    (
+        "v140-b7-span-still-repaired",
+        "$x \nightarrow y$ costs $5",
+        "$x \\rightarrow y$ costs $5",
+        ["B1", "v140-b7"],
+        {},
+    ),
+    (
+        "v140-b7-span-from-a-digit-still-repaired",
+        "$5 + x \nightarrow y$",
+        "$5 + x \\rightarrow y$",
+        ["B1", "v140-b7"],
+        {},
+    ),
+]
+
+# v140-b8: DEL is a control character; `lost_escape` is a command whose first
+# letter was eaten (agents ahs_generation_service `_LOST_FRAC_RE`).
+AUDIT += [
+    ("v140-b8-del", "a\x7fb", ["control_char"], ["B1", "v140-b8"], {}),
+    ("v140-b8-lost-frac", "$rac{1}{2}$", ["lost_escape"], ["B1", "v140-b8"], {}),
+    (
+        "v140-b8-lost-frac-prose",
+        "Half is rac{1}{2}",
+        ["lost_escape"],
+        ["B1", "v140-b8"],
+        {},
+    ),
+    ("v140-b8-lost-times", "$2 imes 3$", ["lost_escape"], ["B1", "v140-b8"], {}),
+    ("v140-b8-lost-theta", "$\\theta = heta$", ["lost_escape"], ["B1", "v140-b8"], {}),
+    ("v140-b8-lost-text", "ext{H}_2O", ["lost_escape"], ["B1", "v140-b8"], {}),
+    ("v140-b8-word-angle-is-prose", "the angle ABC", [], ["B7", "v140-b8"], {}),
+    (
+        "v140-b8-real-commands",
+        "$\\angle ABC + \\eta + \\frac{1}{2}$",
+        [],
+        ["B7", "v140-b8"],
+        {},
+    ),
+    ("v140-b8-inside-text-group", "$\\text{heta}$", [], ["B7", "v140-b8"], {}),
+    ("v140-b8-not-a-word-start", "practice rac", [], ["B7", "v140-b8"], {}),
+    (
+        "v140-b8-form-feed-is-control-char",
+        "Area \x0crac{1}{2}",
+        ["control_char"],
+        ["B1", "v140-b8"],
+        {"note": "the control character is still there: one finding, not two"},
+    ),
+]
+
+# v140-b11: inline code as maths, opt-in only.
+NORMALIZE += [
+    (
+        "v140-b11-code-span-power",
+        "Find `x^2` here",
+        "Find $x^2$ here",
+        ["B4", "v140-b11"],
+        {"opts": {"code_spans_as_math": True}},
+    ),
+    (
+        "v140-b11-code-span-fraction",
+        "`\\frac{1}{2}` of it",
+        "$\\frac{1}{2}$ of it",
+        ["B4", "v140-b11"],
+        {"opts": {"code_spans_as_math": True}},
+    ),
+    (
+        "v140-b11-code-span-subscript",
+        "the term `a_n` and `x_{12}`",
+        "the term $a_n$ and $x_{12}$",
+        ["B4", "v140-b11"],
+        {"opts": {"code_spans_as_math": True}},
+    ),
+    (
+        "v140-b11-real-code-stays",
+        "Call `print(x)` with `my_var`, `lo_0` and `CO_2`",
+        "Call `print(x)` with `my_var`, `lo_0` and `CO_2`",
+        ["B7", "v140-b11"],
+        {"opts": {"code_spans_as_math": True}},
+    ),
+    (
+        "v140-b11-no-math-stays",
+        "Set `x = 5` and ```x^2``` and `2^{10}`5",
+        "Set `x = 5` and ```x^2``` and `2^{10}`5",
+        ["B7", "v140-b11"],
+        {"opts": {"code_spans_as_math": True}},
+    ),
+    (
+        "v140-b11-off-by-default",
+        "Find `x^2` here",
+        "Find `x^2` here",
+        ["B7", "v140-b11"],
+        {},
+    ),
+]
+
+# v140-b12: `loads_model_json` is lenient by default; `lenient=False` is a
+# plain strict parse.
+JSON_TRANSPORT += [
+    (
+        "v140-b12-lenient-unknown-escape",
+        '{"q": "\\frac{1}{2} and \\q and \\alpha"}',
+        {"q": "\\frac{1}{2} and \\q and \\alpha"},
+        ["B1", "v140-b12"],
+        {"via": "loads_model_json"},
+    ),
+    (
+        "v140-b12-lenient-raw-newline",
+        '{"q": "line one\nline two"}',
+        {"q": "line one\nline two"},
+        ["B1", "v140-b12"],
+        {"via": "loads_model_json", "opts": {"lenient": True}},
+    ),
+    (
+        "v140-b12-strict-raises",
+        '{"q": "\\q"}',
+        None,
+        ["B1", "v140-b12"],
+        {"via": "loads_model_json", "opts": {"lenient": False}, "expected_error": True},
+    ),
+    (
+        "v140-b12-strict-plain-json",
+        '{"q": "A.\\nB."}',
+        {"q": "A.\nB."},
+        ["B1", "v140-b12"],
+        {"via": "loads_model_json", "opts": {"lenient": False}},
+    ),
+]
+
+# v140-b4: `normalize_option_text` (Backend services/ai/utils.py:132).
+NORMALIZE_OPTION_TEXT = [
+    ("v140-b4-text-word-span", "$\\text{Coulomb}$", "Coulomb", ["B7", "v140-b4"], {}),
+    ("v140-b4-text-word-bare", "\\text{Coulomb}", "Coulomb", ["B7", "v140-b4"], {}),
+    ("v140-b4-plain-word-span", "$Coulomb$", "Coulomb", ["B7", "v140-b4"], {}),
+    (
+        "v140-b4-text-words-span",
+        "$\\text{New Delhi}$",
+        "New Delhi",
+        ["B7", "v140-b4"],
+        {},
+    ),
+    (
+        "v140-b4-text-word-before-math",
+        "\\text{rises} when $x > 0$",
+        "rises when $x > 0$",
+        ["B7", "v140-b4"],
+        {},
+    ),
+    (
+        "v140-b4-script-in-text",
+        "$\\text{H_{2}O}$",
+        "$\\text{H}_{2}\\text{O}$",
+        ["B6", "v140-b4"],
+        {},
+    ),
+    (
+        "v140-b4-unit-power-in-text",
+        "$5 \\text{ m^{2}}$",
+        "$5 \\text{ m}^{2}$",
+        ["B6", "v140-b4"],
+        {},
+    ),
+    (
+        "v140-b4-double-superscript-merged",
+        "$3 \\text{ m s^{-}^{1}}$",
+        "$3 \\text{ m s}^{-1}$",
+        ["B6", "v140-b4"],
+        {},
+    ),
+    ("v140-b4-percent-in-text", "$50 \\text{ %}$", "$50 \\%$", ["B4", "v140-b4"], {}),
+    (
+        "v140-b4-command-in-text",
+        "$5 \\text{ \\Omega}$",
+        "$5 \\Omega$",
+        ["B4", "v140-b4"],
+        {},
+    ),
+    ("v140-b4-escaped-braces", "\\{A, B\\}", "{A, B}", ["B7", "v140-b4"], {}),
+    (
+        "v140-b4-chemistry-stays",
+        "$\\text{H}_{2}\\text{O}$",
+        "$\\text{H}_{2}\\text{O}$",
+        ["B7", "v140-b4"],
+        {},
+    ),
+    (
+        "v140-b4-element-stays",
+        "$\\text{NaCl}$",
+        "$\\text{NaCl}$",
+        ["B7", "v140-b4"],
+        {},
+    ),
+    (
+        "v140-b4-unit-stays",
+        "$10.0 \\text{ J}$",
+        "$10.0 \\text{ J}$",
+        ["B7", "v140-b4"],
+        {},
+    ),
+    ("v140-b4-variable-stays", "$x$", "$x$", ["B7", "v140-b4"], {}),
+    ("v140-b4-capitals-stay", "$ABCD$", "$ABCD$", ["B7", "v140-b4"], {}),
+    ("v140-b4-runs-fix", "H₂O", "$\\text{H}_{2}\\text{O}$", ["B6", "v140-b4"], {}),
+    ("v140-b4-plain-option", "Newton", "Newton", ["B7", "v140-b4"], {}),
+]
+
+# v140-b9: `needs_fix` (worksheet.ai latex_renderer.py `has_unicode_math`).
+NEEDS_FIX = [
+    ("v140-b9-chemistry", "H₂O", True, ["B6", "v140-b9"], {}),
+    ("v140-b9-radical", "√2", True, ["B6", "v140-b9"], {}),
+    ("v140-b9-greek", "π", True, ["B6", "v140-b9"], {}),
+    ("v140-b9-times", "x × y", True, ["B6", "v140-b9"], {}),
+    ("v140-b9-bare-script", "x_0", True, ["B6", "v140-b9"], {}),
+    ("v140-b9-bare-command", "Area \\frac{1}{2}", True, ["B6", "v140-b9"], {}),
+    ("v140-b9-plain-prose", "plain words", False, ["B7", "v140-b9"], {}),
+    ("v140-b9-already-math", "$x^2$", False, ["B7", "v140-b9"], {}),
+    ("v140-b9-amount", "costs $5", False, ["B3", "B7", "v140-b9"], {}),
+    ("v140-b9-padded-span", "Solve $ x + 1 = 0 $", False, ["B7", "v140-b9"], {}),
+]
+
+# v140-b6: `currency_spans` (Backend routes/fix_latex.py:159). The corpus
+# compares the matched texts only (positions differ by language).
+CURRENCY_SPANS = [
+    ("v140-b6-two-amounts", "costs $5 and $10", ["$5", "$10"], ["B3", "v140-b6"], {}),
+    ("v140-b6-escaped", "costs \\$5.50 today", ["\\$5.50"], ["B3", "v140-b6"], {}),
+    (
+        "v140-b6-rupee-indian",
+        "₹ 45,00,000 per year",
+        ["₹ 45,00,000"],
+        ["B3", "v140-b6"],
+        {},
+    ),
+    ("v140-b6-rupee-glued", "₹45,00,000", ["₹45,00,000"], ["B3", "v140-b6"], {}),
+    ("v140-b6-after-span", "$x^2$ and $5", ["$5"], ["B3", "v140-b6"], {}),
+    ("v140-b6-math-is-not-money", "$5x+1=0$", [], ["B3", "B7", "v140-b6"], {}),
+    ("v140-b6-amount-then-span", "Rs $5 and $x^2$", ["$5"], ["B3", "v140-b6"], {}),
+    (
+        "v140-b6-other-symbols",
+        "€5 and £3.50 and ¥100",
+        ["€5", "£3.50", "¥100"],
+        ["B3", "v140-b6"],
+        {},
+    ),
+    ("v140-b6-trailing-comma", "costs $5, and more", ["$5"], ["B3", "v140-b6"], {}),
+    ("v140-b6-line-break-then-dollar", "\\\\$5x$", [], ["B3", "B7", "v140-b6"], {}),
+]
+
+# v140-b10: a gpt_markdown radio button is not plain prose
+# (script_editor script_editor_tex.dart `_radioButtonRx`).
+IS_PLAIN_PROSE = [
+    (
+        "v140-b10-radio-checked",
+        "(x) The force opposes the displacement.",
+        False,
+        ["B2", "v140-b10"],
+        {},
+    ),
+    ("v140-b10-radio-empty", "( ) The force", False, ["B2", "v140-b10"], {}),
+    ("v140-b10-radio-capital", "(X) The force", False, ["B2", "v140-b10"], {}),
+    (
+        "v140-b10-parentheses-are-prose",
+        "Plain sentence (with parens) here.",
+        True,
+        ["B2", "v140-b10"],
+        {},
+    ),
+    ("v140-b10-plain", "Water boils at 100 degrees.", True, ["B2", "v140-b10"], {}),
+    ("v140-b10-math", "Water is $H_2O$", False, ["B2", "v140-b10"], {}),
+]
+
+
+# ---------------------------------------------------------------------------
 # Evaluation
 # ---------------------------------------------------------------------------
 
@@ -2801,6 +3123,10 @@ def build(check_only: bool) -> int:
         "to_plain": TO_PLAIN,
         "audit": AUDIT,
         "json_transport": JSON_TRANSPORT,
+        "normalize_option_text": NORMALIZE_OPTION_TEXT,
+        "needs_fix": NEEDS_FIX,
+        "currency_spans": CURRENCY_SPANS,
+        "is_plain_prose": IS_PLAIN_PROSE,
     }
     for function, rows in groups.items():
         cases = curated(function, rows)

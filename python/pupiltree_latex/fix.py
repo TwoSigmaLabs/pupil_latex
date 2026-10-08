@@ -28,10 +28,11 @@ Where to call it:
 from __future__ import annotations
 
 import re
-from typing import Any, Callable
+from typing import Any, Callable, Iterable
 
 from .canonicalize import canonicalize
 from .normalize import normalize
+from .repair import repair_deep
 from .segment import Segment, segment
 from .unicode_math import (
     UNICODE_MATH,
@@ -40,7 +41,7 @@ from .unicode_math import (
     convert_cluster,
     wrap_cluster,
 )
-from .walk import is_non_content_key, is_url_or_path_string
+from .walk import is_narrative_key, is_non_content_key, is_url_or_path_string
 
 # ---------------------------------------------------------------------------
 # Bare symbol commands
@@ -491,18 +492,53 @@ def fix(text: Any, *, chemistry: bool = True) -> Any:
     return merge_adjacent_math(text)
 
 
-def fix_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
+def fix_deep(
+    obj: Any,
+    _key_hint: str = "",
+    *,
+    chemistry: bool = True,
+    narrative_keys: Iterable[str] | None = None,
+) -> Any:
     """`fix` over every content string of a JSON-like document, skipping
-    non-content keys and URL-shaped values (CONTRACT §5)."""
+    non-content keys and URL-shaped values (CONTRACT §5).
+
+    ``narrative_keys`` (tag ``v140-b5``): values under these keys are
+    Class B narration (CONTRACT §2) and get the lossless `repair_deep` only,
+    never `fix`. An entry ``name@sibling`` matches ``name`` only in an object
+    that also has a ``sibling`` key (``script@transcript``)."""
+    keys = tuple(narrative_keys) if narrative_keys else ()
     if isinstance(obj, str):
         if is_non_content_key(_key_hint) or is_url_or_path_string(obj):
             return obj
         return fix(obj, chemistry=chemistry)
     if isinstance(obj, dict):
-        return {k: fix_deep(v, _key_hint=k, chemistry=chemistry) for k, v in obj.items()}
+        return {
+            k: (
+                repair_deep(v)
+                if is_narrative_key(k, obj, keys)
+                else fix_deep(v, _key_hint=k, chemistry=chemistry, narrative_keys=keys)
+            )
+            for k, v in obj.items()
+        }
     if isinstance(obj, list):
-        return [fix_deep(v, _key_hint=_key_hint, chemistry=chemistry) for v in obj]
+        return [
+            fix_deep(v, _key_hint=_key_hint, chemistry=chemistry, narrative_keys=keys)
+            for v in obj
+        ]
     return obj
+
+
+def needs_fix(text: Any, *, chemistry: bool = True) -> bool:
+    """True when `fix` would change more than `normalize` does: it would add
+    LaTeX for Unicode or bare maths (``H₂O``, ``√2``, ``π``, ``x × y``,
+    ``\\frac{1}{2}`` in prose) or repair a formula (tag ``v140-b9``).
+    ``False`` for non-strings and for text `fix` leaves as `normalize` does
+    (plain prose, ``$x^2$``, ``costs $5``)."""
+    if not isinstance(text, str) or not text:
+        return False
+    if text.isascii() and not any(c in text for c in "\\^_${}%`"):
+        return False
+    return fix(text, chemistry=chemistry) != normalize(text)
 
 
 __all__ = [
@@ -511,6 +547,7 @@ __all__ = [
     "escape_text_specials",
     "fix",
     "fix_deep",
+    "needs_fix",
     "merge_adjacent_math",
     "wrap_bare_symbol_commands",
     "wrap_unicode_chemistry",

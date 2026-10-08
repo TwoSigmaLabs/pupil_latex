@@ -1005,6 +1005,33 @@
    ]
   },
   {
+   "id": "curated-v140-b1-surplus-brace",
+   "input": "$x}$",
+   "expected": "${x}$",
+   "tags": [
+    "B4",
+    "v140-b1"
+   ]
+  },
+  {
+   "id": "curated-v140-b2-typo-and-double-group",
+   "input": "$\\frc{1}{{2}}$",
+   "expected": "$\\frac{1}{2}$",
+   "tags": [
+    "B4",
+    "v140-b2"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom",
+   "input": "Bond length 1.5 \\AA",
+   "expected": "Bond length 1.5 Å",
+   "tags": [
+    "B6",
+    "v140-b3"
+   ]
+  },
+  {
    "id": "backend-latex-rules-0001",
    "source": "Backend/tests/unit/test_latex_rules.py::test_sanitize_converts_paren_inline_delimiter",
    "via": "sanitize_latex_text",
@@ -12955,6 +12982,19 @@
    "note": "write-path snapshot pinned on A8 base commit 838dad0b; sanitize_json_strings(audit=False); options[1]"
   },
   {
+   "id": "backend-latex-escape-fix-0001",
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
+   "via": "fix_common_latex_errors",
+   "input": "\\$1.56 \\text{ meters}$",
+   "expected": "$1.56 \\text{ meters}$",
+   "tags": [
+    "B3",
+    "B4",
+    "backend#1416"
+   ],
+   "note": "helper not in the mapping table (services.ai.question_generation); recorded under canonicalize for review"
+  },
+  {
    "id": "backend-latex-escape-fix-0003",
    "source": "Backend/tests/unit/test_latex_escape_fix.py::test_escaped_opening_dollar",
    "via": "fix_common_latex_errors",
@@ -13012,6 +13052,19 @@
    "via": "sanitize_latex_option",
    "input": "Price \\$5 and $x^2$",
    "expected": "Price \\$5 and $x^2$",
+   "tags": [
+    "B3",
+    "B4",
+    "backend#1416"
+   ],
+   "note": "helper not in the mapping table (services.ai.question_generation); recorded under canonicalize for review"
+  },
+  {
+   "id": "backend-latex-escape-fix-0010",
+   "source": "Backend/tests/unit/test_latex_escape_fix.py::test_sanitize_latex_option_ignores_escaped_dollars",
+   "via": "sanitize_latex_option",
+   "input": "orphan $x",
+   "expected": "orphan x",
    "tags": [
     "B3",
     "B4",
