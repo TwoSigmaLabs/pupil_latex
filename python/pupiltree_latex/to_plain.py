@@ -134,7 +134,7 @@ LATEX_CMD_MAP: Dict[str, str] = {
     "max": "max",
     "min": "min",
     # Seen in live in-class content (frequency-ordered from a scan of
-    # Pupil-Amigo.student_submitted); without these they rendered as the
+    # student submissions); without these they rendered as the
     # bare command name, e.g. "\colon" → "colon".
     "angle": "∠",
     "colon": ":",

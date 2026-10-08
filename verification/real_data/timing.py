@@ -1,7 +1,7 @@
 """Timing: wall-clock for fix over all strings.json, plus the 10 slowest strings."""
 import json, os, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, r"C:\Users\Ankit\Desktop\pupiltree\pupiltree-latex\python")
+sys.path.insert(0, os.path.join(HERE, "..", "..", "python"))
 from pupiltree_latex import fix
 S = json.load(open(os.path.join(HERE, "strings.json"), encoding="utf-8"))
 for r in S: fix(r["text"])  # warm-up (regex compilation, ftfy tables)
