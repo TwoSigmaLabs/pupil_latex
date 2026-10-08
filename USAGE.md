@@ -163,7 +163,7 @@ to_plain(r"$x^{2} + \frac{1}{2}$", "tts")                      # 'x squared + (1
 to_plain(r"$\frac{1}{3}$", "compare") == to_plain("1/3", "compare")   # True   answer matching
 ```
 
-`compare` gives one form for comparing a typed answer with a stored one: `x^2` and `$x^2$` both become `x^2`, `H_2O`, `H₂O` and `$\text{H}_{2}\text{O}$` become `H_2O`, `−3` becomes `-3`, `$90^\circ$` becomes `90°`, and spaces around operators go. `text` and `pdf` keep braces in prose (`A = {1, 2, 3}`), keep lesson-script labels at a line start (`\instruction:`; `pdf` drops the backslash) and keep the minus sign `−` as written.
+`compare` gives one form for comparing a typed answer with a stored one: `x^2` and `$x^2$` both become `x^2`, `H_2O`, `H₂O` and `$\text{H}_{2}\text{O}$` become `H_2O`, `−3` becomes `-3`, `$90^\circ$` becomes `90°`, and spaces around operators go. Since 1.4.0 `compare` also folds compatibility characters (full-width `ｘ＝５` → `x=5`, `½` → `1/2`, `㎝` → `cm`, `℃` → `°C`, thin and no-break spaces, `–` → `-`), decodes HTML entities like Python's `html.unescape` (`5&thinsp;m` → `5 m`), drops a leading option label (`B) 8-celled`, `(A) 2/4`, `C. x^2`, `D: 5` → the answer alone) and drops unpaired `$` / `\)` halves (`3.2$ m` → `3.2 m`), so a consumer needs no NFKC, entity or label code of its own. Every style repairs mojibake (`Ï€` → `π`); `text`/`pdf` write bare chemistry in prose as Unicode (`H_2SO_4` → `H₂SO₄`, identifiers such as `lo_0` stay). `text` and `pdf` keep braces in prose (`A = {1, 2, 3}`), keep lesson-script labels at a line start (`\instruction:`; `pdf` drops the backslash) and keep the minus sign `−` as written.
 
 ## Checking content: audit
 

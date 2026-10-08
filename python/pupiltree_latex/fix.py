@@ -544,6 +544,7 @@ def fix_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
 __all__ = [
     "SYMBOL_COMMANDS",
     "Segment",
+    "TYPOGRAPHIC_SPANS",
     "escape_text_specials",
     "fix",
     "fix_deep",

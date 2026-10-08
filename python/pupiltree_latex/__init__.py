@@ -23,6 +23,7 @@ from .canonicalize import canonicalize, canonicalize_deep
 from .fix import (
     DECLARATION_COMMANDS,
     SINGLE_LETTER_UNITS,
+    TYPOGRAPHIC_SPANS,
     UNIT_BASES,
     escape_text_specials,
     fix,
@@ -150,5 +151,6 @@ __all__ = [
     "GREEK_UNIT_SYMBOLS",
     "DECLARATION_COMMANDS",
     "COMPARE_FOLD",
+    "TYPOGRAPHIC_SPANS",
     "ELEMENT_SYMBOLS",
 ]
