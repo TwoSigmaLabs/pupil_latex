@@ -454,6 +454,39 @@ String mergeAdjacentMath(String text) {
 // The one call
 // ---------------------------------------------------------------------------
 
+/// A span whose whole body is one of these is typography, not maths (tag
+/// `v140-a7`): `leukocytes$\ldots$` → `leukocytes…`. `\textmu` becomes
+/// `$\mu$`, not a bare `µ`: `canonicalize` wraps a bare `µ` as `$\mu$`, so
+/// that is the fixed point (`$\cdots$` stays for the same reason).
+const Map<String, String> kTypographicSpans = {
+  r'\ldots': '…',
+  r'\dots': '…',
+  r'\textellipsis': '…',
+  r'\textmu': r'$\mu$',
+};
+
+/// Replace each math span whose trimmed body is a key of
+/// [kTypographicSpans] (inline or display) by its value; every other span
+/// and all prose are copied as written.
+String unwrapTypographicSpans(String text) {
+  if (!text.contains(r'\')) return text;
+  if (!kTypographicSpans.keys.any(text.contains)) return text;
+  final out = StringBuffer();
+  var changed = false;
+  for (final seg in segment(text)) {
+    if (seg.isMath) {
+      final value = kTypographicSpans[pyStrip(seg.value)];
+      if (value != null) {
+        out.write(value);
+        changed = true;
+        continue;
+      }
+    }
+    out.write(seg.raw);
+  }
+  return changed ? out.toString() : text;
+}
+
 /// Repair, normalise, canonicalise, wrap what is still bare, escape what
 /// would cut a formula short and merge adjacent spans, in one call.
 /// Idempotent; the empty string passes through.
@@ -462,7 +495,10 @@ String mergeAdjacentMath(String text) {
 /// bare `\ce{…}` / `\pu{…}` is never put into a new math span.
 String fix(String text, {bool chemistry = true}) {
   if (text.isEmpty) return text;
-  text = canonicalize(normalize(text), chemistry: chemistry);
+  text = canonicalize(
+    unwrapTypographicSpans(normalize(text)),
+    chemistry: chemistry,
+  );
   text = wrapBareSymbolCommands(text);
   text = wrapUnicodeChemistry(text);
   text = wrapUnicodeScripts(text);

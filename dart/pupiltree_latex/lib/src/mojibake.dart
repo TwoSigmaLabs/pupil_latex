@@ -40,10 +40,66 @@ String _entityReplace(Match m) {
   return m[0]!;
 }
 
-/// `&amp;` → `&`, `&#960;` → `π`, `&#x3c0;` → `π`; unknown names stay.
-/// Decoding repeats to a fixed point (at most three rounds) so a doubly
-/// encoded `&amp;amp;` also becomes `&`.
+// Python `html.unescape` (tag `v140-a2`): the same character-reference
+// pattern, the full HTML5 table and the Windows-1252 numeric overrides.
+final _charref =
+    RegExp(r'&(#[0-9]+;?|#[xX][0-9a-fA-F]+;?|[^\t\n\f <&#;]{1,32};?)');
+
+bool _invalidCodepoint(int num) =>
+    (num >= 0x1 && num <= 0x8) ||
+    num == 0xB ||
+    (num >= 0xE && num <= 0x1F) ||
+    (num >= 0x7F && num <= 0x9F) ||
+    (num >= 0xFDD0 && num <= 0xFDEF) ||
+    (num & 0xFFFE) == 0xFFFE;
+
+String _replaceCharref(Match m) {
+  final s = m[1]!;
+  if (s.startsWith('#')) {
+    final hex = s.length > 1 && (s[1] == 'x' || s[1] == 'X');
+    var digits = hex ? s.substring(2) : s.substring(1);
+    if (digits.endsWith(';')) digits = digits.substring(0, digits.length - 1);
+    var k = 0;
+    while (k < digits.length && digits[k] == '0') {
+      k++;
+    }
+    digits = digits.substring(k);
+    // More than 8 significant digits is past U+10FFFF in either base.
+    final num = digits.length > 8
+        ? 0x7FFFFFFF
+        : digits.isEmpty
+            ? 0
+            : int.parse(digits, radix: hex ? 16 : 10);
+    final override = kHtmlNumericOverrides['$num'];
+    if (override != null) return override;
+    if ((num >= 0xD800 && num <= 0xDFFF) || num > 0x10FFFF) {
+      return u(0xFFFD);
+    }
+    if (_invalidCodepoint(num)) return '';
+    return String.fromCharCode(num);
+  }
+  final whole = kHtml5Entities[s];
+  if (whole != null) return whole;
+  // The longest legacy name (one without `;`) that starts the reference.
+  for (var x = s.length - 1; x > 1; x--) {
+    final head = kHtml5Entities[s.substring(0, x)];
+    if (head != null) return head + s.substring(x);
+  }
+  return '&$s';
+}
+
+/// Python's `html.unescape`, in every language (tag `v140-a2`): the full
+/// HTML5 table, numeric references with or without `;`, legacy names
+/// without `;` (`&lt` → `<`, longest prefix: `&ampx` → `&x`), one round
+/// (`&amp;lt;` → `&lt;`); unknown names stay (`AT&T`, `&foo;`).
 String unescapeHtmlEntities(String text) {
+  if (!text.contains('&')) return text;
+  return text.replaceAllMapped(_charref, _replaceCharref);
+}
+
+/// The small `kHtmlEntities` set plus numeric references, up to three
+/// rounds: what `normalize`'s mojibake step decodes (unchanged since 1.0).
+String _unescapeTableEntities(String text) {
   if (!text.contains('&')) return text;
   for (var round = 0; round < 3; round++) {
     final decoded = text.replaceAllMapped(_entity, _entityReplace);
@@ -167,7 +223,14 @@ String _stripLoneSurrogates(String text) {
 /// byte-level steps are skipped when the text has no character ≥ U+0080.
 String fixMojibakeTable(String text) {
   if (text.isEmpty) return text;
-  text = unescapeHtmlEntities(text);
+  return fixMojibakeCore(_unescapeTableEntities(text));
+}
+
+/// [fixMojibakeTable] without its entity step: double-encoding repair, the
+/// table and the context rules. `toPlain(…, style: 'compare')` decodes
+/// entities with [unescapeHtmlEntities] first, once.
+String fixMojibakeCore(String text) {
+  if (text.isEmpty) return text;
   if (!_nonAscii.hasMatch(text)) return text;
   text = _tryFixDoubleEncoding(text);
   text = _applyTable(text);

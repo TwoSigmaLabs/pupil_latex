@@ -5,6 +5,8 @@
 library;
 
 import 'guarded_regexp.dart';
+import 'mojibake.dart'
+    show fixMojibakeCore, fixMojibakeTable, unescapeHtmlEntities;
 import 'nfc.dart';
 import 'normalize.dart' show currencyPositions, trimPaddedSpansKeepCurrency;
 import 'repair.dart';
@@ -64,6 +66,9 @@ final _simpleFractionPart = RegExp(
   r'^(?:[0-9]+(?:\.[0-9]+)?|[\p{L}\p{Nl}\p{No}])$',
   unicode: true,
 );
+// A negative number is a simple NUMERATOR too: `\frac{-1}{4}` → `-1/4`
+// (tag `v140-a5`); a negative denominator keeps its parentheses (`1/(-4)`).
+final _signedNumber = RegExp('^[-−][0-9]+(?:\\.[0-9]+)?\$');
 
 /// Index of the `}` closing the `{` at [k], or -1. Positions marked in
 /// [skip] (math spans) are not counted.
@@ -167,8 +172,9 @@ String _protectProseBraces(String s) {
 /// A numerator or denominator: a single token (a number or one letter)
 /// or one parenthesised group stays bare; anything compound gets
 /// parentheses.
-String _fractionPart(String part) {
+String _fractionPart(String part, {bool numerator = false}) {
   final core = pyStrip(part);
+  if (numerator && _signedNumber.hasMatch(core)) return core;
   if (_simpleFractionPart.hasMatch(core) || _isWrapped(core)) return core;
   return '($part)';
 }
@@ -182,7 +188,11 @@ String _lastCodePoint(String s) {
 
 /// A fraction touching a term is parenthesised (`2(1/2)`, `(1/2)x`).
 bool _fractionNeedsParens(String prev, String s, int i) {
-  final nxt = i < s.length ? codePointAt(s, i) : '';
+  var nxt = i < s.length ? codePointAt(s, i) : '';
+  // A closing `\)` / `\]` ends the formula; it is not a term (`v140-a3`).
+  if (nxt == r'\' && i + 1 < s.length && (s[i + 1] == ')' || s[i + 1] == ']')) {
+    nxt = '';
+  }
   return (prev.isNotEmpty && (isAlnum(prev) || prev == '/')) ||
       (nxt.isNotEmpty && (isAlnum(nxt) || '(\\^_{'.contains(nxt)));
 }
@@ -210,6 +220,146 @@ String _parkCurrencyDollars(String s) {
     }
   }
   return chars.join();
+}
+
+// (`\$5\)` is an amount inside `\(…\)`: a closing delimiter is not a unit.)
+final _escapedCutOffDollar =
+    RegExp(r'\\\$(?=[0-9]+(?:[.,][0-9]+)*(?:[A-Za-z^_{]|\\[A-Za-z]))');
+
+const _subscriptDigits = '₀₁₂₃₄₅₆₇'
+    '₈₉';
+
+bool _isAsciiWordChar(String ch) {
+  if (ch.isEmpty) return false;
+  final c = ch.codeUnitAt(0);
+  return (c >= 0x61 && c <= 0x7A) ||
+      (c >= 0x41 && c <= 0x5A) ||
+      (c >= 0x30 && c <= 0x39) ||
+      c == 0x5F;
+}
+
+bool _isDigitAt(String s, int i) {
+  if (i >= s.length) return false;
+  final c = s.codeUnitAt(i);
+  return c >= 0x30 && c <= 0x39;
+}
+
+bool _isUpperAt(String s, int i) {
+  if (i >= s.length) return false;
+  final c = s.codeUnitAt(i);
+  return c >= 0x41 && c <= 0x5A;
+}
+
+bool _isLowerAt(String s, int i) {
+  if (i >= s.length) return false;
+  final c = s.codeUnitAt(i);
+  return c >= 0x61 && c <= 0x7A;
+}
+
+/// A digit subscript at [i] (`_2`, `_{12}`): its digits and the index after.
+(String, int) _chemDigits(String s, int i) {
+  if (i >= s.length || s[i] != '_') return ('', i);
+  final j = i + 1;
+  if (j < s.length && s[j] == '{') {
+    var k = j + 1;
+    while (_isDigitAt(s, k)) {
+      k++;
+    }
+    if (k > j + 1 && k < s.length && s[k] == '}') {
+      return (s.substring(j + 1, k), k + 1);
+    }
+    return ('', i);
+  }
+  var k = j;
+  while (_isDigitAt(s, k)) {
+    k++;
+  }
+  return k > j ? (s.substring(j, k), k) : ('', i);
+}
+
+/// Index after the element symbol at [i] (two letters first), or -1.
+int _chemElement(String s, int i) {
+  if (!_isUpperAt(s, i)) return -1;
+  if (_isLowerAt(s, i + 1) && kElementSymbols.contains(s.substring(i, i + 2))) {
+    return i + 2;
+  }
+  if (kElementSymbols.contains(s[i])) return i + 1;
+  return -1;
+}
+
+/// Element symbols, `(…)` groups and digit subscripts from [i]: the
+/// converted text, the end index and the number of subscripts.
+(String, int, int) _chemToken(String s, int i, [int depth = 0]) {
+  final out = StringBuffer();
+  var subs = 0;
+  while (i < s.length) {
+    if (s[i] == '(' && depth == 0) {
+      final (inner, j, innerSubs) = _chemToken(s, i + 1, 1);
+      if (inner.isEmpty || j >= s.length || s[j] != ')') break;
+      out.write('($inner)');
+      subs += innerSubs;
+      i = j + 1;
+    } else {
+      final j = _chemElement(s, i);
+      if (j < 0) break;
+      out.write(s.substring(i, j));
+      i = j;
+    }
+    final (digits, j) = _chemDigits(s, i);
+    if (digits.isNotEmpty) {
+      for (final unit in digits.codeUnits) {
+        out.write(_subscriptDigits[unit - 0x30]);
+      }
+      subs++;
+      i = j;
+    }
+  }
+  return (out.toString(), i, subs);
+}
+
+/// `H_2SO_4` → `H₂SO₄`, `Ca(OH)_2` → `Ca(OH)₂` in prose (tag `v140-a9`).
+/// A run of element symbols ([kElementSymbols]) and `(…)` groups with digit
+/// subscripts, at least one; no ASCII letter, digit, `_` or `\` before it,
+/// no ASCII letter, digit or `_` after it, never inside a math span. So
+/// `lo_0`, `v_avg`, `E_1`, `fallback_factual_error` and `XH_2O_id` stay.
+String bareChemistryToUnicode(String text) {
+  if (!text.contains('_')) return text;
+  List<bool>? mask;
+  final out = StringBuffer();
+  var last = 0;
+  var changed = false;
+  var i = 0;
+  final n = text.length;
+  while (i < n) {
+    if (!(_isUpperAt(text, i) || text[i] == '(')) {
+      i++;
+      continue;
+    }
+    final prev = i > 0 ? text[i - 1] : '';
+    if (prev.isNotEmpty && (_isAsciiWordChar(prev) || prev == r'\')) {
+      i++;
+      continue;
+    }
+    final (converted, end, subs) = _chemToken(text, i);
+    final nxt = end < n ? text[end] : '';
+    if (subs == 0 || _isAsciiWordChar(nxt)) {
+      i++;
+      continue;
+    }
+    mask ??= mathMask(text);
+    if (mask[i]) {
+      i = end;
+      continue;
+    }
+    out
+      ..write(text.substring(last, i))
+      ..write(converted);
+    last = i = end;
+    changed = true;
+  }
+  if (!changed) return text;
+  out.write(text.substring(last));
+  return out.toString();
 }
 
 final _displayDollar = RegExp(r'\$\$(.+?)\$\$', dotAll: true);
@@ -494,7 +644,7 @@ String _environment(String name, String content, bool markAccents) {
     final a = _convert(num ?? '', markAccents);
     final b = _convert(den ?? '', markAccents);
     if (_fracCmds.contains(name)) {
-      return ('${_fractionPart(a)}/${_fractionPart(b)}', j2);
+      return ('${_fractionPart(a, numerator: true)}/${_fractionPart(b)}', j2);
     }
     return ('C($a, $b)', j2);
   }
@@ -722,7 +872,10 @@ String latexToPlain(
   bool markAccents = false,
   bool keepLabelBackslash = true,
   bool force = false,
+  bool compare = false,
+  bool bareChemistry = false,
 }) {
+  if (bareChemistry) text = bareChemistryToUnicode(text);
   if (!force &&
       !text.contains(r'$') &&
       !text.contains(r'\') &&
@@ -744,6 +897,13 @@ String latexToPlain(
   // Amounts outside the `segment` math spans (`Rs $5 and $10`, `costs $5.`)
   // are literal dollars, never paired as a span (tag `audit5-1`).
   out = _parkCurrencyDollars(out);
+
+  // `compare`: an escaped dollar before an amount that runs into a unit or
+  // a command (`\$0.008Wb`, `\$4\sqrt{3}`) is a cut-off span's opener, not
+  // money; `\$5`, `\$5 each` stay (tag `v140-a5`).
+  if (compare && out.contains(r'\$')) {
+    out = out.replaceAll(_escapedCutOffDollar, '');
+  }
 
   // Literal `\n` escapes first — before the greedy command scanner can claim
   // them as `\nStatement`-style pseudo-commands.
@@ -805,6 +965,9 @@ String latexToPlain(
       out = out.substring(0, out.length - 1);
     }
   }
+  // `compare`: every span was stripped and amounts are parked, so a `$`
+  // left now is an unpaired half (`3.2$ m` → `3.2 m`; tag `v140-a3`).
+  if (compare) out = out.replaceAll(r'$', '');
 
   // Literal characters come back now that grouping and delimiters are done.
   out = out
@@ -848,6 +1011,12 @@ const _spokenOperators = <(String, String)>[
   (r'\infty', 'infinity'),
   (r'\int', 'integral of'),
   (r'\sum', 'sum of'),
+  // tag `v140-a8`
+  (r'\ldots', 'dots'),
+  (r'\cdots', 'dots'),
+  (r'\dots', 'dots'),
+  (r'\textellipsis', 'dots'),
+  (r'\textmu', 'micro'),
 ];
 
 final _spokenOperatorRe = RegExp(
@@ -1216,9 +1385,12 @@ final _italic = RegExp(r'\*([^\n]+?)\*');
 final _twoPlusSpaces = RegExp('  +');
 final _threePlusNewlines = RegExp(r'\n{3,}');
 
+final _spaceBeforeComma = RegExp(r' +([,;])');
+
 String _latexToSpoken(String latex) {
   var text = _spokenStructures(pyStrip(latex));
-  text = text.replaceAll(_degrees, ' degrees');
+  // `50^\circ C` → "50 degrees C": room on both sides (tag `v140-a8`).
+  text = text.replaceAll(_degrees, ' degrees ');
   text = text.replaceAllMapped(_squared, (m) => '${m[1]} squared');
   text = text.replaceAllMapped(_cubed, (m) => '${m[1]} cubed');
   text = text.replaceAllMapped(
@@ -1237,21 +1409,52 @@ String _latexToSpoken(String latex) {
   text = text.replaceAll(_blanks, ' ');
   text = text.replaceAll(_openParenSpace, '(');
   text = text.replaceAll(_spaceCloseParen, ')');
+  // A word before a comma or semicolon (`\ldots,` → "dots,").
+  text = text.replaceAllMapped(_spaceBeforeComma, (m) => m[1]!);
   return _stripOuterParens(pyStrip(text));
 }
 
+// A span whose whole body is typography is read as the character itself, so
+// the voice pauses (`leukocytes$\ldots$` → "leukocytes…"; tag `v140-a8`).
+const _spokenTypographicSpans = {
+  r'\ldots': '…',
+  r'\dots': '…',
+  r'\cdots': '…',
+  r'\textellipsis': '…',
+  r'\textmu': 'micro',
+};
+
+// A bare single-letter subscript in prose (`x_{n}`, `a_1`): "x sub n". The
+// base is one ASCII letter with no letter, digit, `_` or `\` before it, and
+// the subscript must not run into a word, a superscript or a group (`v_avg`,
+// `lo_0`, `H_2O`, `H_{2}O`, `x_0^2` and `fallback_factual_error` stay).
+final _proseSubscript = RegExp(
+  r'(^|[^A-Za-z0-9_\\])([A-Za-z])_(?:\{([A-Za-z0-9]+)\}|([A-Za-z0-9]))(?![A-Za-z0-9_^{])',
+);
+
+String _spokenProseSubscripts(String text) {
+  if (!text.contains('_')) return text;
+  return text.replaceAllMapped(
+    _proseSubscript,
+    (m) => '${m[1]}${m[2]} sub ${m[3] ?? m[4]}',
+  );
+}
+
 String _toSpoken(String text) {
-  final parts = <String>[
-    for (final seg in segment(text))
-      if (seg.isMath)
-        _latexToSpoken(seg.value)
-      // Bare LaTeX in prose (`\frac{1}{2}` never wrapped): fractions, roots,
-      // wrappers and environments are read the same way.
-      else if (seg.value.contains(r'\'))
-        _spokenStructures(seg.value, prose: true)
-      else
-        seg.value,
-  ];
+  final parts = <String>[];
+  for (final seg in segment(text)) {
+    if (seg.isMath) {
+      parts.add(_spokenTypographicSpans[pyStrip(seg.value)] ??
+          _latexToSpoken(seg.value));
+      continue;
+    }
+    final value = _spokenProseSubscripts(seg.value);
+    // Bare LaTeX in prose (`\frac{1}{2}` never wrapped): fractions, roots,
+    // wrappers and environments are read the same way.
+    parts.add(
+      value.contains(r'\') ? _spokenStructures(value, prose: true) : value,
+    );
+  }
   var cleaned = parts.join();
   cleaned = cleaned.replaceAll(_leftoverStructural, '');
   cleaned = cleaned.replaceAllMapped(_anyCommand, (m) => m[1]!);
@@ -1275,26 +1478,47 @@ final _subscriptToAscii = {
 };
 final _superscriptRun = RegExp('[${_superscriptToAscii.keys.join()}]+');
 final _subscriptRun = RegExp('[${_subscriptToAscii.keys.join()}]+');
-const _compareFold = {
-  '\u2212': '-', // minus sign
-  '\u2010': '-', // hyphen
-  '\u2012': '-', // figure dash
-  '\u00D7': '*', // ×
-  '\u00B7': '*', // ·
-  '\u22C5': '*', // ⋅
-  '\u2217': '*', // ∗
-  '\u00F7': '/', // ÷
-};
 final _compareSpace = RegExp(r'\s+');
 final _compareOperatorSpace = RegExp(r' ?([+\-*/=<>^_(),{}\[\]]) ?');
+// One leading option label (tag `v140-a4`): `A)`, `(B)`, `C.`, `D:`, `a)` —
+// a letter A–H in either case — followed by whitespace and an answer.
+final _optionLabel = RegExp(r'^\s*(?:\([A-Ha-h]\)|[A-Ha-h][).:])\s+(?=\S)');
 
-/// One ASCII-leaning form for answer comparison.
-String _foldForCompare(String text) {
+bool _isAsciiDigitChar(String ch) =>
+    ch.length == 1 && ch.codeUnitAt(0) >= 0x30 && ch.codeUnitAt(0) <= 0x39;
+
+/// [kCompareFold] (the shared `compare_fold` table, tag `v140-a1`) per
+/// character. A folded value that starts with a digit and holds a `/` (a
+/// vulgar fraction) gets a space after a digit, so `1½` reads `1 1/2`.
+String _applyCompareFold(String text) {
   final b = StringBuffer();
+  var lastChar = '';
   for (var i = 0; i < text.length; i++) {
-    b.write(_compareFold[text[i]] ?? text[i]);
+    final ch = text[i];
+    var value = kCompareFold[ch];
+    if (value == null) {
+      b.write(ch);
+      lastChar = ch;
+      continue;
+    }
+    if (value.isNotEmpty &&
+        _isAsciiDigitChar(value[0]) &&
+        value.contains('/') &&
+        _isAsciiDigitChar(lastChar)) {
+      value = ' $value';
+    }
+    b.write(value);
+    if (value.isNotEmpty) lastChar = value[value.length - 1];
   }
-  text = b.toString();
+  return b.toString();
+}
+
+/// One ASCII-leaning form for answer comparison: a leading option label
+/// dropped, compatibility characters folded, scripts as `^…`/`_…`, minus
+/// signs and multiplication dots folded, whitespace collapsed and removed
+/// around operators and brackets.
+String _foldForCompare(String text) {
+  text = _applyCompareFold(text.replaceFirst(_optionLabel, ''));
   text = text.replaceAllMapped(
     _superscriptRun,
     (m) => '^${m[0]!.split('').map((c) => _superscriptToAscii[c]).join()}',
@@ -1324,18 +1548,29 @@ String toPlain(String text, {String style = 'text'}) {
   // `<TAB>imes`) is restored first, with the same `guessWhitespace` as `fix`
   // (`normalize`); tag `audit5-3`.
   text = repair(text);
+  // Mojibake is repaired as `normalize` does (tag `v140-a6`). `compare`
+  // decodes HTML entities the `html.unescape` way first, once (`v140-a2`).
+  text = style == 'compare'
+      ? fixMojibakeCore(unescapeHtmlEntities(text))
+      : fixMojibakeTable(text);
   // A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
   // masked (tag `audit6-2`).
   text = trimPaddedSpansKeepCurrency(text);
   if (style == 'tts') return _toSpoken(text);
   if (style == 'compare') {
     return _foldForCompare(
-      latexToPlain(text, keepLabelBackslash: false, force: true),
+      latexToPlain(
+        text,
+        keepLabelBackslash: false,
+        force: true,
+        compare: true,
+      ),
     );
   }
   return latexToPlain(
     text,
     markAccents: style == 'pdf',
     keepLabelBackslash: style == 'text',
+    bareChemistry: true,
   );
 }
