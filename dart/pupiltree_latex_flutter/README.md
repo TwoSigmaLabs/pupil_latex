@@ -16,7 +16,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: <this repository's git URL>
-      ref: v1.1.0
+      ref: v1.1.1
       path: dart/pupiltree_latex_flutter
 ```
 

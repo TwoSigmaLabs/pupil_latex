@@ -28,7 +28,7 @@ fix("Cost $5 and \\(\\theta\\) with \x0crac{1}{2} and π and H₂O")
 | `normalize(text)`       | Display-safe prep: `\(…\)` → `$…$`, orphan delimiters, currency `$5` → `\$5`, literal `\n` in prose, mojibake table | content-preserving | clients before rendering                             |
 | `canonicalize(text)`    | Full write-time sanitiser: everything above plus Unicode → LaTeX, bare `\frac`/`H_{2}O`/`π` wrapping, brace fixes   | no (heuristic)     | **only** at the generation chokepoint, never on read |
 | `segment(text)`         | The one tokenizer: prose / inline math / display math, escape- and brace-aware, currency-safe                       | yes                | every renderer                                       |
-| `to_plain(text, style)` | LaTeX → Unicode text for PDFs (`pdf`), grading and canvases (`text`), speech (`tts`)                                | lossy by design    | PDF, canvas, TTS, answer matching                    |
+| `to_plain(text, style)` | LaTeX → Unicode text for PDFs (`pdf`), canvases and reports (`text`), speech (`tts`), answer matching (`compare`)   | lossy by design    | PDF, canvas, TTS, answer matching                    |
 | `audit(text)`           | Detect what is still broken (12 finding kinds), never mutates                                                       | read-only          | logs, CI, editor hints                               |
 
 Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums, and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`).
@@ -41,7 +41,7 @@ The repository `github.com/TwoSigmaLabs/pupil_latex` is private. pip and `flutte
 
 ```bash
 # Python (Backend, pupiltree-agents, Fillers, worksheet.ai backend)
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.1.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.1.1#subdirectory=python"
 ```
 
 ```yaml
@@ -52,7 +52,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.1.0
+      ref: v1.1.1
       path: dart/pupiltree_latex_flutter
 ```
 
@@ -62,7 +62,7 @@ dependencies:
   pupiltree_latex:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.1.0
+      ref: v1.1.1
       path: dart/pupiltree_latex
 ```
 
@@ -70,13 +70,13 @@ npm cannot install a sub-folder of a git repository, and it cannot download a re
 
 ```bash
 # Maintainer, once per tag
-cd js && npm ci && npm pack            # → pupiltree-latex-1.1.0.tgz
-gh release create v1.1.0 js/pupiltree-latex-1.1.0.tgz -R TwoSigmaLabs/pupil_latex --notes-file CHANGELOG.md
+cd js && npm ci && npm pack            # → pupiltree-latex-1.1.1.tgz
+gh release create v1.1.1 js/pupiltree-latex-1.1.1.tgz -R TwoSigmaLabs/pupil_latex --notes-file CHANGELOG.md
 
 # JavaScript consumers (worksheet.ai, pupil-assessment-ui), from the consumer repo root
-gh release download v1.1.0 -R TwoSigmaLabs/pupil_latex -p "*.tgz" -D vendor
-npm install ./vendor/pupiltree-latex-1.1.0.tgz    # package.json: "file:vendor/pupiltree-latex-1.1.0.tgz"
-git add vendor/pupiltree-latex-1.1.0.tgz package.json package-lock.json
+gh release download v1.1.1 -R TwoSigmaLabs/pupil_latex -p "*.tgz" -D vendor
+npm install ./vendor/pupiltree-latex-1.1.1.tgz    # package.json: "file:vendor/pupiltree-latex-1.1.1.tgz"
+git add vendor/pupiltree-latex-1.1.1.tgz package.json package-lock.json
 
 # Fillers (no bundler): copy js/dist/pupiltree-latex.iife.js next to the vendored KaTeX
 # (needs Safari/iOS 14+, Chrome/Edge 80+, Firefox 78+; see js/README.md)

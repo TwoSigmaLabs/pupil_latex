@@ -70,7 +70,7 @@ from .unicode_math import (
 )
 from .walk import NON_CONTENT_KEY_SUFFIXES, NON_CONTENT_KEYS
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 __version__ = VERSION
 
 __all__ = [

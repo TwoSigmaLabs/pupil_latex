@@ -127,6 +127,8 @@ import { MathText } from "@pupiltree/latex/react";
 
 `typesetMath` fixes every text node under the element, keeps dollar amounts as text, and renders the maths. Running it twice on the same element is safe.
 
+If the page does not load `mhchem.min.js`, `typesetMath` notices (`PupiltreeLatex.hasMhchem()`) and leaves a bare `\ce{…}` as text instead of turning it into a red error. Pass `{ chemistry: true }` or `{ chemistry: false }` to decide yourself; `fix(text, { chemistry: false })` does the same for one string.
+
 Supported browsers: Safari and iOS 14 or newer, Chrome and Edge 80 or newer, Firefox 78 or newer. On anything older the script logs one console error and does nothing, so check `window.PupiltreeLatex` before calling it.
 
 ## Flutter app: one widget
@@ -147,10 +149,13 @@ Use `to_plain` (Python), `toPlain` (JavaScript and Dart) when the target cannot 
 ```python
 from pupiltree_latex import to_plain
 
-to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "text")   # '(1)/(2) of H₂O'   canvases, grading, answer matching
-to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "pdf")    # '(1)/(2) of H₂O'   PDF export
+to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "text")   # '1/2 of H₂O'   canvases, reports
+to_plain(r"$\frac{1}{2}$ of $\text{H}_{2}\text{O}$", "pdf")    # '1/2 of H₂O'   PDF export
 to_plain(r"$x^{2} + \frac{1}{2}$", "tts")                      # 'x squared + (1 over 2)'   text to speech
+to_plain(r"$\frac{1}{3}$", "compare") == to_plain("1/3", "compare")   # True   answer matching
 ```
+
+`compare` gives one form for comparing a typed answer with a stored one: `x^2` and `$x^2$` both become `x^2`, `H_2O`, `H₂O` and `$\text{H}_{2}\text{O}$` become `H_2O`, `−3` becomes `-3`, `$90^\circ$` becomes `90°`, and spaces around operators go. `text` and `pdf` keep braces in prose (`A = {1, 2, 3}`), keep lesson-script labels at a line start (`\instruction:`; `pdf` drops the backslash) and keep the minus sign `−` as written.
 
 ## Checking content: audit
 
@@ -179,7 +184,7 @@ A good backend pattern: `fix_deep` the model output, `audit_deep` the result, an
 | Find what is broken     | `audit(text)`           | `audit(text)`               | `audit(text)`             |
 | Render                  | none                    | `<MathText>`, `typesetMath` | `MathText` widget         |
 
-Every function gives the same output in all three languages for the same input. A shared set of about 3,800 test cases checks this in CI.
+Every function gives the same output in all three languages for the same input. A shared set of about 3,900 test cases checks this in CI.
 
 ## Rules of thumb
 
