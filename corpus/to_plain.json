@@ -1723,6 +1723,46 @@
    ]
   },
   {
+   "id": "curated-v140-a4-lone-letter-kept",
+   "input": "a: b",
+   "expected": "a: b",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-lone-capital-kept",
+   "input": "A) B",
+   "expected": "A)B",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-lone-letter-latex-kept",
+   "input": "(c) $x$",
+   "expected": "(c)x",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-word-still-stripped",
+   "input": "a: bc",
+   "expected": "bc",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
    "id": "curated-v140-a5-negative-numerator",
    "input": "$\\frac{-1}{4}$",
    "expected": "-1/4",
@@ -2105,6 +2145,46 @@
    "id": "curated-v140-a8-degrees-end",
    "input": "$90^{\\circ}$",
    "expected": "90 degrees",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-span-then-unit",
+   "input": "$50^\\circ$C",
+   "expected": "50 degrees C",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-prose",
+   "input": "heat to 50^\\circ C now",
+   "expected": "heat to 50 degrees C now",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-prose-glued",
+   "input": "50^{\\circ}C",
+   "expected": "50 degrees C",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-prose-end",
+   "input": "It is 90^\\circ.",
+   "expected": "It is 90 degrees.",
    "tags": [
     "B8",
     "v140-a8"

@@ -1440,6 +1440,19 @@ String _spokenProseSubscripts(String text) {
   );
 }
 
+// Bare `50^\circ C` / `50^{\circ}C` in prose (tag `v140-a8`).
+final _proseDegrees = RegExp(r'\^[ \t]*\{?[ \t]*\\circ(?![A-Za-z])[ \t]*\}?');
+
+String _spokenProseDegrees(String text) {
+  if (!text.contains(r'\circ')) return text;
+  return text.replaceAllMapped(
+    _proseDegrees,
+    (m) =>
+        ' degrees'
+        '${m.end < text.length && isAlnum(codePointAt(text, m.end)) ? ' ' : ''}',
+  );
+}
+
 String _toSpoken(String text) {
   final parts = <String>[];
   for (final seg in segment(text)) {
@@ -1448,7 +1461,15 @@ String _toSpoken(String text) {
           _latexToSpoken(seg.value));
       continue;
     }
-    final value = _spokenProseSubscripts(seg.value);
+    var value = seg.value;
+    // `$50^\circ$C`: a degrees span runs into a unit (tag `v140-a8`).
+    if (parts.isNotEmpty &&
+        parts.last.endsWith('degrees') &&
+        value.isNotEmpty &&
+        isAlnum(codePointAt(value, 0))) {
+      value = ' $value';
+    }
+    value = _spokenProseDegrees(_spokenProseSubscripts(value));
     // Bare LaTeX in prose (`\frac{1}{2}` never wrapped): fractions, roots,
     // wrappers and environments are read the same way.
     parts.add(
@@ -1483,6 +1504,7 @@ final _compareOperatorSpace = RegExp(r' ?([+\-*/=<>^_(),{}\[\]]) ?');
 // One leading option label (tag `v140-a4`): `A)`, `(B)`, `C.`, `D:`, `a)` —
 // a letter A–H in either case — followed by whitespace and an answer.
 final _optionLabel = RegExp(r'^\s*(?:\([A-Ha-h]\)|[A-Ha-h][).:])\s+(?=\S)');
+final _loneLetter = RegExp(r'^[A-Za-z]\s*$');
 
 bool _isAsciiDigitChar(String ch) =>
     ch.length == 1 && ch.codeUnitAt(0) >= 0x30 && ch.codeUnitAt(0) <= 0x39;
@@ -1518,7 +1540,13 @@ String _applyCompareFold(String text) {
 /// signs and multiplication dots folded, whitespace collapsed and removed
 /// around operators and brackets.
 String _foldForCompare(String text) {
-  text = _applyCompareFold(text.replaceFirst(_optionLabel, ''));
+  // Never strip when a lone letter would remain: `a: b` must not compare as
+  // the option letter `b` (tag `v140-a4`).
+  final label = _optionLabel.firstMatch(text);
+  if (label != null && !_loneLetter.hasMatch(text.substring(label.end))) {
+    text = text.substring(label.end);
+  }
+  text = _applyCompareFold(text);
   text = text.replaceAllMapped(
     _superscriptRun,
     (m) => '^${m[0]!.split('').map((c) => _superscriptToAscii[c]).join()}',

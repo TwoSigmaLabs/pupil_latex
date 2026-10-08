@@ -1547,6 +1547,19 @@ def _spoken_prose_subscripts(text: str) -> str:
     )
 
 
+# Bare `50^\circ C` / `50^{\circ}C` in prose (tag `v140-a8`).
+_PROSE_DEGREES_RE = re.compile(r"\^[ \t]*\{?[ \t]*\\circ(?![A-Za-z])[ \t]*\}?")
+
+
+def _spoken_prose_degrees(text: str) -> str:
+    if "\\circ" not in text:
+        return text
+    return _PROSE_DEGREES_RE.sub(
+        lambda m: " degrees" + (" " if text[m.end() : m.end() + 1].isalnum() else ""),
+        text,
+    )
+
+
 def _to_spoken(text: str) -> str:
     parts: List[str] = []
     for seg in segment(text):
@@ -1557,7 +1570,10 @@ def _to_spoken(text: str) -> str:
                 typographic if typographic is not None else _latex_to_spoken(value)
             )
             continue
-        value = _spoken_prose_subscripts(value)
+        # `$50^\circ$C`: a degrees span runs into a unit (tag `v140-a8`).
+        if parts and parts[-1].endswith("degrees") and value[:1].isalnum():
+            value = " " + value
+        value = _spoken_prose_degrees(_spoken_prose_subscripts(value))
         # Bare LaTeX in prose (`rac{1}{2}` never wrapped): fractions,
         # roots, wrappers and environments are read the same way.
         parts.append(_spoken_structures(value, prose=True) if "\\" in value else value)
@@ -1663,6 +1679,7 @@ _COMPARE_OPERATOR_SPACE_RE = re.compile(r" ?([+\-*/=<>^_(),{}\[\]]) ?")
 # One leading option label (tag `v140-a4`): `A)`, `(B)`, `C.`, `D:`, `a)` —
 # a letter A–H in either case — followed by whitespace and an answer.
 _OPTION_LABEL_RE = re.compile(r"^\s*(?:\([A-Ha-h]\)|[A-Ha-h][).:])\s+(?=\S)")
+_LONE_LETTER_RE = re.compile(r"[A-Za-z]\s*")
 
 
 def _apply_compare_fold(text: str) -> str:
@@ -1693,7 +1710,11 @@ def _fold_for_compare(text: str) -> str:
     dropped, compatibility characters folded, scripts as `^…`/`_…`, minus
     signs and multiplication dots folded, whitespace collapsed and removed
     around operators and brackets."""
-    text = _OPTION_LABEL_RE.sub("", text, count=1)
+    label = _OPTION_LABEL_RE.match(text)
+    # Never strip when a lone letter would remain: `a: b` must not compare
+    # as the option letter `b` (tag `v140-a4`).
+    if label and not _LONE_LETTER_RE.fullmatch(text[label.end() :]):
+        text = text[label.end() :]
     text = _apply_compare_fold(text)
     text = _SUPERSCRIPT_RUN_RE.sub(
         lambda m: "^" + "".join(_SUPERSCRIPT_TO_ASCII[c] for c in m.group(0)), text

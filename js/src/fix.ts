@@ -30,7 +30,7 @@ import {
 } from "./lookbehind.js";
 import { normalize } from "./normalize.js";
 import { segment } from "./segment.js";
-import { delimiterWidth } from "./spans.js";
+import { delimiterWidth, mathMask } from "./spans.js";
 import {
   DECLARATION_COMMANDS,
   SINGLE_LETTER_UNITS,
@@ -449,7 +449,38 @@ export function unwrapTypographicSpans(text: unknown): unknown {
     }
     out += seg.raw;
   }
-  return changed ? out : text;
+  return unwrapPaddedTypographic(changed ? out : text);
+}
+
+// `wait$ \ldots $now`: a padded pair that `segment` does not read as math
+// (whitespace right inside a delimiter). The dollars go and the padding
+// stays (`wait … now`); `canonicalize` would otherwise wrap the bare command
+// again inside the stray dollars (`wait$ $\ldots$ $now`).
+const PADDED_TYPOGRAPHIC_RE =
+  /\$([ \t]*)\\(ldots|dots|textellipsis|textmu)([ \t]*)\$/g;
+
+function unwrapPaddedTypographic(text: string): string {
+  if (!text.includes("$")) return text;
+  let mask: boolean[] | null = null;
+  let out = "";
+  let last = 0;
+  let changed = false;
+  PADDED_TYPOGRAPHIC_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = PADDED_TYPOGRAPHIC_RE.exec(text)) !== null) {
+    const start = m.index;
+    const end = start + m[0].length;
+    if (start > 0 && (text[start - 1] === "\\" || text[start - 1] === "$"))
+      continue;
+    if (text[end] === "$") continue;
+    if (mask === null) mask = mathMask(text);
+    if (mask[start]) continue;
+    out +=
+      text.slice(last, start) + m[1] + TYPOGRAPHIC_SPANS["\\" + m[2]] + m[3];
+    last = end;
+    changed = true;
+  }
+  return changed ? out + text.slice(last) : text;
 }
 
 // ---------------------------------------------------------------------------
