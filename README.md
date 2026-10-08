@@ -138,6 +138,7 @@ js/                         TypeScript port, React and DOM adapters, IIFE bundle
 tools/build_corpus.py       curated cases + harvested → corpus/*.json
 tools/lint_plain_text_sites.py   CI check for math fields rendered as plain text (bug class B2)
 tools/check_prompt_parity.py     CI check that a service's prompt rules match spec/CONTRACT.md
+tools/bump_consumer.py           moves a consumer's pin to a new tag (used by .github/workflows/propagate.yml)
 ```
 
 ## Where this came from
