@@ -2,25 +2,32 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
-## 1.2.1 (2026-10-08)
+## 1.3.0 (2026-10-08)
 
-Bugs found while migrating Fillers, Backend and pupiltree-agents to 1.2.0 (audit round 5). New corpus cases are tagged `audit5-<n>`; every fix is in Python, JavaScript and Dart. No existing corpus expectation changes (CONTRACT §7: patch).
+Bugs found while migrating Fillers, Backend, pupiltree-agents, script_editor and worksheet.ai to 1.2.0 (audit rounds 5 and 6). New corpus cases are tagged `audit5-<n>` and `audit6-<n>`; every fix is in Python, JavaScript and Dart.
+
+**Versioning note.** These fixes were first prepared as 1.2.1 (a patch: new corpus cases only). The `normalize` padded-span trim below changes two existing `must_not_change` expectations, and CONTRACT §7 makes any change to a corpus expectation a minor bump, so everything ships together as 1.3.0. There is no 1.2.1 tag.
+
+### Changed corpus expectations
+
+- `must_not_change/audit4-6-space-before-closer` (`Compute $2x + 3 $.`, via `normalize`) and `must_not_change/audit4-6-space-before-closer-power` (`Find $3x^2 - 1 $ when x is 2`, via `normalize`) are removed. The same inputs are now `normalize` cases with the same ids, expecting `Compute $2x + 3$.` and `Find $3x^2 - 1$ when x is 2`.
+- `normalize/audit5-8-padded-span-keeps-ne` (new in the untagged 1.2.1) now expects `$x \ne y$` instead of `$ x \ne y $`; the padded-span protection is still pinned by `normalize/audit5-8-untrimmed-padded-span-keeps-ne` (`$ x \ne y $5`, closer before a digit, unchanged).
+
+Consumers that compare `normalize` output literally must re-check padded spans. `fix` and `canonicalize` output does not change: they already trimmed these spans.
 
 ### Fixed in every language
 
+- **`normalize` trims a padded span (audit6-1).** Every frontend now displays stored content as `segment(normalize(text))`, and `segment` keeps pandoc's rule (no whitespace right inside the delimiters). A stored `Solve $ x + 1 = 0 $ for x.` or `Compute $2x + 3 $.` therefore showed as raw text in script_editor and was not drawn as maths in worksheet.ai's PDF, while the apps' old regexes rendered it. `normalize` now runs `canonicalize`'s padded-span trim (API §3 step 10a) right after `escapeCurrency` (new step 5a): `$ x + 1 = 0 $` → `$x + 1 = 0$`, `$2x + 3 $` → `$2x + 3$`, `$ x + 1$` → `$x + 1$`, `($ a^2 + b^2 $)` → `($a^2 + b^2$)`. Currency still wins: `Prices: $10, $20`, `$5 and $10`, `Rs $5 and $10`, `costs $5.`, `I paid $ 5 and got $ 3` and a closer followed by a digit (`pay $ x + 1 $5 now`) are unchanged. A single letter is not clearly math, so `where $ v $ is speed` stays padded, as it does in `fix`.
+- **`to_plain` trims the same padding (audit6-2).** After `repair`, padded spans are trimmed with the amounts `escapeCurrency` reads as money masked first: `Compute $2x + 3 $.` → `Compute 2x + 3.` (was `Compute 2x + 3 .`), `($ a^2 + b^2 $)` → `(a² + b²)`, and `tts` now reads a padded span as maths (`Solve $ x^2 = 4 $.` → `Solve x squared = 4.`, was left with its dollars).
 - **`to_plain` pairs math the way `segment` does (audit5-1).** `Rs $5 and $10` was `Rs 5 and 10`: the delimiter strip paired two amounts as a span. A dollar that `normalize`'s currency rule reads as money (the closer is followed by a digit, or there is no closer), outside every `segment` math span and followed by an amount, is now a literal dollar: `Rs $5 and $10`, `$5-$10`, `Rs $5 and $x^2$` → `Rs $5 and x²`.
 - **Unpaired amounts keep their dollar (audit5-2).** `$5` and `costs $5.` were `5` / `costs 5.`; they stay `$5` / `costs $5.` in `text`, `pdf` and `compare` (`compare` already kept `\$5`, so a stored amount and a typed one still compare equal). A cut-off span keeps the old behaviour: `$45m` → `45m`, `$4\sqrt{3}s` → `4√3s`.
 - **`to_plain` repairs first (audit5-3).** Every style runs `repair` with `guessWhitespace=true`, as `fix` does: `Area <FF>rac{1}{2}` → `Area 1/2`, `3 <TAB>imes 4` → `3 × 4`, `$x <LF>ightarrow y$` → `x → y`, `<BS>eta` → `β`, and ANSI colour codes are removed. A `\name:` whose name is in `SCRIPT_LABELS` is a label anywhere in a line, so a repaired `(<TAB>ool: timer)` reads `(\tool: timer)` (`text`) / `(tool: timer)` (`pdf`), not `(→ol: timer)`.
-- **`fix` idempotency on `$ $` shapes (audit5-8).** `a $ $\nu$ b` became `a $ <LF>u$ b` in `normalize`, and `$\nu = $\frac{c}{\lambd$a^{{2}$}$}$` lost its `\nu` on a second `fix`: the prose-escape decoder paired `$ $` with a regex while `segment` renders `$\nu$`. A position is now protected when either `segment` or the regex calls it math (decoding is lossy, and a padded `$ x \ne y $` must survive until `canonicalize` trims it).
+- **`fix` idempotency on `$ $` shapes (audit5-8).** `a $ $\nu$ b` became `a $ <LF>u$ b` in `normalize`, and `$\nu = $\frac{c}{\lambd$a^{{2}$}$}$` lost its `\nu` on a second `fix`: the prose-escape decoder paired `$ $` with a regex while `segment` renders `$\nu$`. A position is now protected when either `segment` or the regex calls it math (decoding is lossy, and a padded span that is not trimmed, such as `$ x \ne y $5`, must keep its `\ne`).
 
 ### Release tooling
 
 - `propagate.yml`: worksheet.ai moved to `TwoSigmaLabs/worksheet.ai` (base `main`); every consumer now uses the one `PUPIL_LATEX_BUMP_TOKEN` secret (the `PUPIL_LATEX_BUMP_TOKEN_PUPILTREE` fallback is gone). A missing secret is a `::warning::` plus a run summary from a new `token` job and no bump job runs; on a tag run (called from `ci.yml`) the `resolve` and `bump` jobs are `continue-on-error`, so a consumer that cannot be bumped is an `::error::` on its own job and the release run stays green. Manual and `release`-event runs still fail.
 - `tools/bump_consumer.py` (kind `fillers`): a `README*` next to a vendored `pupiltree-latex.iife.js` gets its `Version: X.Y.Z` line and `pupil_latex/releases/tag/vX.Y.Z` link rewritten (Fillers `frontend/static/vendor/pupiltree-latex/README.md`).
-
-### Not in this release
-
-- `normalize` trimming a padded span (`Compute $2x + 3 $.` → `$2x + 3$`, as `canonicalize` does) would change two `must_not_change` expectations (`audit4-6-space-before-closer`, `audit4-6-space-before-closer-power`, both via `normalize`), so it is a minor change and waits for 1.3.0.
 
 ## 1.2.0 (2026-10-08)
 

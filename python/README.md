@@ -3,7 +3,7 @@
 The reference implementation of the Pupiltree math-text contract. See the repository `README.md` and `spec/API.md` for the full description.
 
 ```bash
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.2.1#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.3.0#subdirectory=python"
 ```
 
 ```python
