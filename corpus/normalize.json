@@ -1,6 +1,6 @@
 {
  "function": "normalize",
- "version": "1.1.0",
+ "version": "1.1.1",
  "cases": [
   {
    "id": "curated-paren-inline",
@@ -424,6 +424,16 @@
    "expected": "\\$5 and \\$10",
    "tags": [
     "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-command-without-argument-stays-currency",
+   "input": "Unit: $5 \\text $ m",
+   "expected": "Unit: \\$5 \\text $ m",
+   "tags": [
+    "B3",
+    "B7",
     "audit4-6"
    ]
   },

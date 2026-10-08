@@ -8,6 +8,10 @@
  * touches URLs.
  */
 
+import {
+  detectCommandMissingArgument,
+  detectFracMissingArgs,
+} from "./audit.js";
 import { isAsciiDigit, matchAt } from "./chars.js";
 import { PROSE_ESCAPE_COMMANDS } from "./commands.js";
 import {
@@ -110,7 +114,14 @@ export function isFormula(content: string): boolean {
   const bare = core.replace(FORMULA_COMMAND_RE, " ");
   if (!FORMULA_CHARS_RE.test(bare) || TWO_LETTERS_RE.test(bare)) return false;
   if (!FORMULA_OPERATOR_RE.test(bare) && !hasCommand) return false;
-  return hasCommand || /[A-Za-z]/.test(bare);
+  if (!(hasCommand || /[A-Za-z]/.test(bare))) return false;
+  // A command that needs an argument and has none (`$5 \text $`) cannot
+  // render: as currency it at least stays readable.
+  const probe = "$" + core + "$";
+  return (
+    detectCommandMissingArgument(probe).length === 0 &&
+    detectFracMissingArgs(probe).length === 0
+  );
 }
 
 function escapeCurrencyInLine(line: string): string {

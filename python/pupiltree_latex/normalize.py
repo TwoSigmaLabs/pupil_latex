@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .audit import _detect_command_missing_argument, _detect_frac_missing_args
 from .commands import PROSE_ESCAPE_COMMANDS
 from .mojibake import fix_mojibake_table
 from .repair import repair
@@ -103,7 +104,14 @@ def is_formula(content: str) -> bool:
         return False
     if not _FORMULA_OPERATOR_RE.search(bare) and not has_command:
         return False
-    return has_command or any(c.isalpha() for c in bare)
+    if not (has_command or any(c.isalpha() for c in bare)):
+        return False
+    # A command that needs an argument and has none (`$5 \text $`) cannot
+    # render: as currency it at least stays readable.
+    probe = "$" + core + "$"
+    return not (
+        _detect_command_missing_argument(probe) or _detect_frac_missing_args(probe)
+    )
 
 
 def _escape_currency_in_line(line: str) -> str:

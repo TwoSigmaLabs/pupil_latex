@@ -2150,6 +2150,13 @@ NORMALIZE += [
     ),
     ("audit4-6-two-amounts", "$5 and $10", "\\$5 and \\$10", ["B3", "audit4-6"], {}),
     (
+        "audit4-6-command-without-argument-stays-currency",
+        "Unit: $5 \\text $ m",
+        "Unit: \\$5 \\text $ m",
+        ["B3", "B7", "audit4-6"],
+        {},
+    ),
+    (
         "audit4-6-prose-before-padded-dollar",
         "costs $5 and x $ more",
         "costs \\$5 and x $ more",
