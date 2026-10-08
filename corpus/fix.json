@@ -1026,6 +1026,97 @@
     "B3",
     "audit6-1"
    ]
+  },
+  {
+   "id": "curated-v140-a7-ldots",
+   "input": "leukocytes$\\ldots$",
+   "expected": "leukocytes…",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-dots",
+   "input": "and so on $\\dots$",
+   "expected": "and so on …",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-textellipsis",
+   "input": "wait$\\textellipsis$",
+   "expected": "wait…",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-display-ldots",
+   "input": "and $$\\ldots$$",
+   "expected": "and …",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-legacy-delimiters",
+   "input": "cells\\(\\ldots\\)",
+   "expected": "cells…",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-textmu",
+   "input": "5 $\\textmu$m",
+   "expected": "5 $\\mu$m",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-cdots-stays",
+   "input": "$\\cdots$",
+   "expected": "$\\cdots$",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-formula-unchanged",
+   "input": "$1, 2, \\ldots, n$",
+   "expected": "$1, 2, \\ldots, n$",
+   "tags": [
+    "B7",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-other-span-unchanged",
+   "input": "$x \\ldots$",
+   "expected": "$x \\ldots$",
+   "tags": [
+    "B7",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-greek-unchanged",
+   "input": "$\\mu$",
+   "expected": "$\\mu$",
+   "tags": [
+    "B7",
+    "v140-a7"
+   ]
   }
  ]
 }

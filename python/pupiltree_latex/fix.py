@@ -475,6 +475,40 @@ def merge_adjacent_math(text: Any) -> Any:
 # ---------------------------------------------------------------------------
 
 
+# A span whose whole body is one of these is typography, not maths (tag
+# `v140-a7`): `leukocytes$\ldots$` → `leukocytes…`. `\textmu` becomes
+# `$\mu$`, not a bare `µ`: `canonicalize` wraps a bare `µ` as `$\mu$`, so
+# that is the fixed point (`$\cdots$` stays for the same reason: a bare `⋯`
+# is wrapped back into `$\cdots$`).
+TYPOGRAPHIC_SPANS: dict[str, str] = {
+    "\\ldots": "…",
+    "\\dots": "…",
+    "\\textellipsis": "…",
+    "\\textmu": "$\\mu$",
+}
+
+
+def unwrap_typographic_spans(text: Any) -> Any:
+    """Replace each math span whose trimmed body is a key of
+    `TYPOGRAPHIC_SPANS` (inline or display) by its value; every other span
+    and all prose are copied as written."""
+    if not isinstance(text, str) or "\\" not in text:
+        return text
+    if not any(name in text for name in TYPOGRAPHIC_SPANS):
+        return text
+    out: list[str] = []
+    changed = False
+    for seg in segment(text):
+        if seg["kind"] == "math":
+            value = TYPOGRAPHIC_SPANS.get(seg["value"].strip())
+            if value is not None:
+                out.append(value)
+                changed = True
+                continue
+        out.append(seg["raw"])
+    return "".join(out) if changed else text
+
+
 def fix(text: Any, *, chemistry: bool = True) -> Any:
     """Repair, normalise, canonicalise, wrap what is still bare, escape what
     would cut a formula short and merge adjacent spans, in one call.
@@ -483,7 +517,9 @@ def fix(text: Any, *, chemistry: bool = True) -> Any:
     a bare ``\\ce{…}`` / ``\\pu{…}`` is never put into a new math span."""
     if not isinstance(text, str) or not text:
         return text
-    text = canonicalize(normalize(text), chemistry=chemistry)
+    text = canonicalize(
+        unwrap_typographic_spans(normalize(text)), chemistry=chemistry
+    )
     text = wrap_bare_symbol_commands(text)
     text = wrap_unicode_chemistry(text)
     text = wrap_unicode_scripts(text)
@@ -512,6 +548,7 @@ __all__ = [
     "fix",
     "fix_deep",
     "merge_adjacent_math",
+    "unwrap_typographic_spans",
     "wrap_bare_symbol_commands",
     "wrap_unicode_chemistry",
     "wrap_unicode_scripts",

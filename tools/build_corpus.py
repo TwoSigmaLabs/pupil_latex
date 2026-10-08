@@ -2658,6 +2658,344 @@ TO_PLAIN += [
 ]
 
 
+# v1.4.0 Group A: plain text, answer comparison and speech.
+_CMP = {"style": "compare"}
+_TTS = {"style": "tts"}
+_PDF = {"style": "pdf"}
+# v140-a1: `compare` owns Unicode compatibility folding (an explicit table,
+# `compare_fold`, so the three languages agree without platform NFKC).
+TO_PLAIN += [
+    ("v140-a1-fullwidth", "ｘ＝５", "x=5", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-fullwidth-unit", "５ ｃｍ", "5 cm", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-fullwidth-power", "ｘ^２", "x^2", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-thin-space", "5 cm", "5 cm", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-narrow-nbsp", "5 kg", "5 kg", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-ideographic-space", "5　kg", "5 kg", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-square-unit", "25 ㎝", "25 cm", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-cubic-unit", "3 ㎤", "3 cm^3", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-celsius", "10 ℃", "10 °C", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-ohm-sign", "5 Ω", "5 Ω", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-kelvin-sign", "300 K", "300 K", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-micro-sign", "5 µm", "5 μm", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-textmu-equals-micro", "5 $\\textmu$m", "5 μm", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-vulgar-half", "½", "1/2", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-vulgar-three-quarters", "¾ kg", "3/4 kg", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-vulgar-third", "⅓", "1/3", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-mixed-number", "1½", "1 1/2", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-unicode-power", "x²", "x^2", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-latex-power", "$x^2$", "x^2", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-unicode-chem", "H₂O", "H_2O", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-latex-chem", "$H_2O$", "H_2O", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-en-dash", "2 – 3", "2-3", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-non-breaking-hyphen", "x‑1", "x-1", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-ordinal-as-degree", "90º", "90°", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-ellipsis", "1, 2, …", "1,2,...", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-ldots", "$1, 2, \\ldots$", "1,2,...", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-ligature", "ﬁve", "five", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-fraction-slash", "1⁄2", "1/2", ["B8", "v140-a1"], _CMP),
+    ("v140-a1-text-style-keeps-fullwidth", "ｘ＝５", "ｘ＝５", ["B7", "v140-a1"], {}),
+]
+
+# v140-a2: `unescape_html_entities` is `html.unescape` (full HTML5 table, one
+# round); `compare` applies it.
+TO_PLAIN += [
+    ("v140-a2-thinsp", "5&thinsp;m", "5 m", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-ndash", "2&ndash;3", "2-3", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-mdash-kept", "a&mdash;b", "a—b", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-micro", "5 &micro;m", "5 μm", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-times", "2 &times; 3", "2*3", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-numeric-hex", "&#x3C0;r", "πr", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-numeric-cp1252", "&#128;5", "€5", ["B8", "v140-a2"], _CMP),
+    ("v140-a2-legacy-no-semicolon", "x &lt y", "x<y", ["B8", "v140-a2"], _CMP),
+    (
+        "v140-a2-unknown-kept",
+        "AT&T &foo; Q&A",
+        "AT&T &foo; Q&A",
+        ["B7", "v140-a2"],
+        _CMP,
+    ),
+    ("v140-a2-sup-entity", "x&sup2;", "x^2", ["B8", "v140-a2"], _CMP),
+]
+
+# v140-a3: `compare` drops unpaired delimiter halves.
+TO_PLAIN += [
+    ("v140-a3-stray-dollar", "3.2$ m", "3.2 m", ["B4", "B8", "v140-a3"], _CMP),
+    ("v140-a3-stray-closer", "\\frac{1}{2}\\)", "1/2", ["B4", "B8", "v140-a3"], _CMP),
+    ("v140-a3-stray-opener", "\\(x + 1", "x+1", ["B4", "B8", "v140-a3"], _CMP),
+    ("v140-a3-stray-bracket", "x = 2\\]", "x=2", ["B4", "B8", "v140-a3"], _CMP),
+    (
+        "v140-a3-dollar-mid",
+        "$x$ and 5$ more",
+        "x and 5 more",
+        ["B4", "B8", "v140-a3"],
+        _CMP,
+    ),
+    ("v140-a3-amount-kept", "costs $5.", "costs $5.", ["B3", "B8", "v140-a3"], _CMP),
+    (
+        "v140-a3-paired-frac-text",
+        "\\(\\frac{1}{2}\\)",
+        "1/2",
+        ["B4", "B8", "v140-a3"],
+        {},
+    ),
+    (
+        "v140-a3-closer-then-word-text",
+        "\\(\\frac{1}{2}\\) of it",
+        "1/2 of it",
+        ["B4", "B8", "v140-a3"],
+        {},
+    ),
+]
+
+# v140-a4: `compare` strips one leading option label (`A)`, `(B)`, `C.`,
+# `D:`, `a)`, letters A-H either case) followed by whitespace.
+TO_PLAIN += [
+    ("v140-a4-paren-label", "B) 8-celled", "8-celled", ["B8", "v140-a4"], _CMP),
+    ("v140-a4-bracketed-label", "(A) 2/4", "2/4", ["B8", "v140-a4"], _CMP),
+    ("v140-a4-dot-label", "C. x^2", "x^2", ["B8", "v140-a4"], _CMP),
+    ("v140-a4-colon-label", "D: 5", "5", ["B8", "v140-a4"], _CMP),
+    ("v140-a4-lower-label", "a) $\\frac{1}{2}$", "1/2", ["B8", "v140-a4"], _CMP),
+    ("v140-a4-label-latex", "(B) $x^2$", "x^2", ["B8", "v140-a4"], _CMP),
+    ("v140-a4-bare-letter-kept", "B", "B", ["B7", "v140-a4"], _CMP),
+    ("v140-a4-label-alone-kept", "(C)", "(C)", ["B7", "v140-a4"], _CMP),
+    ("v140-a4-no-space-kept", "C.x", "C.x", ["B7", "v140-a4"], _CMP),
+    ("v140-a4-group-kept", "(a+b) 2", "(a+b)2", ["B7", "v140-a4"], _CMP),
+    (
+        "v140-a4-mid-text-kept",
+        "Vitamin C. Yes",
+        "Vitamin C. Yes",
+        ["B7", "v140-a4"],
+        _CMP,
+    ),
+    (
+        "v140-a4-text-style-keeps-label",
+        "B) 8-celled",
+        "B) 8-celled",
+        ["B7", "v140-a4"],
+        {},
+    ),
+]
+
+# v140-a5: a signed number is a simple fraction part; `compare` drops the
+# escaped dollar of a cut-off span (`\$0.008Wb`).
+TO_PLAIN += [
+    ("v140-a5-negative-numerator", "$\\frac{-1}{4}$", "-1/4", ["B8", "v140-a5"], _CMP),
+    (
+        "v140-a5-negative-numerator-text",
+        "$\\frac{-1}{4}$",
+        "-1/4",
+        ["B8", "v140-a5"],
+        {},
+    ),
+    (
+        "v140-a5-negative-letter-grouped",
+        "$\\frac{-x}{4}$",
+        "(-x)/4",
+        ["B8", "v140-a5"],
+        {},
+    ),
+    (
+        "v140-a5-negative-denominator-grouped",
+        "$\\frac{y+1}{-2}$",
+        "(y+1)/(-2)",
+        ["B8", "v140-a5"],
+        {},
+    ),
+    (
+        "v140-a5-escaped-dollar-unit",
+        "\\$0.008Wb",
+        "0.008Wb",
+        ["B3", "B8", "v140-a5"],
+        _CMP,
+    ),
+    (
+        "v140-a5-escaped-dollar-command",
+        "\\$4\\sqrt{3}s",
+        "4√3s",
+        ["B3", "B8", "v140-a5"],
+        _CMP,
+    ),
+    ("v140-a5-escaped-amount-kept", "\\$5", "$5", ["B3", "B8", "v140-a5"], _CMP),
+    (
+        "v140-a5-escaped-amount-in-span-kept",
+        "Cost \\(\\$5\\) total",
+        "Cost $5 total",
+        ["B3", "B8", "v140-a5"],
+        _CMP,
+    ),
+    (
+        "v140-a5-escaped-amount-space-kept",
+        "\\$5 each",
+        "$5 each",
+        ["B3", "B8", "v140-a5"],
+        _CMP,
+    ),
+    (
+        "v140-a5-text-keeps-escaped-dollar",
+        "\\$0.008Wb",
+        "$0.008Wb",
+        ["B3", "B8", "v140-a5"],
+        {},
+    ),
+]
+
+# v140-a6: `to_plain` fixes mojibake with the table fixer, as `normalize` does.
+TO_PLAIN += [
+    ("v140-a6-pi", "Value of Ï€", "Value of π", ["B6", "B8", "v140-a6"], {}),
+    ("v140-a6-times", "5 Ã— 3", "5 × 3", ["B6", "B8", "v140-a6"], {}),
+    ("v140-a6-with-math", "Ï€ and $x^2$", "π and x²", ["B6", "B8", "v140-a6"], {}),
+    ("v140-a6-pdf", "Value of Ï€", "Value of π", ["B6", "B8", "v140-a6"], _PDF),
+    ("v140-a6-tts", "Value of Ï€", "Value of π", ["B6", "B8", "v140-a6"], _TTS),
+    ("v140-a6-compare", "2Ï€", "2π", ["B6", "B8", "v140-a6"], _CMP),
+    ("v140-a6-entity-text", "a &amp; b", "a & b", ["B6", "B8", "v140-a6"], {}),
+]
+
+# v140-a7: a span that is only `\ldots`, `\dots`, `\cdots`, `\textellipsis`
+# or `\textmu` is typography.
+TO_PLAIN += [
+    ("v140-a7-ldots", "leukocytes$\\ldots$", "leukocytes…", ["B8", "v140-a7"], {}),
+    ("v140-a7-dots", "and so on$\\dots$", "and so on…", ["B8", "v140-a7"], {}),
+    ("v140-a7-cdots", "$1 + 2 + \\cdots$", "1 + 2 + ⋯", ["B8", "v140-a7"], {}),
+    ("v140-a7-cdots-alone", "$\\cdots$", "⋯", ["B8", "v140-a7"], {}),
+    ("v140-a7-textellipsis", "wait$\\textellipsis$", "wait…", ["B8", "v140-a7"], {}),
+    ("v140-a7-textmu", "5 $\\textmu$m", "5 µm", ["B8", "v140-a7"], {}),
+    ("v140-a7-pdf", "leukocytes$\\ldots$", "leukocytes…", ["B8", "v140-a7"], _PDF),
+]
+
+# v140-a8: speech for ellipses, micro, bare subscripts and degrees.
+TO_PLAIN += [
+    (
+        "v140-a8-typographic-ldots",
+        "leukocytes$\\ldots$",
+        "leukocytes…",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-typographic-cdots",
+        "and so on $\\cdots$",
+        "and so on …",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-ldots-in-formula",
+        "$1, 2, \\ldots, n$",
+        "1, 2, dots, n",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    ("v140-a8-textmu-alone", "$\\textmu$", "micro", ["B8", "v140-a8"], _TTS),
+    (
+        "v140-a8-textmu-in-formula",
+        "$5 \\textmu m$",
+        "5 micro m",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-bare-sub-braced",
+        "the term x_{n} is next",
+        "the term x sub n is next",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-bare-sub-single",
+        "so a_1 = 3",
+        "so a sub 1 = 3",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-identifier-kept",
+        "Gap: lo_0 and v_avg",
+        "Gap: lo_0 and v_avg",
+        ["B7", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-chemistry-group-kept",
+        "Water is H_{2}O",
+        "Water is H_{2}O",
+        ["B7", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-script-then-power-kept",
+        "The term x_0^2 here",
+        "The term x_0^2 here",
+        ["B7", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-energy-level",
+        "The energy E_n is negative.",
+        "The energy E sub n is negative.",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-snake-case-kept",
+        "fallback_factual_error",
+        "fallback_factual_error",
+        ["B7", "v140-a8"],
+        _TTS,
+    ),
+    ("v140-a8-degrees-unit", "$50^\\circ C$", "50 degrees C", ["B8", "v140-a8"], _TTS),
+    (
+        "v140-a8-degrees-braced-unit",
+        "$50^{\\circ}C$",
+        "50 degrees C",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    ("v140-a8-degrees-end", "$90^{\\circ}$", "90 degrees", ["B8", "v140-a8"], _TTS),
+]
+
+# v140-a9: bare chemistry in prose (element symbols with digit subscripts)
+# renders as Unicode in `text`/`pdf`; identifiers stay.
+TO_PLAIN += [
+    (
+        "v140-a9-sulfuric",
+        "H_2SO_4 is an acid",
+        "H₂SO₄ is an acid",
+        ["B8", "v140-a9"],
+        {},
+    ),
+    (
+        "v140-a9-carbonate",
+        "Add Na_2CO_3 to Ca(OH)_2.",
+        "Add Na₂CO₃ to Ca(OH)₂.",
+        ["B8", "v140-a9"],
+        {},
+    ),
+    ("v140-a9-braced", "Water is H_{2}O", "Water is H₂O", ["B8", "v140-a9"], {}),
+    ("v140-a9-chlorine", "Cl_2 gas", "Cl₂ gas", ["B8", "v140-a9"], {}),
+    ("v140-a9-pdf", "CO_2 and H_2O", "CO₂ and H₂O", ["B8", "v140-a9"], _PDF),
+    ("v140-a9-identifier-lo", "Gap: lo_0", "Gap: lo_0", ["B7", "v140-a9"], {}),
+    (
+        "v140-a9-snake-case",
+        "fallback_factual_error",
+        "fallback_factual_error",
+        ["B7", "v140-a9"],
+        {},
+    ),
+    ("v140-a9-v-avg", "v_avg = 5", "v_avg = 5", ["B7", "v140-a9"], {}),
+    (
+        "v140-a9-enum",
+        "MCQ_SINGLE and q_001_easy",
+        "MCQ_SINGLE and q_001_easy",
+        ["B7", "v140-a9"],
+        {},
+    ),
+    ("v140-a9-not-an-element", "E_1 and Q_2", "E_1 and Q_2", ["B7", "v140-a9"], {}),
+    ("v140-a9-glued-identifier", "XH_2O_id", "XH_2O_id", ["B7", "v140-a9"], {}),
+    ("v140-a9-class-name", "10_A", "10_A", ["B7", "v140-a9"], {}),
+    ("v140-a9-compare-unchanged", "H_2SO_4", "H_2SO_4", ["B8", "v140-a9"], _CMP),
+]
+
+
 # ---------------------------------------------------------------------------
 # Evaluation
 # ---------------------------------------------------------------------------

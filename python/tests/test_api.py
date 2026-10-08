@@ -235,3 +235,72 @@ def test_has_ftfy_flag_matches_import():
         assert mojibake.HAS_FTFY is True
     except ImportError:
         assert mojibake.HAS_FTFY is False
+
+
+# v1.4.0 Group A ------------------------------------------------------------
+
+UNESCAPE_SAMPLES = [
+    "a &amp; b",
+    "a &amp;lt; b",
+    "&thinsp;&ndash;&mdash;&micro;&hellip;",
+    "x &lt y &gt z",
+    "&ampx &notit; &notin; &not",
+    "&AMP; &Afr; &afr;",
+    "&#65;&#x41;&#X41;&#65 &#x41g",
+    "&#0; &#13; &#128; &#129; &#150; &#159;",
+    "&#1; &#11; &#127; &#xFDD0; &#xFFFE; &#x1FFFF;",
+    "&#xD800; &#x110000; &#99999999999999999999;",
+    "&#128512; &#x1F600;",
+    "AT&T Q&A &foo; & ; &; &#; &#x;",
+    "&abcdefghijklmnopqrstuvwxyzabcdefghij;",
+    "&lt;&lt;&lt",
+    "no entity",
+]
+
+
+@pytest.mark.parametrize("text", UNESCAPE_SAMPLES)
+def test_unescape_html_entities_is_html_unescape(text):
+    import html
+
+    assert L.unescape_html_entities(text) == html.unescape(text)
+
+
+def test_unescape_tables_exported():
+    import html.entities
+
+    assert L.HTML5_ENTITIES == html.entities.html5
+    assert L.HTML_NUMERIC_OVERRIDES["128"] == "€"
+    assert L.HTML_NUMERIC_OVERRIDES["13"] == "\r"
+
+
+def test_compare_one_round_of_entities():
+    # `html.unescape` decodes once, so this is not idempotent and lives here,
+    # not in the corpus (every corpus string case is checked for idempotency).
+    assert L.to_plain("a &amp;lt; b", "compare") == "a &lt; b"
+
+
+def test_normalize_keeps_its_entity_set():
+    # `normalize` still decodes the small `HTML_ENTITIES` set, up to 3 rounds.
+    assert L.normalize("a &amp;lt; b") == "a < b"
+    assert L.normalize("x &thinsp; y") == "x &thinsp; y"
+
+
+def test_compare_fold_table():
+    assert L.COMPARE_FOLD["½"] == "1/2"
+    assert L.COMPARE_FOLD["㎤"] == "cm³"
+    assert L.COMPARE_FOLD["–"] == "-"
+    assert "²" not in L.COMPARE_FOLD  # scripts are folded as runs
+    assert all(len(k) == 1 and ord(k) <= 0xFFFF for k in L.COMPARE_FOLD)
+
+
+def test_unwrap_typographic_spans():
+    assert L.unwrap_typographic_spans("a$\\ldots$") == "a…"
+    assert L.unwrap_typographic_spans("$\\textmu$m") == "$\\mu$m"
+    assert L.unwrap_typographic_spans("$x\\ldots$") == "$x\\ldots$"
+    assert L.unwrap_typographic_spans("costs \\$5") == "costs \\$5"
+    assert L.unwrap_typographic_spans(None) is None
+
+
+def test_element_symbols():
+    assert len(L.ELEMENT_SYMBOLS) == 118
+    assert len(set(L.ELEMENT_SYMBOLS)) == 118
