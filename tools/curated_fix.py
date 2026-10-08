@@ -557,3 +557,91 @@ FIX += [
         {},
     ),
 ]
+
+
+# Audit round 4 (2026-10-08, v1.1.1). See build_corpus.py for the other
+# functions' `audit4-<n>` cases.
+FIX += [
+    # audit4-1
+    ("audit4-1-gap-title", "Gap: lo_0", "Gap: lo_0", ["B7", "audit4-1"], {}),
+    (
+        "audit4-1-script-still-wraps",
+        "Gap: lo_0 and x_0",
+        "Gap: lo_0 and $x_0$",
+        ["B5", "B7", "audit4-1"],
+        {},
+    ),
+    # audit4-6
+    (
+        "audit4-6-space-before-closer",
+        "Compute $2x + 3 $.",
+        "Compute $2x + 3$.",
+        ["B3", "audit4-6"],
+        {},
+    ),
+    (
+        "audit4-6-prices-still-currency",
+        "Prices: $10, $20 and $5 and $10",
+        "Prices: \\$10, \\$20 and \\$5 and \\$10",
+        ["B3", "audit4-6"],
+        {},
+    ),
+    # audit4-8
+    (
+        "audit4-8-ce-wrapped-by-default",
+        "\\ce{H2O}",
+        "$\\ce{H2O}$",
+        ["B6", "audit4-8"],
+        {},
+    ),
+    (
+        "audit4-8-ce-left-bare-without-chemistry",
+        "\\ce{H2O}",
+        "\\ce{H2O}",
+        ["B6", "B7", "audit4-8"],
+        {"opts": {"chemistry": False}},
+    ),
+    (
+        "audit4-8-pu-left-bare-without-chemistry",
+        "\\pu{5 kg}",
+        "\\pu{5 kg}",
+        ["B6", "B7", "audit4-8"],
+        {"opts": {"chemistry": False}},
+    ),
+    (
+        "audit4-8-other-math-still-wrapped-without-chemistry",
+        "\\ce{H2O} has H₂O and x≤5",
+        "\\ce{H2O} has $\\text{H}_{2}\\text{O}$ and $x\\leq5$",
+        ["B6", "audit4-8"],
+        {"opts": {"chemistry": False}},
+    ),
+    (
+        "audit4-8-pure-math-without-chemistry",
+        "\\frac{1}{2} + \\alpha",
+        "$\\frac{1}{2} + \\alpha$",
+        ["B6", "audit4-8"],
+        {"opts": {"chemistry": False}},
+    ),
+    # audit4-9
+    (
+        "audit4-9-declaration-not-merged",
+        "$\\forall$ $\\flat$ $\\bf x$",
+        "$\\forall \\flat$ $\\bf x$",
+        ["B7", "audit4-9"],
+        {},
+    ),
+    (
+        "audit4-9-colour-and-size-not-merged",
+        "$\\color{red} a$ $b$ and $c$ $\\Large d$ $e$",
+        "$\\color{red} a$ $b$ and $c$ $\\Large d$ $e$",
+        ["B7", "audit4-9"],
+        {},
+    ),
+    (
+        "audit4-9-boldsymbol-still-merges",
+        "$\\boldsymbol{x}$ $\\times$ $y$",
+        "$\\boldsymbol{x} \\times y$",
+        ["B7", "audit4-9"],
+        {},
+    ),
+]

@@ -600,6 +600,88 @@
    ]
   },
   {
+   "id": "curated-audit4-1-gap-title-lo",
+   "input": "Gap: lo_0",
+   "functions": [
+    "canonicalize",
+    "fix"
+   ],
+   "tags": [
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-1-gap-title-lo-two-digits",
+   "input": "Gap: lo_12 needs a remedy",
+   "functions": [
+    "canonicalize",
+    "fix"
+   ],
+   "tags": [
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-1-two-letter-id-mid-sentence",
+   "input": "lo_0 is the id and ab_1 too",
+   "functions": [
+    "canonicalize",
+    "fix"
+   ],
+   "tags": [
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-1-snake-case-ids",
+   "input": "fallback_factual_error, comparison_table, v_avg, 6_A",
+   "functions": [
+    "canonicalize",
+    "fix"
+   ],
+   "tags": [
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-1-video-id",
+   "input": "Watch dQw4w9_WgXcQ and Ab_cD3_x",
+   "functions": [
+    "canonicalize",
+    "fix"
+   ],
+   "tags": [
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-space-before-closer",
+   "input": "Compute $2x + 3 $.",
+   "functions": [
+    "normalize"
+   ],
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-space-before-closer-power",
+   "input": "Find $3x^2 - 1 $ when x is 2",
+   "functions": [
+    "normalize"
+   ],
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
    "input": "$x^2$",
    "functions": [
     "canonicalize"

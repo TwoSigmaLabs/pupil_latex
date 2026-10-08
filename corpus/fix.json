@@ -803,6 +803,129 @@
     "B6",
     "audit3-script-group"
    ]
+  },
+  {
+   "id": "curated-audit4-1-gap-title",
+   "input": "Gap: lo_0",
+   "expected": "Gap: lo_0",
+   "tags": [
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-1-script-still-wraps",
+   "input": "Gap: lo_0 and x_0",
+   "expected": "Gap: lo_0 and $x_0$",
+   "tags": [
+    "B5",
+    "B7",
+    "audit4-1"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-space-before-closer",
+   "input": "Compute $2x + 3 $.",
+   "expected": "Compute $2x + 3$.",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-6-prices-still-currency",
+   "input": "Prices: $10, $20 and $5 and $10",
+   "expected": "Prices: \\$10, \\$20 and \\$5 and \\$10",
+   "tags": [
+    "B3",
+    "audit4-6"
+   ]
+  },
+  {
+   "id": "curated-audit4-8-ce-wrapped-by-default",
+   "input": "\\ce{H2O}",
+   "expected": "$\\ce{H2O}$",
+   "tags": [
+    "B6",
+    "audit4-8"
+   ]
+  },
+  {
+   "id": "curated-audit4-8-ce-left-bare-without-chemistry",
+   "input": "\\ce{H2O}",
+   "expected": "\\ce{H2O}",
+   "tags": [
+    "B6",
+    "B7",
+    "audit4-8"
+   ],
+   "opts": {
+    "chemistry": false
+   }
+  },
+  {
+   "id": "curated-audit4-8-pu-left-bare-without-chemistry",
+   "input": "\\pu{5 kg}",
+   "expected": "\\pu{5 kg}",
+   "tags": [
+    "B6",
+    "B7",
+    "audit4-8"
+   ],
+   "opts": {
+    "chemistry": false
+   }
+  },
+  {
+   "id": "curated-audit4-8-other-math-still-wrapped-without-chemistry",
+   "input": "\\ce{H2O} has H₂O and x≤5",
+   "expected": "\\ce{H2O} has $\\text{H}_{2}\\text{O}$ and $x\\leq5$",
+   "tags": [
+    "B6",
+    "audit4-8"
+   ],
+   "opts": {
+    "chemistry": false
+   }
+  },
+  {
+   "id": "curated-audit4-8-pure-math-without-chemistry",
+   "input": "\\frac{1}{2} + \\alpha",
+   "expected": "$\\frac{1}{2} + \\alpha$",
+   "tags": [
+    "B6",
+    "audit4-8"
+   ],
+   "opts": {
+    "chemistry": false
+   }
+  },
+  {
+   "id": "curated-audit4-9-declaration-not-merged",
+   "input": "$\\forall$ $\\flat$ $\\bf x$",
+   "expected": "$\\forall \\flat$ $\\bf x$",
+   "tags": [
+    "B7",
+    "audit4-9"
+   ]
+  },
+  {
+   "id": "curated-audit4-9-colour-and-size-not-merged",
+   "input": "$\\color{red} a$ $b$ and $c$ $\\Large d$ $e$",
+   "expected": "$\\color{red} a$ $b$ and $c$ $\\Large d$ $e$",
+   "tags": [
+    "B7",
+    "audit4-9"
+   ]
+  },
+  {
+   "id": "curated-audit4-9-boldsymbol-still-merges",
+   "input": "$\\boldsymbol{x}$ $\\times$ $y$",
+   "expected": "$\\boldsymbol{x} \\times y$",
+   "tags": [
+    "B7",
+    "audit4-9"
+   ]
   }
  ]
 }

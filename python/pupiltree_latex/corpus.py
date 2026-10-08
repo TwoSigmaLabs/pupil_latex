@@ -57,10 +57,11 @@ def run(function: str, case: dict) -> Any:
         return repair(inp, guess_whitespace=case.get("variant") != "hard")
     if function == "normalize":
         return normalize(inp)
+    options = case.get("opts") or {}
     if function == "canonicalize":
-        return canonicalize(inp)
+        return canonicalize(inp, **options)
     if function == "fix":
-        return fix(inp)
+        return fix(inp, **options)
     if function == "segment":
         return [dict(s) for s in segment(inp)]
     if function == "to_plain":

@@ -759,7 +759,7 @@ SEGMENT = [
 ]
 
 TO_PLAIN = [
-    ("frac-and-script", "$\\frac{1}{2}mv^{2}$", "(1)/(2)mv²", ["B8"], {}),
+    ("frac-and-script", "$\\frac{1}{2}mv^{2}$", "(1/2)mv²", ["B8", "audit4-3"], {}),
     ("vec-text-style", "$\\vec{F} = m\\vec{a}$", "F = ma", ["B8"], {}),
     (
         "vec-pdf-style",
@@ -780,8 +780,8 @@ TO_PLAIN = [
     (
         "nested-frac",
         "$\\frac{\\frac{1}{2}}{3}$",
-        "((1)/(2))/(3)",
-        ["B8", "backend#1599"],
+        "(1/2)/3",
+        ["B8", "backend#1599", "audit4-3"],
         {},
     ),
     ("greek-and-ops", "$\\alpha \\times \\beta \\leq \\pi$", "α × β ≤ π", ["B8"], {}),
@@ -1680,6 +1680,548 @@ MUST_NOT_CHANGE += [
         "cost $5 and {5 more $",
         ["canonicalize", "repair"],
         ["B3", "B7", "audit3-brace-close"],
+    ),
+]
+
+
+# ---------------------------------------------------------------------------
+# Audit round 4 (2026-10-08, v1.1.1): regressions found when the library was
+# compared with the projects' own LaTeX code. Tags `audit4-<n>`, one per
+# item of the comparison report. `fix` cases live in tools/curated_fix.py.
+# ---------------------------------------------------------------------------
+
+# audit4-1: a word-like base before `_` is an identifier, not a subscript.
+CANONICALIZE += [
+    (
+        "audit4-1-single-letter-bases-still-wrap",
+        "x_0 and v_1 and a_n",
+        "$x_0$ and $v_1$ and $a_n$",
+        ["B5", "audit4-1"],
+        {},
+    ),
+    (
+        "audit4-1-chemistry-capitals-still-wrap",
+        "H_2O and CO_2",
+        "$H_2O$ and $CO_2$",
+        ["B5", "audit4-1"],
+        {},
+    ),
+]
+
+MUST_NOT_CHANGE += [
+    (
+        "audit4-1-gap-title-lo",
+        "Gap: lo_0",
+        ["canonicalize", "fix"],
+        ["B7", "audit4-1"],
+    ),
+    (
+        "audit4-1-gap-title-lo-two-digits",
+        "Gap: lo_12 needs a remedy",
+        ["canonicalize", "fix"],
+        ["B7", "audit4-1"],
+    ),
+    (
+        "audit4-1-two-letter-id-mid-sentence",
+        "lo_0 is the id and ab_1 too",
+        ["canonicalize", "fix"],
+        ["B7", "audit4-1"],
+    ),
+    (
+        "audit4-1-snake-case-ids",
+        "fallback_factual_error, comparison_table, v_avg, 6_A",
+        ["canonicalize", "fix"],
+        ["B7", "audit4-1"],
+    ),
+    (
+        "audit4-1-video-id",
+        "Watch dQw4w9_WgXcQ and Ab_cD3_x",
+        ["canonicalize", "fix"],
+        ["B7", "audit4-1"],
+    ),
+]
+
+# audit4-2: braces in prose are text, not grouping.
+# audit4-3: a fraction of two single tokens reads `22/7`.
+# audit4-4: a lesson-script label at a line start is kept.
+# audit4-7: `compare` style, one form for a typed and a LaTeX answer.
+# audit4-10: U+2212 is kept by `text`/`pdf` and folded only by `compare`.
+TO_PLAIN += [
+    ("audit4-2-set-literal", "A = {1, 2, 3}", "A = {1, 2, 3}", ["B8", "audit4-2"], {}),
+    (
+        "audit4-2-set-literal-no-spaces",
+        "A = {1,2,3} and $x^2$",
+        "A = {1,2,3} and x²",
+        ["B8", "audit4-2"],
+        {},
+    ),
+    (
+        "audit4-2-set-in-sentence",
+        "the set {a, b} has 2 elements",
+        "the set {a, b} has 2 elements",
+        ["B8", "audit4-2"],
+        {},
+    ),
+    (
+        "audit4-2-set-in-sentence-pdf",
+        "the set {a, b} has $2$ elements",
+        "the set {a, b} has 2 elements",
+        ["B8", "audit4-2"],
+        {"style": "pdf"},
+    ),
+    (
+        "audit4-2-mindmap-json",
+        '\\mindmap: {"central": "Cell", "branches": ["Nucleus"]}',
+        '\\mindmap: {"central": "Cell", "branches": ["Nucleus"]}',
+        ["B8", "audit4-2", "audit4-4"],
+        {},
+    ),
+    (
+        "audit4-2-command-argument-braces-still-read",
+        "\\textbf{Set} {1, 2} and \\frac{a+b}{2}",
+        "Set {1, 2} and (a+b)/2",
+        ["B8", "audit4-2", "audit4-3"],
+        {},
+    ),
+    (
+        "audit4-2-symbols-inside-prose-braces",
+        "the set {\\alpha, \\beta}",
+        "the set {α, β}",
+        ["B8", "audit4-2"],
+        {},
+    ),
+    (
+        "audit4-2-math-braces-still-grouping",
+        "$x^{2} + {y}$ and {1, 2}",
+        "x² + y and {1, 2}",
+        ["B8", "audit4-2"],
+        {},
+    ),
+    (
+        "audit4-2-escaped-braces-in-math",
+        "$\\{1, 2\\}$",
+        "{1, 2}",
+        ["B8", "audit4-2"],
+        {},
+    ),
+    ("audit4-3-simple-fraction", "$\\frac{22}{7}$", "22/7", ["B8", "audit4-3"], {}),
+    (
+        "audit4-3-simple-fraction-pdf",
+        "$\\dfrac{x}{y}$",
+        "x/y",
+        ["B8", "audit4-3"],
+        {"style": "pdf"},
+    ),
+    (
+        "audit4-3-compound-fraction",
+        "$\\frac{a+b}{c+d}$",
+        "(a+b)/(c+d)",
+        ["B8", "audit4-3"],
+        {},
+    ),
+    (
+        "audit4-3-mixed-fraction",
+        "$\\frac{x}{y+1}$ and $\\frac{2a}{3}$",
+        "x/(y+1) and (2a)/3",
+        ["B8", "audit4-3"],
+        {},
+    ),
+    (
+        "audit4-3-decimal-and-greek",
+        "$\\frac{3.5}{\\pi}$",
+        "3.5/π",
+        ["B8", "audit4-3"],
+        {},
+    ),
+    (
+        "audit4-3-fraction-touching-a-term",
+        "$2\\frac{1}{2}$ and $\\frac{1}{2}x$",
+        "2(1/2) and (1/2)x",
+        ["B8", "audit4-3"],
+        {},
+    ),
+    # The harvested Backend cases below expected `(a)/(b)` and moved to
+    # corpus/review/; these pin the same inputs under the 1.1.1 rule.
+    (
+        "audit4-3-root-over-number",
+        "$\\frac{\\sqrt{3}}{2}$",
+        "(√3)/2",
+        ["B8", "audit4-3", "backend#1599"],
+        {},
+    ),
+    (
+        "audit4-3-deep-nesting",
+        "$\\frac{a}{\\frac{b}{\\frac{c}{\\frac{d}{e}}}}$",
+        "a/(b/(c/(d/e)))",
+        ["B8", "audit4-3", "backend#1599"],
+        {},
+    ),
+    (
+        "audit4-3-limit",
+        "$\\lim_{x\\to 0}\\frac{\\sin x}{x}$",
+        "lim_(x→0)(sin x)/x",
+        ["B8", "audit4-3", "backend#1599"],
+        {},
+    ),
+    (
+        "audit4-3-photoelectric",
+        "$\\frac{\\sqrt{2m(\\frac{hc}{\\lambda}-\\phi)}}{eB}$",
+        "(√(2m((hc)/λ-φ)))/(eB)",
+        ["B8", "audit4-3", "backend#1599"],
+        {},
+    ),
+    (
+        "audit4-3-unbraced-and-dfrac",
+        "$\\frac12$ and $\\dfrac{3}{4}$",
+        "1/2 and 3/4",
+        ["B8", "audit4-3", "backend#1599"],
+        {},
+    ),
+    (
+        "audit4-3-tts-unchanged",
+        "$\\frac{22}{7}$",
+        "22 over 7",
+        ["B8", "audit4-3"],
+        {"style": "tts"},
+    ),
+    (
+        "audit4-4-instruction-label",
+        "\\instruction: read the text",
+        "\\instruction: read the text",
+        ["B8", "audit4-4"],
+        {},
+    ),
+    (
+        "audit4-4-labels-on-each-line",
+        "\\heading: Intro\n  \\notes: $x^2$ is \\alpha",
+        "\\heading: Intro\n \\notes: x² is α",
+        ["B8", "audit4-4"],
+        {},
+    ),
+    (
+        "audit4-4-label-pdf-drops-backslash",
+        "\\instruction: read $\\frac{1}{2}$",
+        "instruction: read 1/2",
+        ["B8", "audit4-4"],
+        {"style": "pdf"},
+    ),
+    (
+        "audit4-4-label-tts-drops-backslash",
+        "\\instruction: read the text",
+        "instruction: read the text",
+        ["B8", "audit4-4"],
+        {"style": "tts"},
+    ),
+    (
+        "audit4-4-mid-line-command-still-converted",
+        "so x \\in A: yes",
+        "so x ∈ A: yes",
+        ["B8", "audit4-4"],
+        {},
+    ),
+    (
+        "audit4-7-compare-typed-fraction",
+        "1/3",
+        "1/3",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-latex-fraction",
+        "$\\frac{1}{3}$",
+        "1/3",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-typed-power",
+        "x^2",
+        "x^2",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-latex-power",
+        "$x^2$",
+        "x^2",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-unicode-power",
+        "x²",
+        "x^2",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-typed-chem",
+        "H_2O",
+        "H_2O",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-latex-chem",
+        "$H_2O$",
+        "H_2O",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-text-chem",
+        "$\\text{H}_{2}\\text{O}$",
+        "H_2O",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-unicode-chem",
+        "H₂O",
+        "H_2O",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-typed-negative-power",
+        "10^-3",
+        "10^-3",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-latex-negative-power",
+        "$10^{-3}$",
+        "10^-3",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-typed-degree",
+        "90°",
+        "90°",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-latex-degree",
+        "$90^\\circ$",
+        "90°",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-unicode-minus",
+        "−3",
+        "-3",
+        ["B8", "audit4-7", "audit4-10"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-ascii-minus",
+        "-3",
+        "-3",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-spacing-and-times",
+        "  2 \\times 3 =  6 ",
+        "2*3=6",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-typed-times",
+        "2*3 = 6",
+        "2*3=6",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    (
+        "audit4-7-compare-words-kept",
+        "New  Delhi",
+        "New Delhi",
+        ["B8", "audit4-7"],
+        {"style": "compare"},
+    ),
+    ("audit4-10-text-keeps-minus", "−3", "−3", ["B8", "audit4-10"], {}),
+    (
+        "audit4-10-text-keeps-minus-with-math",
+        "$x$ = −3",
+        "x = −3",
+        ["B8", "audit4-10"],
+        {},
+    ),
+    (
+        "audit4-10-pdf-keeps-minus",
+        "$x = −3$",
+        "x = −3",
+        ["B8", "audit4-10"],
+        {"style": "pdf"},
+    ),
+]
+
+# audit4-5: ANSI colour codes are removed whole.
+# audit4-12: the read path is `repair(guessWhitespace=False)`; the opt-in
+# `guessWhitespace=True` restores TAB/LF/CR only before an unambiguous command.
+REPAIR += [
+    (
+        "audit4-5-ansi-bold",
+        "\x1b[1mRecall Prompt 1:\x1b[0m",
+        "Recall Prompt 1:",
+        ["B1", "audit4-5"],
+        {},
+    ),
+    (
+        "audit4-5-ansi-bold-read-path",
+        "\x1b[1mRecall Prompt 1:\x1b[0m and $x$",
+        "Recall Prompt 1: and $x$",
+        ["B1", "audit4-5"],
+        {"variant": "hard"},
+    ),
+    (
+        "audit4-5-ansi-colour-params",
+        "\x1b[38;5;196mred\x1b[39m text \x1b[K",
+        "red text ",
+        ["B1", "audit4-5"],
+        {},
+    ),
+    (
+        "audit4-5-lone-escape-dropped",
+        "a\x1bb [1m",
+        "ab [1m",
+        ["B1", "audit4-5"],
+        {},
+    ),
+    (
+        "audit4-12-read-path-keeps-tab-text",
+        "\text{H}_2O",
+        "\text{H}_2O",
+        ["B1", "B7", "audit4-12"],
+        {"variant": "hard"},
+    ),
+    (
+        "audit4-12-opt-in-restores-tab-text",
+        "\text{H}_2O and \times and \theta and \tan x",
+        "\\text{H}_2O and \\times and \\theta and \\tan x",
+        ["B1", "audit4-12"],
+        {},
+    ),
+    (
+        "audit4-12-read-path-restores-form-feed",
+        "Area \x0crac{1}{2}",
+        "Area \\frac{1}{2}",
+        ["B1", "audit4-12"],
+        {"variant": "hard"},
+    ),
+    (
+        "audit4-12-opt-in-restores-lf-rightarrow-in-math",
+        "$x \nightarrow y$",
+        "$x \\rightarrow y$",
+        ["B1", "audit4-12"],
+        {},
+    ),
+    (
+        "audit4-12-read-path-keeps-lf",
+        "$x \nightarrow y$",
+        "$x \nightarrow y$",
+        ["B1", "B7", "audit4-12"],
+        {"variant": "hard"},
+    ),
+    (
+        "audit4-12-opt-in-keeps-ambiguous-newline",
+        "line one\nu = 5",
+        "line one\nu = 5",
+        ["B1", "B7", "audit4-12"],
+        {},
+    ),
+]
+
+# audit4-6: `$2x + 3 $` (space before the closer) is a formula; amounts are
+# still currency.
+NORMALIZE += [
+    (
+        "audit4-6-prices-list",
+        "Prices: $10, $20",
+        "Prices: \\$10, \\$20",
+        ["B3", "audit4-6"],
+        {},
+    ),
+    ("audit4-6-two-amounts", "$5 and $10", "\\$5 and \\$10", ["B3", "audit4-6"], {}),
+    (
+        "audit4-6-prose-before-padded-dollar",
+        "costs $5 and x $ more",
+        "costs \\$5 and x $ more",
+        ["B3", "audit4-6"],
+        {},
+    ),
+    (
+        "audit4-6-closer-before-digit-is-currency",
+        "pay $2x + 3 $4 now",
+        "pay \\$2x + 3 \\$4 now",
+        ["B3", "audit4-6"],
+        {},
+    ),
+]
+
+# `normalize` keeps the dollars (no `\$`); `canonicalize`/`fix` trim the
+# padding so every renderer (segment's pandoc closer rule included) pairs it.
+MUST_NOT_CHANGE += [
+    (
+        "audit4-6-space-before-closer",
+        "Compute $2x + 3 $.",
+        ["normalize"],
+        ["B3", "audit4-6"],
+    ),
+    (
+        "audit4-6-space-before-closer-power",
+        "Find $3x^2 - 1 $ when x is 2",
+        ["normalize"],
+        ["B3", "audit4-6"],
+    ),
+]
+
+CANONICALIZE += [
+    (
+        "audit4-6-space-before-closer-trimmed",
+        "Compute $2x + 3 $.",
+        "Compute $2x + 3$.",
+        ["B3", "audit4-6"],
+        {},
+    ),
+    (
+        "audit4-6-space-before-closer-power-trimmed",
+        "Find $3x^2 - 1 $ when x is 2",
+        "Find $3x^2 - 1$ when x is 2",
+        ["B3", "audit4-6"],
+        {},
+    ),
+    (
+        "audit4-6-amounts-not-trimmed",
+        "I paid $ 5 and got $ 3 back; Prices: $10, $20",
+        "I paid $ 5 and got $ 3 back; Prices: $10, $20",
+        ["B3", "B7", "audit4-6"],
+        {},
+    ),
+]
+
+SEGMENT += [
+    (
+        "audit4-6-segment-keeps-pandoc-closer-rule",
+        "Compute $2x + 3 $.",
+        [
+            {
+                "kind": "text",
+                "display": False,
+                "value": "Compute $2x + 3 $.",
+                "raw": "Compute $2x + 3 $.",
+            },
+        ],
+        ["B3", "audit4-6"],
+        {
+            "note": "segment keeps the pandoc rule (no closer after a space); fix trims the padding instead"
+        },
     ),
 ]
 

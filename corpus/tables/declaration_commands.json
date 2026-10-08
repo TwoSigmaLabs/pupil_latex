@@ -1,0 +1,30 @@
+{
+ "version": "1.1.0",
+ "name": "declaration_commands",
+ "value": [
+  "bf",
+  "it",
+  "rm",
+  "sf",
+  "tt",
+  "cal",
+  "sl",
+  "em",
+  "mit",
+  "color",
+  "displaystyle",
+  "textstyle",
+  "scriptstyle",
+  "scriptscriptstyle",
+  "tiny",
+  "scriptsize",
+  "footnotesize",
+  "small",
+  "normalsize",
+  "large",
+  "Large",
+  "LARGE",
+  "huge",
+  "Huge"
+ ]
+}

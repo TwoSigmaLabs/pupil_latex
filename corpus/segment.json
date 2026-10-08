@@ -212,6 +212,23 @@
    "tags": []
   },
   {
+   "id": "curated-audit4-6-segment-keeps-pandoc-closer-rule",
+   "input": "Compute $2x + 3 $.",
+   "expected": [
+    {
+     "kind": "text",
+     "display": false,
+     "value": "Compute $2x + 3 $.",
+     "raw": "Compute $2x + 3 $."
+    }
+   ],
+   "tags": [
+    "B3",
+    "audit4-6"
+   ],
+   "note": "segment keeps the pandoc rule (no closer after a space); fix trims the padding instead"
+  },
+  {
    "id": "worksheet-MathText-test-0001",
    "source": "worksheet.ai/frontend/src/components/inclasspaper/MathText.test.js::KaTeX renders %s",
    "via": "renderMath(tex, display=false)",

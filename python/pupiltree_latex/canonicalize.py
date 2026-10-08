@@ -24,6 +24,7 @@ from .commands import (
     STRUCTURAL_COMMANDS,
 )
 from .mojibake import fix_mojibake_ftfy
+from .normalize import is_formula
 from .repair import repair
 from .segment import segment
 from .unicode_math import (
@@ -264,13 +265,21 @@ def _has_dollar_inside_braces(text: str) -> bool:
     return False
 
 
-def _wrap_pure_math_short_strings(text: str) -> str:
+_CHEMISTRY_CMD_RE = re.compile(r"\\(?:ce|pu)(?![A-Za-z])")
+
+
+def _wrap_pure_math_short_strings(text: str, chemistry: bool = True) -> str:
     if len(text) > 200 or "$$" in text or not _ANY_LATEX_CMD_RE.search(text):
         return text
     if _has_dollar_inside_braces(text):
         return text
     # A lesson-script line (`\teacher: …`) is prose, however short.
     if _SCRIPT_LABEL_RE.search(text):
+        return text
+    # `\ce`/`\pu` need KaTeX's mhchem extension. A caller whose renderer does
+    # not load it (Fillers: KaTeX core only) asks for `chemistry=False`, and
+    # the command stays prose instead of becoming a red error.
+    if not chemistry and _CHEMISTRY_CMD_RE.search(text):
         return text
     # An unpaired `$` means the author's spans are broken; stripping and
     # re-wrapping would not converge (`$ H₂` → `$ $…$` → …).
@@ -335,6 +344,11 @@ def _looks_like_identifier(s: str) -> bool:
         return True
     base, rest = s.split("_", 1)
     if len(base) >= 3:
+        return True
+    # A two-letter lowercase base is a word or an id prefix (`lo_0` gap
+    # titles, `id_1`), not a variable: math subscripts sit on one letter
+    # (`x_0`, `v_1`, `a_n`) and chemistry on capitals (`H_2O`, `CO_2`).
+    if len(base) == 2 and base.isalpha() and base.isascii() and base.islower():
         return True
     # A class name: digits, underscore, 1–4 capital letters (`10_A`, `6_B`,
     # `12_PCM`). Math never writes a numeric base with a capital subscript.
@@ -470,7 +484,7 @@ def _trim_padded_line(line: str) -> str:
         if (
             not core
             or core == inner
-            or not _looks_like_padded_math(core)
+            or not (_looks_like_padded_math(core) or is_formula(core))
             # A dollar glued to a word or number outside the pair
             # (`$x = $y`, `wait$ … $now`) reads as currency or a typo.
             or (b + 1 < len(line) and line[b + 1].isalnum())
@@ -649,8 +663,11 @@ def _stash_token(idx: int) -> str:
     return _STASH_OPEN + chr(_STASH_BASE + idx) + _STASH_CLOSE
 
 
-def canonicalize(text: Any) -> Any:
-    """Normalize a fresh model string to the canonical form (spec §3)."""
+def canonicalize(text: Any, *, chemistry: bool = True) -> Any:
+    """Normalize a fresh model string to the canonical form (spec §3).
+
+    ``chemistry=False`` never puts a bare ``\\ce{…}`` / ``\\pu{…}`` into a new
+    math span (for renderers without mhchem)."""
     if not isinstance(text, str) or not text:
         return text
     if _URL_RE.match(text):
@@ -688,7 +705,7 @@ def canonicalize(text: Any) -> Any:
     text = wrap_bare_unicode_math(text)
     text = _wrap_bare_latex_commands(text)
     text = _wrap_bare_scripts(text)
-    text = _wrap_pure_math_short_strings(text)
+    text = _wrap_pure_math_short_strings(text, chemistry)
     # Step 14 left the symbols inside bare script / command argument groups
     # (`e^{iπ}`, `\frac{π}{2}`) to steps 15–17, which put the whole group in
     # one span. A group none of them took is prose; its symbols are wrapped
@@ -709,7 +726,7 @@ def canonicalize(text: Any) -> Any:
     return text
 
 
-def canonicalize_deep(obj: Any, _key_hint: str = "") -> Any:
+def canonicalize_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
     """`canonicalize` over every content string in a JSON-like document.
 
     Skips non-content keys and URL-shaped values (CONTRACT §5); list items
@@ -720,11 +737,17 @@ def canonicalize_deep(obj: Any, _key_hint: str = "") -> Any:
     if isinstance(obj, str):
         if is_non_content_key(_key_hint) or is_url_or_path_string(obj):
             return obj
-        return canonicalize(obj)
+        return canonicalize(obj, chemistry=chemistry)
     if isinstance(obj, dict):
-        return {k: canonicalize_deep(v, _key_hint=k) for k, v in obj.items()}
+        return {
+            k: canonicalize_deep(v, _key_hint=k, chemistry=chemistry)
+            for k, v in obj.items()
+        }
     if isinstance(obj, list):
-        return [canonicalize_deep(item, _key_hint=_key_hint) for item in obj]
+        return [
+            canonicalize_deep(item, _key_hint=_key_hint, chemistry=chemistry)
+            for item in obj
+        ]
     if isinstance(obj, datetime.datetime):
         if obj.tzinfo is None:
             obj = obj.replace(tzinfo=datetime.timezone.utc)
