@@ -25,6 +25,7 @@ import 'canonicalize.dart';
 import 'guarded_regexp.dart';
 import 'normalize.dart';
 import 'segment.dart';
+import 'spans.dart';
 import 'tables.g.dart';
 import 'text_util.dart';
 import 'unicode_math.dart';
@@ -484,7 +485,42 @@ String unwrapTypographicSpans(String text) {
     }
     out.write(seg.raw);
   }
-  return changed ? out.toString() : text;
+  return _unwrapPaddedTypographic(changed ? out.toString() : text);
+}
+
+// `wait$ \ldots $now`: a padded pair that `segment` does not read as math
+// (whitespace right inside a delimiter). The dollars go and the padding
+// stays (`wait … now`); `canonicalize` would otherwise wrap the bare command
+// again inside the stray dollars (`wait$ $\ldots$ $now`).
+final _paddedTypographic =
+    RegExp(r'\$([ \t]*)\\(ldots|dots|textellipsis|textmu)([ \t]*)\$');
+
+String _unwrapPaddedTypographic(String text) {
+  if (!text.contains(r'$')) return text;
+  List<bool>? mask;
+  final out = StringBuffer();
+  var last = 0;
+  var changed = false;
+  for (final m in _paddedTypographic.allMatches(text)) {
+    final start = m.start;
+    final end = m.end;
+    if (start > 0 && (text[start - 1] == r'\' || text[start - 1] == r'$')) {
+      continue;
+    }
+    if (end < text.length && text[end] == r'$') continue;
+    mask ??= mathMask(text);
+    if (mask[start]) continue;
+    out
+      ..write(text.substring(last, start))
+      ..write(m[1])
+      ..write(kTypographicSpans['\\${m[2]}'])
+      ..write(m[3]);
+    last = end;
+    changed = true;
+  }
+  if (!changed) return text;
+  out.write(text.substring(last));
+  return out.toString();
 }
 
 /// Repair, normalise, canonicalise, wrap what is still bare, escape what
