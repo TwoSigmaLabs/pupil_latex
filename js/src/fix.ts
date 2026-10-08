@@ -19,7 +19,7 @@
 
 import { canonicalize, mapContentStrings } from "./canonicalize.js";
 import type { CanonicalizeOptions } from "./canonicalize.js";
-import { isAsciiDigit, matchAt } from "./chars.js";
+import { isAsciiDigit, matchAt, pyStrip } from "./chars.js";
 import { padSpan, wrapUnicodeChemistry } from "./chemistry.js";
 import { SYMBOL_COMMANDS } from "./commands.js";
 import {
@@ -415,6 +415,43 @@ export function mergeAdjacentMath(text: unknown): unknown {
   return out.join("");
 }
 
+// A span whose whole body is one of these is typography, not maths (tag
+// `v140-a7`): `leukocytes$\ldots$` → `leukocytes…`. `\textmu` becomes
+// `$\mu$`, not a bare `µ`: `canonicalize` wraps a bare `µ` as `$\mu$`, so
+// that is the fixed point (`$\cdots$` stays for the same reason).
+export const TYPOGRAPHIC_SPANS: Readonly<Record<string, string>> = {
+  "\\ldots": "…",
+  "\\dots": "…",
+  "\\textellipsis": "…",
+  "\\textmu": "$\\mu$",
+};
+
+/**
+ * Replace each math span whose trimmed body is a key of `TYPOGRAPHIC_SPANS`
+ * (inline or display) by its value; every other span and all prose are
+ * copied as written.
+ */
+export function unwrapTypographicSpans<T>(text: T): T;
+export function unwrapTypographicSpans(text: unknown): unknown {
+  if (typeof text !== "string" || !text.includes("\\")) return text;
+  const names = Object.keys(TYPOGRAPHIC_SPANS);
+  if (!names.some((name) => text.includes(name))) return text;
+  let out = "";
+  let changed = false;
+  for (const seg of segment(text)) {
+    if (seg.kind === "math") {
+      const key = pyStrip(seg.value);
+      if (Object.prototype.hasOwnProperty.call(TYPOGRAPHIC_SPANS, key)) {
+        out += TYPOGRAPHIC_SPANS[key];
+        changed = true;
+        continue;
+      }
+    }
+    out += seg.raw;
+  }
+  return changed ? out : text;
+}
+
 // ---------------------------------------------------------------------------
 // The one call
 // ---------------------------------------------------------------------------
@@ -426,7 +463,10 @@ export function mergeAdjacentMath(text: unknown): unknown {
 export function fix<T>(text: T, options?: CanonicalizeOptions): T;
 export function fix(text: unknown, options: CanonicalizeOptions = {}): unknown {
   if (typeof text !== "string" || !text) return text;
-  let out: string = canonicalize(normalize(text), options);
+  let out: string = canonicalize(
+    unwrapTypographicSpans(normalize(text)),
+    options,
+  );
   out = wrapBareSymbolCommands(out);
   out = wrapUnicodeChemistry(out);
   out = wrapUnicodeScripts(out);

@@ -16,16 +16,24 @@ import {
   pyStrip,
   rstripChars,
 } from "./chars.js";
-import {
-  currencyPositions,
-  trimPaddedSpansKeepCurrency,
-} from "./normalize.js";
+import { currencyPositions, trimPaddedSpansKeepCurrency } from "./normalize.js";
 import { repair } from "./repair.js";
 import { segment } from "./segment.js";
 import { mathMask } from "./spans.js";
-import { KATEX_COMMANDS, LATEX_CMD_MAP, SCRIPT_LABELS } from "./tables.g.js";
+import {
+  fixMojibakeCore,
+  fixMojibakeTable,
+  unescapeHtmlEntities,
+} from "./mojibake.js";
+import {
+  COMPARE_FOLD,
+  ELEMENT_SYMBOLS,
+  KATEX_COMMANDS,
+  LATEX_CMD_MAP,
+  SCRIPT_LABELS,
+} from "./tables.g.js";
 
-export { LATEX_CMD_MAP };
+export { COMPARE_FOLD, ELEMENT_SYMBOLS, LATEX_CMD_MAP };
 
 function charMap(from: string, to: string): ReadonlyMap<string, string> {
   const a = [...from];
@@ -191,6 +199,124 @@ function parkCurrencyDollars(s: string): string {
   }
   return chars.join("");
 }
+// (`\$5\)` is an amount inside `\(…\)`: a closing delimiter is not a unit.)
+const ESCAPED_CUT_OFF_DOLLAR_RE =
+  /\\\$(?=[0-9]+(?:[.,][0-9]+)*(?:[A-Za-z^_{]|\\[A-Za-z]))/g;
+
+const ELEMENTS: ReadonlySet<string> = ELEMENT_SYMBOLS;
+const SUBSCRIPT_DIGITS = "₀₁₂₃₄₅₆₇₈₉";
+
+function isAsciiWordChar(ch: string): boolean {
+  return (
+    (ch >= "a" && ch <= "z") ||
+    (ch >= "A" && ch <= "Z") ||
+    (ch >= "0" && ch <= "9") ||
+    ch === "_"
+  );
+}
+
+function isDigitChar(ch: string | undefined): boolean {
+  return ch !== undefined && ch >= "0" && ch <= "9";
+}
+
+/** A digit subscript at `i` (`_2`, `_{12}`): its digits and the index after it. */
+function chemDigits(s: string, i: number): [string, number] {
+  if (s[i] !== "_") return ["", i];
+  const j = i + 1;
+  if (s[j] === "{") {
+    let k = j + 1;
+    while (isDigitChar(s[k])) k++;
+    if (k > j + 1 && s[k] === "}") return [s.slice(j + 1, k), k + 1];
+    return ["", i];
+  }
+  let k = j;
+  while (isDigitChar(s[k])) k++;
+  return k > j ? [s.slice(j, k), k] : ["", i];
+}
+
+/** Index after the element symbol at `i` (two letters first), or -1. */
+function chemElement(s: string, i: number): number {
+  const c = s[i];
+  if (c !== undefined && c >= "A" && c <= "Z") {
+    const d = s[i + 1];
+    if (d !== undefined && d >= "a" && d <= "z" && ELEMENTS.has(c + d))
+      return i + 2;
+    if (ELEMENTS.has(c)) return i + 1;
+  }
+  return -1;
+}
+
+/** Element symbols, `(…)` groups and digit subscripts from `i`. */
+function chemToken(s: string, i: number, depth = 0): [string, number, number] {
+  let out = "";
+  let subs = 0;
+  while (i < s.length) {
+    if (s[i] === "(" && depth === 0) {
+      const [inner, j, innerSubs] = chemToken(s, i + 1, 1);
+      if (!inner || s[j] !== ")") break;
+      out += "(" + inner + ")";
+      subs += innerSubs;
+      i = j + 1;
+    } else {
+      const j = chemElement(s, i);
+      if (j < 0) break;
+      out += s.slice(i, j);
+      i = j;
+    }
+    const [digits, j] = chemDigits(s, i);
+    if (digits) {
+      for (const d of digits) out += SUBSCRIPT_DIGITS[d.charCodeAt(0) - 48];
+      subs++;
+      i = j;
+    }
+  }
+  return [out, i, subs];
+}
+
+/**
+ * `H_2SO_4` → `H₂SO₄`, `Ca(OH)_2` → `Ca(OH)₂` in prose (tag `v140-a9`).
+ * A run of element symbols (`ELEMENT_SYMBOLS`) and `(…)` groups with digit
+ * subscripts, at least one; no ASCII letter, digit, `_` or `\` before it,
+ * no ASCII letter, digit or `_` after it, never inside a math span. So
+ * `lo_0`, `v_avg`, `E_1`, `fallback_factual_error` and `XH_2O_id` stay.
+ */
+export function bareChemistryToUnicode(text: string): string {
+  if (!text.includes("_")) return text;
+  let mask: boolean[] | null = null;
+  let out = "";
+  let last = 0;
+  let changed = false;
+  let i = 0;
+  const n = text.length;
+  while (i < n) {
+    const ch = text[i];
+    if (!((ch >= "A" && ch <= "Z") || ch === "(")) {
+      i++;
+      continue;
+    }
+    const prev = i > 0 ? text[i - 1] : "";
+    if (prev && (isAsciiWordChar(prev) || prev === "\\")) {
+      i++;
+      continue;
+    }
+    const [converted, end, subs] = chemToken(text, i);
+    const nxt = end < n ? text[end] : "";
+    if (!subs || (nxt && isAsciiWordChar(nxt))) {
+      i++;
+      continue;
+    }
+    if (mask === null) mask = mathMask(text);
+    if (mask[i]) {
+      i = end;
+      continue;
+    }
+    out += text.slice(last, i) + converted;
+    last = i = end;
+    changed = true;
+  }
+  return changed ? out + text.slice(last) : text;
+}
+
 // A literal `\n` escape that survived into the stored string. Only fires
 // before an uppercase letter or whitespace, so the real commands that start
 // with "n" (\nu, \neq, \nabla, \notin) are untouched.
@@ -385,8 +511,13 @@ const SIMPLE_FRACTION_PART_RE =
  * A numerator or denominator: a single token or one parenthesised group
  * stays bare; anything compound gets parentheses (`(a+b)`).
  */
-function fractionPart(part: string): string {
+// A negative number is a simple NUMERATOR too: `\frac{-1}{4}` → `-1/4`
+// (tag `v140-a5`); a negative denominator keeps its parentheses (`1/(-4)`).
+const SIGNED_NUMBER_RE = /^[-−][0-9]+(?:\.[0-9]+)?$/;
+
+function fractionPart(part: string, numerator = false): string {
   const core = pyStrip(part);
+  if (numerator && SIGNED_NUMBER_RE.test(core)) return core;
   if (SIMPLE_FRACTION_PART_RE.test(core) || isWrapped(core)) return core;
   return "(" + part + ")";
 }
@@ -405,7 +536,9 @@ function fractionNeedsParens(out: string[], s: string, i: number): boolean {
       break;
     }
   }
-  const nxt = charAt(s, i);
+  let nxt = charAt(s, i);
+  // A closing `\)` / `\]` ends the formula; it is not a term (`v140-a3`).
+  if (nxt === "\\" && (s[i + 1] === ")" || s[i + 1] === "]")) nxt = "";
   return (
     isAlnum(prev) ||
     prev === "/" ||
@@ -546,7 +679,7 @@ function command(
     const a = convert(num ?? "", markAccents);
     const b = convert(den ?? "", markAccents);
     if (FRAC_CMDS.has(name))
-      return [fractionPart(a) + "/" + fractionPart(b), j];
+      return [fractionPart(a, true) + "/" + fractionPart(b), j];
     return ["C(" + a + ", " + b + ")", j];
   }
   if (name === "sqrt") {
@@ -737,8 +870,11 @@ export function latexToPlain(
   markAccents = false,
   keepLabelBackslash = true,
   force = false,
+  compare = false,
+  bareChemistry = false,
 ): string {
   if (typeof text !== "string") return text;
+  if (bareChemistry) text = bareChemistryToUnicode(text);
   if (
     !force &&
     !text.includes("$") &&
@@ -761,6 +897,12 @@ export function latexToPlain(
   // Amounts outside the `segment` math spans (`Rs $5 and $10`, `costs $5.`)
   // are literal dollars, never paired as a span (tag `audit5-1`).
   out = parkCurrencyDollars(out);
+
+  // `compare`: an escaped dollar before an amount that runs into a unit or
+  // a command (`\$0.008Wb`, `\$4\sqrt{3}`) is a cut-off span's opener, not
+  // money; `\$5`, `\$5 each` stay (tag `v140-a5`).
+  if (compare && out.includes("\\$"))
+    out = out.replace(ESCAPED_CUT_OFF_DOLLAR_RE, "");
 
   // Literal `\n` escapes first — before the greedy command scanner can claim
   // them as `\nStatement`-style pseudo-commands.
@@ -836,6 +978,9 @@ export function latexToPlain(
     if (out.startsWith("$")) out = out.slice(1);
     else if (out.endsWith("$")) out = out.slice(0, -1);
   }
+  // `compare`: every span was stripped and amounts are parked, so a `$`
+  // left now is an unpaired half (`3.2$ m` → `3.2 m`; tag `v140-a3`).
+  if (compare) out = out.split("$").join("");
 
   // Literal characters come back now that grouping and delimiters are done.
   out = out.split(LBRACE_SENTINEL).join("{");
@@ -876,6 +1021,12 @@ const SPOKEN_OPERATORS: ReadonlyArray<[string, string]> = [
   ["\\infty", "infinity"],
   ["\\int", "integral of"],
   ["\\sum", "sum of"],
+  // tag `v140-a8`
+  ["\\ldots", "dots"],
+  ["\\cdots", "dots"],
+  ["\\dots", "dots"],
+  ["\\textellipsis", "dots"],
+  ["\\textmu", "micro"],
 ];
 
 // Python's `\w` (Unicode word character).
@@ -1221,7 +1372,8 @@ function stripOuterParens(text: string): string {
 
 function latexToSpoken(latex: string): string {
   let text = spokenStructures(pyStrip(latex));
-  text = text.replace(SPOKEN_DEGREES_RE, " degrees");
+  // `50^\circ C` → "50 degrees C": room on both sides (tag `v140-a8`).
+  text = text.replace(SPOKEN_DEGREES_RE, " degrees ");
   text = text.replace(SPOKEN_SQUARED_RE, (_m, a: string) => a + " squared");
   text = text.replace(SPOKEN_CUBED_RE, (_m, a: string) => a + " cubed");
   text = text.replace(
@@ -1250,21 +1402,55 @@ function latexToSpoken(latex: string): string {
   text = text.replace(/[ \t]+/g, " ");
   text = text.replace(/\(\s+/g, "(");
   text = text.replace(/\s+\)/g, ")");
+  // A word before a comma or semicolon (`\ldots,` → "dots,").
+  text = text.replace(/ +([,;])/g, "$1");
   return stripOuterParens(pyStrip(text));
+}
+
+// A span whose whole body is typography is read as the character itself, so
+// the voice pauses (`leukocytes$\ldots$` → "leukocytes…"; tag `v140-a8`).
+const SPOKEN_TYPOGRAPHIC_SPANS: ReadonlyMap<string, string> = new Map([
+  ["\\ldots", "…"],
+  ["\\dots", "…"],
+  ["\\cdots", "…"],
+  ["\\textellipsis", "…"],
+  ["\\textmu", "micro"],
+]);
+// A bare single-letter subscript in prose (`x_{n}`, `a_1`): "x sub n". The
+// base is one ASCII letter with no letter, digit, `_` or `\` before it, and
+// the subscript must not run into a word, a superscript or a group (`v_avg`,
+// `lo_0`, `H_2O`, `H_{2}O`, `x_0^2` and `fallback_factual_error` stay).
+const PROSE_SUBSCRIPT_RE =
+  /(^|[^A-Za-z0-9_\\])([A-Za-z])_(?:\{([A-Za-z0-9]+)\}|([A-Za-z0-9]))(?![A-Za-z0-9_^{])/g;
+
+function spokenProseSubscripts(text: string): string {
+  if (!text.includes("_")) return text;
+  return text.replace(
+    PROSE_SUBSCRIPT_RE,
+    (
+      _m,
+      lead: string,
+      base: string,
+      braced: string | undefined,
+      single: string | undefined,
+    ) => lead + base + " sub " + (braced !== undefined ? braced : single),
+  );
 }
 
 function toSpoken(text: string): string {
   const parts: string[] = [];
   for (const seg of segment(text)) {
-    if (seg.kind === "math") parts.push(latexToSpoken(seg.value));
+    if (seg.kind === "math") {
+      const typographic = SPOKEN_TYPOGRAPHIC_SPANS.get(pyStrip(seg.value));
+      parts.push(
+        typographic !== undefined ? typographic : latexToSpoken(seg.value),
+      );
+      continue;
+    }
+    const value = spokenProseSubscripts(seg.value);
     // Bare LaTeX in prose (`\frac{1}{2}` never wrapped): fractions, roots,
     // wrappers and environments are read the same way.
-    else
-      parts.push(
-        seg.value.includes("\\")
-          ? spokenStructures(seg.value, true)
-          : seg.value,
-      );
+    parts.push(value.includes("\\") ? spokenStructures(value, true) : value);
   }
   let cleaned = parts.join("");
   cleaned = cleaned.replace(STRUCTURAL_WORD_RE, "");
@@ -1285,27 +1471,51 @@ const SUBSCRIPT_TO_ASCII = charMap(
 );
 const SUPERSCRIPT_RUN_RE = /[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ]+/g;
 const SUBSCRIPT_RUN_RE = /[₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₒₓₕₖₗₘₙₚₛₜ]+/g;
-// Characters `compare` folds to one ASCII form.
-const COMPARE_FOLD: ReadonlyMap<string, string> = new Map([
-  ["−", "-"], // minus sign
-  ["‐", "-"], // hyphen
-  ["‒", "-"], // figure dash
-  ["×", "*"],
-  ["·", "*"],
-  ["⋅", "*"],
-  ["∗", "*"],
-  ["÷", "/"],
-]);
 const COMPARE_OPERATOR_SPACE_RE = / ?([+\-*/=<>^_(),{}[\]]) ?/g;
+// One leading option label (tag `v140-a4`): `A)`, `(B)`, `C.`, `D:`, `a)` —
+// a letter A–H in either case — followed by whitespace and an answer.
+const OPTION_LABEL_RE = /^\s*(?:\([A-Ha-h]\)|[A-Ha-h][).:])\s+(?=\S)/u;
+
+function isAsciiDigitChar(ch: string): boolean {
+  return ch.length === 1 && ch >= "0" && ch <= "9";
+}
 
 /**
- * One ASCII-leaning form for answer comparison: scripts as `^…`/`_…`, minus
+ * `COMPARE_FOLD` (the shared `compare_fold` table, tag `v140-a1`) per
+ * character. A folded value that starts with a digit and holds a `/` (a
+ * vulgar fraction) gets a space after a digit, so `1½` reads `1 1/2`.
+ */
+function applyCompareFold(text: string): string {
+  let out = "";
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    let value = Object.prototype.hasOwnProperty.call(COMPARE_FOLD, ch)
+      ? COMPARE_FOLD[ch]
+      : undefined;
+    if (value === undefined) {
+      out += ch;
+      continue;
+    }
+    if (
+      isAsciiDigitChar(value.charAt(0)) &&
+      value.includes("/") &&
+      out.length > 0 &&
+      isAsciiDigitChar(out.charAt(out.length - 1))
+    )
+      value = " " + value;
+    out += value;
+  }
+  return out;
+}
+
+/**
+ * One ASCII-leaning form for answer comparison: a leading option label
+ * dropped, compatibility characters folded, scripts as `^…`/`_…`, minus
  * signs and multiplication dots folded, whitespace collapsed and removed
  * around operators and brackets.
  */
 function foldForCompare(text: string): string {
-  let out = "";
-  for (const ch of text) out += COMPARE_FOLD.get(ch) ?? ch;
+  let out = applyCompareFold(text.replace(OPTION_LABEL_RE, ""));
   out = out.replace(
     SUPERSCRIPT_RUN_RE,
     (m) => "^" + translate(m, SUPERSCRIPT_TO_ASCII),
@@ -1325,7 +1535,7 @@ function foldForCompare(text: string): string {
  * `style="pdf"`: accents marked (`\vec{F}` → `F⃗`, `\vec{AB}` → `vec(AB)`).
  * `style="tts"`: spoken English for a text-to-speech voice.
  * `style="compare"`: one form for answer comparison, so a typed answer
- * equals the same value in LaTeX (`1/3` = `$rac{1}{3}$`, `x^2` = `$x^2$`,
+ * equals the same value in LaTeX (`1/3` = `$\frac{1}{3}$`, `x^2` = `$x^2$`,
  * `−3` = `-3`).
  * Non-strings are returned unchanged.
  */
@@ -1340,11 +1550,25 @@ export function toPlain(text: unknown, style: PlainStyle = "text"): unknown {
   // A form feed / backspace / TAB that was a command (`<FF>rac`,
   // `<TAB>imes`) is restored first, with the same `guessWhitespace` as `fix`
   // (`normalize`); tag `audit5-3`.
+  let src: string = repair(text);
+  // Mojibake is repaired as `normalize` does (tag `v140-a6`). `compare`
+  // decodes HTML entities the `html.unescape` way first, once (`v140-a2`).
+  src =
+    style === "compare"
+      ? fixMojibakeCore(unescapeHtmlEntities(src))
+      : fixMojibakeTable(src);
   // A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
   // masked (tag `audit6-2`).
-  const src: string = trimPaddedSpansKeepCurrency(repair(text));
+  src = trimPaddedSpansKeepCurrency(src);
   if (style === "tts") return toSpoken(src);
   if (style === "compare")
-    return foldForCompare(latexToPlain(src, false, false, true));
-  return latexToPlain(src, style === "pdf", style === "text");
+    return foldForCompare(latexToPlain(src, false, false, true, true));
+  return latexToPlain(
+    src,
+    style === "pdf",
+    style === "text",
+    false,
+    false,
+    true,
+  );
 }
