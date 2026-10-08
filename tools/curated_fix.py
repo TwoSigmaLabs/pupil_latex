@@ -644,4 +644,34 @@ FIX += [
         ["B7", "audit4-9"],
         {},
     ),
+    # audit5-8: fix is idempotent on `$ $` shapes; `\nu` is never decoded to
+    # a newline + "u" (the corpus checks fix(fix(x)) == fix(x) too).
+    (
+        "audit5-8-malformed-idempotent",
+        "$\\nu = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        "$ $\\nu$ = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        ["B5", "B7", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-empty-padded-pair-keeps-nu",
+        "a $ $\\nu$ b",
+        "a $ $\\nu$ b",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-two-empty-padded-pairs",
+        "x $ $\\ne$ y $ $\\theta$",
+        "x $ $\\ne$ y $ $\\theta$",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-padded-span-keeps-ne",
+        "$ x \\ne y $",
+        "$x \\ne y$",
+        ["B5", "audit5-8"],
+        {},
+    ),
 ]

@@ -13,6 +13,7 @@ import 'commands.dart';
 import 'guarded_regexp.dart';
 import 'mojibake.dart';
 import 'repair.dart';
+import 'segment.dart';
 import 'text_util.dart';
 
 // ---------------------------------------------------------------------------
@@ -107,41 +108,34 @@ bool isFormula(String content) {
       detectFracMissingArgs(probe).isEmpty;
 }
 
-String _escapeCurrencyInLine(String line) {
-  if (!line.contains(r'$')) return line;
-  final out = StringBuffer();
+/// Indices of the currency dollars in one line (the `$` that
+/// [escapeCurrency] turns into `\$`).
+List<int> _currencyPositionsInLine(String line) {
+  final found = <int>[];
+  if (!line.contains(r'$')) return found;
   var i = 0;
   final n = line.length;
   while (i < n) {
     final ch = line[i];
     if (ch != r'$' || _isEscaped(line, i)) {
-      out.write(ch);
       i++;
       continue;
     }
-    // `$$` display block: copy through to its closing `$$` (or end of line).
+    // `$$` display block: skip to its closing `$$` (or end of line).
     if (i + 1 < n && line[i + 1] == r'$') {
       final close = line.indexOf(r'$$', i + 2);
-      final end = close == -1 ? n : close + 2;
-      out.write(line.substring(i, end));
-      i = end;
+      i = close == -1 ? n : close + 2;
       continue;
     }
     if (!_isDigitAt(line, i + 1)) {
-      // A math opener: copy the whole span through to its first closer (the
+      // A math opener: skip the whole span through to its first closer (the
       // tokenizer's rule) so the closer is never re-examined as a currency
       // opener (`$\sqrt$2` must not become `$\sqrt\$2`).
       var j = i + 1;
       while (j < n && !(line[j] == r'$' && !_isEscaped(line, j))) {
         j++;
       }
-      if (j < n) {
-        out.write(line.substring(i, j + 1));
-        i = j + 1;
-        continue;
-      }
-      out.write(ch);
-      i++;
+      i = j < n ? j + 1 : i + 1;
       continue;
     }
     // `$<digit>`: currency unless the next single `$` is a valid closer.
@@ -162,13 +156,42 @@ String _escapeCurrencyInLine(String line) {
       j++;
     }
     if (closerValid) {
-      out.write(line.substring(i, j + 1));
       i = j + 1;
     } else {
-      out.write(r'\$');
+      found.add(i);
       i++;
     }
   }
+  return found;
+}
+
+/// Indices of the dollars [escapeCurrency] reads as money (pandoc's closer
+/// rule, per line). `toPlain` uses it to keep amounts.
+List<int> currencyPositions(String text) {
+  final found = <int>[];
+  if (!text.contains(r'$')) return found;
+  var base = 0;
+  for (final line in text.split('\n')) {
+    for (final k in _currencyPositionsInLine(line)) {
+      found.add(base + k);
+    }
+    base += line.length + 1;
+  }
+  return found;
+}
+
+String _escapeCurrencyInLine(String line) {
+  final positions = _currencyPositionsInLine(line);
+  if (positions.isEmpty) return line;
+  final out = StringBuffer();
+  var pos = 0;
+  for (final k in positions) {
+    out
+      ..write(line.substring(pos, k))
+      ..write(r'\$');
+    pos = k + 1;
+  }
+  out.write(line.substring(pos));
   return out.toString();
 }
 
@@ -222,11 +245,41 @@ String _decodeProseEscapes(String prose) {
 /// `\neq`, `\text{…}`, `\right`) is never touched.
 String decodeEscapesOutsideMath(String text) {
   if (!text.contains(r'\')) return text;
-  return _mathSpan.splitMapJoin(
-    text,
-    onMatch: (m) => m[0]!,
-    onNonMatch: _decodeProseEscapes,
-  );
+  // Protected: every `segment` math span (what the renderers typeset; tag
+  // `audit5-8`: in `a $ $\nu$ b` the regex pairs `$ $` and used to decode
+  // the `\nu` that `segment` renders) and every regex span (a padded
+  // `$ x \ne y $` that `canonicalize` trims later). Decoding is lossy, so a
+  // position either reader calls math is kept.
+  final n = text.length;
+  final protected = List<bool>.filled(n, false);
+  for (final m in _mathSpan.allMatches(text)) {
+    for (var k = m.start; k < m.end; k++) {
+      protected[k] = true;
+    }
+  }
+  var pos = 0;
+  for (final seg in segment(text)) {
+    final end = pos + seg.raw.length;
+    if (seg.kind == 'math') {
+      for (var k = pos; k < end; k++) {
+        protected[k] = true;
+      }
+    }
+    pos = end;
+  }
+  final out = StringBuffer();
+  var k = 0;
+  while (k < n) {
+    final flag = protected[k];
+    var j = k;
+    while (j < n && protected[j] == flag) {
+      j++;
+    }
+    final part = text.substring(k, j);
+    out.write(flag ? part : _decodeProseEscapes(part));
+    k = j;
+  }
+  return out.toString();
 }
 
 // ---------------------------------------------------------------------------

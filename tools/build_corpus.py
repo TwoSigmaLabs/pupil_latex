@@ -2232,6 +2232,204 @@ SEGMENT += [
     ),
 ]
 
+# ---------------------------------------------------------------------------
+# 1.2.1 (audit round 5, found while migrating Fillers and Backend/agents)
+# ---------------------------------------------------------------------------
+
+# audit5-1: `to_plain` finds math spans as `segment` does; an amount is never
+# paired with another amount as a span.
+# audit5-2: an unpaired amount keeps its dollar in every style (`compare`
+# too, as it already did for `\$5`); a cut-off span (`$45m`) still loses it.
+# audit5-3: `to_plain` runs `repair` (guessWhitespace=True, as `fix` does)
+# first; a known script label is kept anywhere in a line.
+TO_PLAIN += [
+    (
+        "audit5-1-two-amounts",
+        "Rs $5 and $10",
+        "Rs $5 and $10",
+        ["B3", "B8", "audit5-1"],
+        {},
+    ),
+    (
+        "audit5-1-two-amounts-pdf",
+        "Rs $5 and $10",
+        "Rs $5 and $10",
+        ["B3", "B8", "audit5-1"],
+        {"style": "pdf"},
+    ),
+    ("audit5-1-amount-range", "$5-$10", "$5-$10", ["B3", "B8", "audit5-1"], {}),
+    (
+        "audit5-1-amount-then-span",
+        "Rs $5 and $x^2$",
+        "Rs $5 and x²",
+        ["B3", "B8", "audit5-1"],
+        {},
+    ),
+    (
+        "audit5-1-amounts-around-span",
+        "Pay $5, then $\\frac{1}{2}$ of $10.",
+        "Pay $5, then 1/2 of $10.",
+        ["B3", "B8", "audit5-1"],
+        {},
+    ),
+    ("audit5-2-lone-amount", "$5", "$5", ["B3", "B8", "audit5-2"], {}),
+    (
+        "audit5-2-lone-amount-pdf",
+        "$5",
+        "$5",
+        ["B3", "B8", "audit5-2"],
+        {"style": "pdf"},
+    ),
+    (
+        "audit5-2-amount-in-sentence",
+        "costs $5.",
+        "costs $5.",
+        ["B3", "B8", "audit5-2"],
+        {},
+    ),
+    (
+        "audit5-2-amount-with-decimals",
+        "It costs $1,200.50 now",
+        "It costs $1,200.50 now",
+        ["B3", "B8", "audit5-2"],
+        {},
+    ),
+    (
+        "audit5-2-compare-keeps-amount",
+        "costs $5.",
+        "costs $5.",
+        ["B3", "B8", "audit5-2"],
+        {"style": "compare"},
+    ),
+    (
+        "audit5-2-cut-off-span-dropped",
+        "$45m",
+        "45m",
+        ["B8", "audit5-2"],
+        {"note": "a stored answer that kept only its opening delimiter"},
+    ),
+    (
+        "audit5-2-cut-off-command-span-dropped",
+        "$4\\sqrt{3}s",
+        "4√3s",
+        ["B8", "audit5-2"],
+        {},
+    ),
+    (
+        "audit5-3-form-feed-frac",
+        "Area \x0crac{1}{2}",
+        "Area 1/2",
+        ["B1", "B8", "audit5-3"],
+        {},
+    ),
+    ("audit5-3-tab-times", "3 \times 4", "3 × 4", ["B1", "B8", "audit5-3"], {}),
+    (
+        "audit5-3-lf-rightarrow-in-span",
+        "$x \nightarrow y$",
+        "x → y",
+        ["B1", "B8", "audit5-3"],
+        {},
+    ),
+    ("audit5-3-backspace-beta", "\x08eta = 2", "β = 2", ["B1", "B8", "audit5-3"], {}),
+    (
+        "audit5-3-backspace-beta-tts",
+        "$\x08eta$",
+        "beta",
+        ["B1", "B8", "audit5-3"],
+        {"style": "tts"},
+    ),
+    (
+        "audit5-3-ambiguous-newline-kept",
+        "Line one\nuse it",
+        "Line one\nuse it",
+        ["B1", "B7", "audit5-3"],
+        {},
+    ),
+    (
+        "audit5-3-mid-line-label-text",
+        "Pick students (\tool: timer)",
+        "Pick students (\\tool: timer)",
+        ["B1", "B8", "audit5-3"],
+        {},
+    ),
+    (
+        "audit5-3-mid-line-label-pdf",
+        "Pick students (\\tool: timer 5min)",
+        "Pick students (tool: timer 5min)",
+        ["B8", "audit5-3"],
+        {"style": "pdf"},
+    ),
+]
+
+SEGMENT += [
+    (
+        "audit5-1-two-amounts-are-text",
+        "Rs $5 and $10",
+        [
+            {
+                "kind": "text",
+                "display": False,
+                "value": "Rs $5 and $10",
+                "raw": "Rs $5 and $10",
+            },
+        ],
+        ["B3", "audit5-1"],
+        {},
+    ),
+    (
+        "audit5-8-empty-padded-pair-then-span",
+        "a $ $\\nu$ b",
+        [
+            {"kind": "text", "display": False, "value": "a $ ", "raw": "a $ "},
+            {"kind": "math", "display": False, "value": "\\nu", "raw": "$\\nu$"},
+            {"kind": "text", "display": False, "value": " b", "raw": " b"},
+        ],
+        ["B3", "audit5-8"],
+        {},
+    ),
+]
+
+# audit5-8: the prose-escape decoder never touches a command inside what
+# `segment` renders as math (`a $ $\nu$ b`), nor inside a padded span that
+# `canonicalize` will trim (`$ x \ne y $`).
+NORMALIZE += [
+    (
+        "audit5-8-empty-padded-pair-keeps-nu",
+        "a $ $\\nu$ b",
+        "a $ $\\nu$ b",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-malformed-keeps-nu",
+        "$\\nu = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        "$\\nu = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-second-pass-keeps-nu",
+        "$ $\\nu$ = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        "$ $\\nu$ = $\\frac{c}{\\lambd$a^{{2}$}$}$",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-padded-span-keeps-ne",
+        "$ x \\ne y $",
+        "$ x \\ne y $",
+        ["B5", "audit5-8"],
+        {},
+    ),
+    (
+        "audit5-8-prose-escape-still-decoded",
+        "a $ $\\nu$ b\\nNext",
+        "a $ $\\nu$ b\nNext",
+        ["B5", "audit5-8"],
+        {},
+    ),
+]
+
 
 # ---------------------------------------------------------------------------
 # Evaluation
