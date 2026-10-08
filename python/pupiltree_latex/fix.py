@@ -33,6 +33,7 @@ from typing import Any, Callable
 from .canonicalize import canonicalize
 from .normalize import normalize
 from .segment import Segment, segment
+from .spans import math_mask
 from .unicode_math import (
     UNICODE_MATH,
     cluster_left,
@@ -506,7 +507,42 @@ def unwrap_typographic_spans(text: Any) -> Any:
                 changed = True
                 continue
         out.append(seg["raw"])
-    return "".join(out) if changed else text
+    result = "".join(out) if changed else text
+    return _unwrap_padded_typographic(result)
+
+
+# `wait$ \ldots $now`: a padded pair that `segment` does not read as math
+# (whitespace right inside a delimiter). The dollars go and the padding
+# stays (`wait … now`); `canonicalize` would otherwise wrap the bare command
+# again inside the stray dollars (`wait$ $\ldots$ $now`).
+_PADDED_TYPOGRAPHIC_RE = re.compile(
+    r"\$([ \t]*)\\(ldots|dots|textellipsis|textmu)([ \t]*)\$"
+)
+
+
+def _unwrap_padded_typographic(text: str) -> str:
+    if "$" not in text:
+        return text
+    mask: list[bool] | None = None
+    out: list[str] = []
+    last = 0
+    for m in _PADDED_TYPOGRAPHIC_RE.finditer(text):
+        start, end = m.start(), m.end()
+        if start > 0 and text[start - 1] in "\\$":
+            continue
+        if end < len(text) and text[end] == "$":
+            continue
+        if mask is None:
+            mask = math_mask(text)
+        if mask[start]:
+            continue
+        out.append(text[last:start])
+        out.append(m.group(1) + TYPOGRAPHIC_SPANS["\\" + m.group(2)] + m.group(3))
+        last = end
+    if not out:
+        return text
+    out.append(text[last:])
+    return "".join(out)
 
 
 def fix(text: Any, *, chemistry: bool = True) -> Any:
@@ -517,9 +553,7 @@ def fix(text: Any, *, chemistry: bool = True) -> Any:
     a bare ``\\ce{…}`` / ``\\pu{…}`` is never put into a new math span."""
     if not isinstance(text, str) or not text:
         return text
-    text = canonicalize(
-        unwrap_typographic_spans(normalize(text)), chemistry=chemistry
-    )
+    text = canonicalize(unwrap_typographic_spans(normalize(text)), chemistry=chemistry)
     text = wrap_bare_symbol_commands(text)
     text = wrap_unicode_chemistry(text)
     text = wrap_unicode_scripts(text)
@@ -535,7 +569,9 @@ def fix_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
             return obj
         return fix(obj, chemistry=chemistry)
     if isinstance(obj, dict):
-        return {k: fix_deep(v, _key_hint=k, chemistry=chemistry) for k, v in obj.items()}
+        return {
+            k: fix_deep(v, _key_hint=k, chemistry=chemistry) for k, v in obj.items()
+        }
     if isinstance(obj, list):
         return [fix_deep(v, _key_hint=_key_hint, chemistry=chemistry) for v in obj]
     return obj

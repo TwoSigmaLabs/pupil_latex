@@ -2774,6 +2774,12 @@ TO_PLAIN += [
         ["B7", "v140-a4"],
         {},
     ),
+    # A label is kept when stripping it would leave a lone letter, which an
+    # answer matcher would read as an option letter (`a: b` is not `b`).
+    ("v140-a4-lone-letter-kept", "a: b", "a: b", ["B7", "v140-a4"], _CMP),
+    ("v140-a4-lone-capital-kept", "A) B", "A)B", ["B7", "v140-a4"], _CMP),
+    ("v140-a4-lone-letter-latex-kept", "(c) $x$", "(c)x", ["B7", "v140-a4"], _CMP),
+    ("v140-a4-word-still-stripped", "a: bc", "bc", ["B8", "v140-a4"], _CMP),
 ]
 
 # v140-a5: a signed number is a simple fraction part; `compare` drops the
@@ -2951,6 +2957,34 @@ TO_PLAIN += [
         _TTS,
     ),
     ("v140-a8-degrees-end", "$90^{\\circ}$", "90 degrees", ["B8", "v140-a8"], _TTS),
+    (
+        "v140-a8-degrees-span-then-unit",
+        "$50^\\circ$C",
+        "50 degrees C",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-degrees-prose",
+        "heat to 50^\\circ C now",
+        "heat to 50 degrees C now",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-degrees-prose-glued",
+        "50^{\\circ}C",
+        "50 degrees C",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
+    (
+        "v140-a8-degrees-prose-end",
+        "It is 90^\\circ.",
+        "It is 90 degrees.",
+        ["B8", "v140-a8"],
+        _TTS,
+    ),
 ]
 
 # v140-a9: bare chemistry in prose (element symbols with digit subscripts)

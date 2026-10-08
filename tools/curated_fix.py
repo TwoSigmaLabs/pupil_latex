@@ -760,4 +760,17 @@ FIX += [
         {},
     ),
     ("v140-a7-greek-unchanged", "$\\mu$", "$\\mu$", ["B7", "v140-a7"], {}),
+    # Padded typographic "spans" that `segment` does not read as math: the
+    # padding is kept, the dollars go (was `wait$ $\ldots$ $now`).
+    ("v140-a7-padded-both", "wait$ \\ldots $now", "wait … now", ["B8", "v140-a7"], {}),
+    ("v140-a7-padded-right", "wait$\\ldots $now", "wait… now", ["B8", "v140-a7"], {}),
+    ("v140-a7-padded-dots", "x$ \\dots $y", "x … y", ["B8", "v140-a7"], {}),
+    (
+        "v140-a7-padded-alone",
+        "and $ \\ldots $ more",
+        "and … more",
+        ["B8", "v140-a7"],
+        {},
+    ),
+    ("v140-a7-padded-textmu", "5$ \\textmu $m", "5 $\\mu$ m", ["B8", "v140-a7"], {}),
 ]

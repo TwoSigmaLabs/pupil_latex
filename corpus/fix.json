@@ -1117,6 +1117,51 @@
     "B7",
     "v140-a7"
    ]
+  },
+  {
+   "id": "curated-v140-a7-padded-both",
+   "input": "wait$ \\ldots $now",
+   "expected": "wait … now",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-padded-right",
+   "input": "wait$\\ldots $now",
+   "expected": "wait… now",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-padded-dots",
+   "input": "x$ \\dots $y",
+   "expected": "x … y",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-padded-alone",
+   "input": "and $ \\ldots $ more",
+   "expected": "and … more",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-padded-textmu",
+   "input": "5$ \\textmu $m",
+   "expected": "5 $\\mu$ m",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
   }
  ]
 }
