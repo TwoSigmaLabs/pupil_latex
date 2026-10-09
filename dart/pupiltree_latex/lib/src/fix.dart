@@ -25,6 +25,7 @@ import 'canonicalize.dart';
 import 'guarded_regexp.dart';
 import 'normalize.dart';
 import 'segment.dart';
+import 'spans.dart';
 import 'tables.g.dart';
 import 'text_util.dart';
 import 'unicode_math.dart';
@@ -454,6 +455,74 @@ String mergeAdjacentMath(String text) {
 // The one call
 // ---------------------------------------------------------------------------
 
+/// A span whose whole body is one of these is typography, not maths (tag
+/// `v140-a7`): `leukocytes$\ldots$` → `leukocytes…`. `\textmu` becomes
+/// `$\mu$`, not a bare `µ`: `canonicalize` wraps a bare `µ` as `$\mu$`, so
+/// that is the fixed point (`$\cdots$` stays for the same reason).
+const Map<String, String> kTypographicSpans = {
+  r'\ldots': '…',
+  r'\dots': '…',
+  r'\textellipsis': '…',
+  r'\textmu': r'$\mu$',
+};
+
+/// Replace each math span whose trimmed body is a key of
+/// [kTypographicSpans] (inline or display) by its value; every other span
+/// and all prose are copied as written.
+String unwrapTypographicSpans(String text) {
+  if (!text.contains(r'\')) return text;
+  if (!kTypographicSpans.keys.any(text.contains)) return text;
+  final out = StringBuffer();
+  var changed = false;
+  for (final seg in segment(text)) {
+    if (seg.isMath) {
+      final value = kTypographicSpans[pyStrip(seg.value)];
+      if (value != null) {
+        out.write(value);
+        changed = true;
+        continue;
+      }
+    }
+    out.write(seg.raw);
+  }
+  return _unwrapPaddedTypographic(changed ? out.toString() : text);
+}
+
+// `wait$ \ldots $now`: a padded pair that `segment` does not read as math
+// (whitespace right inside a delimiter). The dollars go and the padding
+// stays (`wait … now`); `canonicalize` would otherwise wrap the bare command
+// again inside the stray dollars (`wait$ $\ldots$ $now`).
+final _paddedTypographic =
+    RegExp(r'\$([ \t]*)\\(ldots|dots|textellipsis|textmu)([ \t]*)\$');
+
+String _unwrapPaddedTypographic(String text) {
+  if (!text.contains(r'$')) return text;
+  List<bool>? mask;
+  final out = StringBuffer();
+  var last = 0;
+  var changed = false;
+  for (final m in _paddedTypographic.allMatches(text)) {
+    final start = m.start;
+    final end = m.end;
+    if (start > 0 && (text[start - 1] == r'\' || text[start - 1] == r'$')) {
+      continue;
+    }
+    if (end < text.length && text[end] == r'$') continue;
+    mask ??= mathMask(text);
+    if (mask[start]) continue;
+    out
+      ..write(text.substring(last, start))
+      ..write(m[1])
+      ..write(kTypographicSpans['\\${m[2]}'])
+      ..write(m[3]);
+    last = end;
+    changed = true;
+  }
+  if (!changed) return text;
+  out.write(text.substring(last));
+  return out.toString();
+}
+
 /// Repair, normalise, canonicalise, wrap what is still bare, escape what
 /// would cut a formula short and merge adjacent spans, in one call.
 /// Idempotent; the empty string passes through.
@@ -462,7 +531,10 @@ String mergeAdjacentMath(String text) {
 /// bare `\ce{…}` / `\pu{…}` is never put into a new math span.
 String fix(String text, {bool chemistry = true}) {
   if (text.isEmpty) return text;
-  text = canonicalize(normalize(text), chemistry: chemistry);
+  text = canonicalize(
+    unwrapTypographicSpans(normalize(text)),
+    chemistry: chemistry,
+  );
   text = wrapBareSymbolCommands(text);
   text = wrapUnicodeChemistry(text);
   text = wrapUnicodeScripts(text);

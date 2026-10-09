@@ -42,6 +42,10 @@ const _names = <String, String>{
   'greek_math_letters': 'kGreekMathLetters',
   'greek_unit_symbols': 'kGreekUnitSymbols',
   'declaration_commands': 'kDeclarationCommands',
+  'html5_entities': 'kHtml5Entities',
+  'html_numeric_overrides': 'kHtmlNumericOverrides',
+  'compare_fold': 'kCompareFold',
+  'element_symbols': 'kElementSymbols',
 };
 
 /// Tables whose JSON form is a list but whose Dart form is a `Set` (membership
@@ -60,6 +64,7 @@ const _sets = <String>{
   'symbol_commands',
   'joining_commands',
   'unit_bases',
+  'element_symbols',
 };
 
 /// A Dart single-quoted string literal. Everything outside printable ASCII is

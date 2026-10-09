@@ -1,7 +1,9 @@
 """Prompt-side contract text. One copy for every service.
 
 `LATEX_SYSTEM_RULES` is prepended to every Class A generation prompt,
-`NARRATIVE_PROSE_RULES` to every Class B (spoken script) prompt, and
+`NARRATIVE_PROSE_RULES` to every Class B spoken-script prompt,
+`PLAIN_NOTATION_RULES` to every Class B prompt whose output is displayed
+without a maths renderer (plain Unicode maths), and
 `narrative_field_exemption` carves prose fields out of a JSON object that
 mixes both. All injectors are idempotent: a prompt that already carries a
 block is returned unchanged, so a per-call chokepoint and an explicit call
@@ -22,6 +24,12 @@ exception:
    - Do NOT use \( \) or \[ \] — only $ delimiters.
    - Correct:  The formula is $x^{2} + y^{2} = r^{2}$.
    - Wrong:    The formula is x^{2} + y^{2} = r^{2}. (bare, will not render)
+   - ONE span per whole expression, operators included. Never leave +, -,
+     *, /, = or [ ] outside the span next to rendered math.
+   - Correct:  $\frac{2m}{eB} \times \sqrt{2}$
+   - Wrong:    $\frac{2m}{eB}$ * $\sqrt{2}$, 2m/eB * sqrt[2]
+   - Plain numbers and money are NOT math: "25 students", "Rs 500",
+     never $25$ students or $500$.
 
 2. BACKSLASH COMMANDS
    - Use a single backslash: \frac, \sqrt, \pi, \vec, \theta.
@@ -35,10 +43,12 @@ exception:
    - Wrong:    $x^10$ (renders as x^1 followed by 0)
    - Single character without braces is acceptable: $x^2$, $a_1$.
 
-4. CURRENCY DOLLAR SIGNS
-   - Escape non-math $ as \$.
-   - Correct:  The price is \$5.
+4. CURRENCY IS PLAIN TEXT
+   - Never put a money amount inside $...$.
+   - Escape a dollar sign that is not a delimiter as \$.
+   - Correct:  The price is \$5.   The cost is ₹ 45,00,000.
    - Wrong:    The price is $5. (breaks math delimiter matching)
+   - Wrong:    $₹ 45,00,000$, $\$5$
 
 5. CHEMISTRY (USE \text{} FOR ELEMENT SYMBOLS)
    - Chemical formulas MUST use \text{} for element names and
@@ -54,16 +64,22 @@ exception:
    plain English words in \text{} (e.g. $\text{Coulomb}$ is wrong — just
    write "Coulomb").
 
-6. SCIENTIFIC NOTATION
-   - Always $\times$ inside math, never × or x.
-   - Correct:  $3 \times 10^{8}$
-   - Wrong:    3 × 10^8, 3 x 10^8 (bare characters will not render)
+6. MULTIPLICATION, FRACTIONS, SCIENTIFIC NOTATION
+   - Always $\times$ (or $\cdot$) inside math, never ×, x or *.
+   - Never output a literal * for multiplication: outside math it is
+     markdown emphasis and corrupts the text.
+   - Write a maths fraction a/b as $\frac{a}{b}$. A unit such as m/s may
+     keep its slash.
+   - Correct:  $3 \times 10^{8}$, $\frac{1}{2} m v^{2}$
+   - Wrong:    3 × 10^8, 3 x 10^8, 3 * 10^8, 1/2 m v^2 (bare characters
+     will not render)
 
 7. ENCODING (UTF-8 ONLY)
    - Never emit mojibake sequences: Ï€, Ã, Â, Î±, Ï†, â€.
    - Use proper LaTeX instead: $\pi$, $\alpha$, $\phi$.
 
-8. SUPPORTED COMMANDS (flutter_math_fork subset — do NOT use others)
+8. SUPPORTED COMMANDS (standard KaTeX, flutter_math_fork subset — do NOT
+   use others, and NEVER invent a command or macro)
    Greek lowercase: \alpha \beta \gamma \delta \epsilon \zeta \eta \theta
                     \iota \kappa \lambda \mu \nu \xi \pi \rho \sigma \tau
                     \phi \chi \psi \omega
@@ -104,16 +120,26 @@ exception:
                     Write $\text{NaHCO}_{3}$ NOT NaHCO₃.
     Fractions:      Write $\frac{1}{2}$ NOT ½. $\frac{1}{3}$ NOT ⅓.
 
+11. REPAIR MALFORMED COMMANDS (when fixing or copying existing text)
+    - |sqrt or \|sqrt  ->  \sqrt{...}
+    - \sqrt2           ->  \sqrt{2}   (arguments always in braces)
+    - \sqrt[x] used as the radicand  ->  \sqrt{x}  ([n] is only the
+      root index, as in \sqrt[3]{x})
+    - [...] used as grouping  ->  {...} or \left( ... \right)
+
 === PRE-SUBMIT CHECKLIST ===
-[ ] All math wrapped in $...$ or $$...$$
+[ ] All math wrapped in $...$ or $$...$$, one span per whole expression
 [ ] No bare LaTeX commands outside delimiters
+[ ] No plain number or money amount inside $...$
+[ ] No literal * for multiplication; maths fractions use \frac{a}{b}
 [ ] No mojibake characters anywhere in output
 [ ] No bare Unicode math/Greek characters anywhere (see rule 10)
 [ ] Multi-char sub/superscripts use { }
-[ ] Currency $ escaped as \$
+[ ] Currency $ escaped as \$; ₹ and other amounts as plain text
 [ ] Chemistry uses \text{} for elements (never Unicode subscripts)
 [ ] Scientific notation uses \times (not × or x)
-[ ] Only commands from the supported list above
+[ ] Only commands from the supported list above, none invented
+[ ] Every command argument in braces: \sqrt{2}, not \sqrt2 or |sqrt
 === END LATEX RULES ===
 """
 
@@ -159,10 +185,44 @@ text-to-speech voice reads aloud. It is not a worksheet and not a set of notes.
 === END NARRATIVE PROSE RULES ===
 """
 
+PLAIN_NOTATION_RULES = r"""
+=== PLAIN NOTATION RULES (MANDATORY) ===
+
+This output is shown WITHOUT a maths renderer (smart board text, plain
+labels). The screen displays every character exactly as you write it, so
+LaTeX and markdown markup appear verbatim as garbage.
+
+1. NO LATEX, NO MARKDOWN
+   - Never use $...$, $$...$$, \( \) or \[ \]. Not a single $ character.
+   - Never use a backslash command: no \frac, \text, \times, \sqrt,
+     \rightarrow, \alpha.
+   - No markdown emphasis or code: no *word*, **word**, `code`.
+
+2. WRITE MATHS IN PLAIN UNICODE
+   - Powers and indices:  x², a³, sp³, 10⁻¹⁰, x₁, aₙ
+   - Roots and symbols:   √2, ∛x, π, θ, ∞, ±, ≤, ≥, ≠, ≈, °
+   - Multiplication:      3 × 10⁸, 2 · x   (never * and never x for times)
+   - Fractions:           ½, ¾, 1/2, (a + b)/(c + d)
+   - Arrows:              →, ←, ⇌, ⇒
+   - Chemistry:           H₂O, CO₂, H₂SO₄, CH₃COOH, SO₄²⁻, Fe³⁺
+   - Money:               ₹ 500, Rs 500 (never a $ sign)
+
+3. ENCODING (UTF-8 ONLY)
+   - Never emit mojibake sequences: Ï€, Ã, Â, Î±, Ï†, â€.
+
+=== PRE-SUBMIT CHECKLIST ===
+[ ] Not a single $ character anywhere
+[ ] Not a single backslash command anywhere
+[ ] No *, ** or ` markup anywhere
+[ ] Every formula written with Unicode characters (x², √2, H₂O, 3 × 10⁸)
+=== END PLAIN NOTATION RULES ===
+"""
+
 # The first line of each block doubles as its presence marker, so the
 # idempotency check cannot drift from the text it guards.
 LATEX_RULES_MARKER = LATEX_SYSTEM_RULES.strip().splitlines()[0]
 NARRATIVE_RULES_MARKER = NARRATIVE_PROSE_RULES.strip().splitlines()[0]
+PLAIN_NOTATION_MARKER = PLAIN_NOTATION_RULES.strip().splitlines()[0]
 
 
 def inject_latex_rules(prompt: str) -> str:
@@ -179,9 +239,25 @@ def inject_narrative_prose_rules(prompt: str) -> str:
     return f"{NARRATIVE_PROSE_RULES}\n\n{prompt}"
 
 
+def inject_plain_notation_rules(prompt: str) -> str:
+    """Prepend `PLAIN_NOTATION_RULES`. Idempotent.
+
+    For Class B text displayed without a maths renderer (period plans,
+    in-class questions on the smart board): maths in plain Unicode, no LaTeX.
+    Spoken TTS scripts use `inject_narrative_prose_rules` instead.
+    """
+    if PLAIN_NOTATION_MARKER in prompt:
+        return prompt
+    return f"{PLAIN_NOTATION_RULES}\n\n{prompt}"
+
+
 def has_formatting_contract(prompt: str) -> bool:
-    """True when either rules block is already present."""
-    return LATEX_RULES_MARKER in prompt or NARRATIVE_RULES_MARKER in prompt
+    """True when any of the three rules blocks is already present."""
+    return (
+        LATEX_RULES_MARKER in prompt
+        or NARRATIVE_RULES_MARKER in prompt
+        or PLAIN_NOTATION_MARKER in prompt
+    )
 
 
 def narrative_field_exemption(*fields: str) -> str:

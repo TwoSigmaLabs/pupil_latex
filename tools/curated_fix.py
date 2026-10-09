@@ -726,3 +726,51 @@ FIX += [
         {},
     ),
 ]
+
+# v140-a7: a span whose whole body is typography (`\ldots`, `\dots`,
+# `\textellipsis`) becomes the Unicode character; `\textmu` becomes `$\mu$`
+# (bare `µ` is wrapped as `$\mu$` by `canonicalize`, so that is the fixed
+# point) and `$\cdots$` stays (bare `⋯` is wrapped back into `$\cdots$`).
+FIX += [
+    ("v140-a7-ldots", "leukocytes$\\ldots$", "leukocytes…", ["B8", "v140-a7"], {}),
+    ("v140-a7-dots", "and so on $\\dots$", "and so on …", ["B8", "v140-a7"], {}),
+    ("v140-a7-textellipsis", "wait$\\textellipsis$", "wait…", ["B8", "v140-a7"], {}),
+    ("v140-a7-display-ldots", "and $$\\ldots$$", "and …", ["B8", "v140-a7"], {}),
+    (
+        "v140-a7-legacy-delimiters",
+        "cells\\(\\ldots\\)",
+        "cells…",
+        ["B4", "B8", "v140-a7"],
+        {},
+    ),
+    ("v140-a7-textmu", "5 $\\textmu$m", "5 $\\mu$m", ["B8", "v140-a7"], {}),
+    ("v140-a7-cdots-stays", "$\\cdots$", "$\\cdots$", ["B8", "v140-a7"], {}),
+    (
+        "v140-a7-formula-unchanged",
+        "$1, 2, \\ldots, n$",
+        "$1, 2, \\ldots, n$",
+        ["B7", "v140-a7"],
+        {},
+    ),
+    (
+        "v140-a7-other-span-unchanged",
+        "$x \\ldots$",
+        "$x \\ldots$",
+        ["B7", "v140-a7"],
+        {},
+    ),
+    ("v140-a7-greek-unchanged", "$\\mu$", "$\\mu$", ["B7", "v140-a7"], {}),
+    # Padded typographic "spans" that `segment` does not read as math: the
+    # padding is kept, the dollars go (was `wait$ $\ldots$ $now`).
+    ("v140-a7-padded-both", "wait$ \\ldots $now", "wait … now", ["B8", "v140-a7"], {}),
+    ("v140-a7-padded-right", "wait$\\ldots $now", "wait… now", ["B8", "v140-a7"], {}),
+    ("v140-a7-padded-dots", "x$ \\dots $y", "x … y", ["B8", "v140-a7"], {}),
+    (
+        "v140-a7-padded-alone",
+        "and $ \\ldots $ more",
+        "and … more",
+        ["B8", "v140-a7"],
+        {},
+    ),
+    ("v140-a7-padded-textmu", "5$ \\textmu $m", "5 $\\mu$ m", ["B8", "v140-a7"], {}),
+]

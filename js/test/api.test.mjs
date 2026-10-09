@@ -320,7 +320,7 @@ test("all kinds are produced by some detector", () => {
 });
 
 test("constants are exported in their documented shapes", () => {
-  assert.strictEqual(L.VERSION, "1.3.0");
+  assert.strictEqual(L.VERSION, "1.4.0");
   assert.ok(L.KATEX_COMMANDS instanceof Set && L.KATEX_COMMANDS.has("frac"));
   assert.ok(
     L.LATEX_COMMANDS_BEHIND_JSON_ESCAPES instanceof Set &&

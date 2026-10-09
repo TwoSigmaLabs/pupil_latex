@@ -179,6 +179,91 @@ def test_prompt_rules_injection_is_idempotent():
     assert "   - story_script" in ex and "   - sections[].content" in ex
 
 
+def test_plain_notation_rules_injection_is_idempotent():
+    q = L.inject_plain_notation_rules("Write 5 in-class questions.")
+    marker = L.prompt_rules.PLAIN_NOTATION_MARKER
+    # Split so tools/check_prompt_parity.py does not read this as a pasted block.
+    assert marker == "=== PLAIN NOTATION RULES" + " (MANDATORY) ==="
+    assert q.startswith("\n" + marker)
+    assert q.endswith("Write 5 in-class questions.")
+    assert L.inject_plain_notation_rules(q) == q
+    assert L.has_formatting_contract(q)
+    # Each injector only looks for its own block.
+    assert L.inject_latex_rules(q) != q
+    assert L.inject_narrative_prose_rules(q) != q
+
+
+def test_latex_rules_carry_the_v140_rules():
+    r = L.LATEX_SYSTEM_RULES
+    for needle in (
+        "ONE span per whole expression, operators included",
+        "Never output a literal * for multiplication",
+        r"$\frac{a}{b}$",
+        r"\sqrt2           ->  \sqrt{2}",
+        r"|sqrt or \|sqrt",
+        "[...] used as grouping",
+        "Plain numbers and money are NOT math",
+        "₹ 45,00,000",
+        r"Escape a dollar sign that is not a delimiter as \$.",
+        "NEVER invent a command",
+    ):
+        assert needle in r, needle
+
+
+def test_plain_notation_rules_forbid_latex_and_show_unicode():
+    r = L.PLAIN_NOTATION_RULES
+    for needle in ("x²", "√2", "π", "≤", "H₂O", "3 × 10⁸", "Not a single $ character"):
+        assert needle in r, needle
+    assert "NARRATIVE PROSE" not in r
+
+
+def _parity_tool():
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[2] / "tools" / "check_prompt_parity.py"
+    spec = importlib.util.spec_from_file_location("check_prompt_parity", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_parity_tool_checks_plain_notation_copies(tmp_path):
+    tool = _parity_tool()
+    same = repr(L.PLAIN_NOTATION_RULES)
+    changed = repr(L.PLAIN_NOTATION_RULES.replace("x²", "x^2"))
+    (tmp_path / "ok.py").write_text(
+        f"PLAIN_NOTATION_RULES = {same}\n", encoding="utf-8"
+    )
+    assert tool.main(["x", str(tmp_path)]) == 0
+    (tmp_path / "bad.py").write_text(
+        f"MY_PLAIN_NOTATION_RULES = {changed}\n", encoding="utf-8"
+    )
+    assert tool.main(["x", str(tmp_path)]) == 1
+
+
+def test_parity_tool_finds_a_block_pasted_inside_a_prompt(tmp_path):
+    tool = _parity_tool()
+    pasted = repr("Task text.\n" + L.LATEX_SYSTEM_RULES + "\nMore task text.")
+    (tmp_path / "gen.py").write_text(f"PROMPT = {pasted}\n", encoding="utf-8")
+    assert [c[1] for c in tool.find_copies(tmp_path)] == ["LATEX_SYSTEM_RULES"]
+    assert tool.main(["x", str(tmp_path)]) == 0
+    edited = repr("Task.\n" + L.LATEX_SYSTEM_RULES.replace("\\times", "*") + "\n")
+    (tmp_path / "gen.py").write_text(f"PROMPT = {edited}\n", encoding="utf-8")
+    assert tool.main(["x", str(tmp_path)]) == 1
+
+
+def test_parity_tool_lists_hand_written_rules_without_failing(tmp_path, capsys):
+    tool = _parity_tool()
+    rule = repr("- NOTATION: plain text only (H₂SO₄, 10⁻¹⁰). NO " + "LaTeX.")
+    todo = "# TODO(pupiltree-latex): " + "move to LATEX_SYSTEM_RULES (a/b)"
+    (tmp_path / "gen.py").write_text(f"{todo}\nRULE = {rule}\n", encoding="utf-8")
+    assert tool.main(["x", str(tmp_path)]) == 0
+    out = capsys.readouterr().out
+    assert "gen.py:1 :: rule now in LATEX_SYSTEM_RULES" in out
+    assert "gen.py:2 :: plain-notation rule" in out
+
+
 def test_to_plain_rejects_unknown_style():
     with pytest.raises(ValueError):
         L.to_plain("$x$", "html")
@@ -235,3 +320,72 @@ def test_has_ftfy_flag_matches_import():
         assert mojibake.HAS_FTFY is True
     except ImportError:
         assert mojibake.HAS_FTFY is False
+
+
+# v1.4.0 Group A ------------------------------------------------------------
+
+UNESCAPE_SAMPLES = [
+    "a &amp; b",
+    "a &amp;lt; b",
+    "&thinsp;&ndash;&mdash;&micro;&hellip;",
+    "x &lt y &gt z",
+    "&ampx &notit; &notin; &not",
+    "&AMP; &Afr; &afr;",
+    "&#65;&#x41;&#X41;&#65 &#x41g",
+    "&#0; &#13; &#128; &#129; &#150; &#159;",
+    "&#1; &#11; &#127; &#xFDD0; &#xFFFE; &#x1FFFF;",
+    "&#xD800; &#x110000; &#99999999999999999999;",
+    "&#128512; &#x1F600;",
+    "AT&T Q&A &foo; & ; &; &#; &#x;",
+    "&abcdefghijklmnopqrstuvwxyzabcdefghij;",
+    "&lt;&lt;&lt",
+    "no entity",
+]
+
+
+@pytest.mark.parametrize("text", UNESCAPE_SAMPLES)
+def test_unescape_html_entities_is_html_unescape(text):
+    import html
+
+    assert L.unescape_html_entities(text) == html.unescape(text)
+
+
+def test_unescape_tables_exported():
+    import html.entities
+
+    assert L.HTML5_ENTITIES == html.entities.html5
+    assert L.HTML_NUMERIC_OVERRIDES["128"] == "€"
+    assert L.HTML_NUMERIC_OVERRIDES["13"] == "\r"
+
+
+def test_compare_one_round_of_entities():
+    # `html.unescape` decodes once, so this is not idempotent and lives here,
+    # not in the corpus (every corpus string case is checked for idempotency).
+    assert L.to_plain("a &amp;lt; b", "compare") == "a &lt; b"
+
+
+def test_normalize_keeps_its_entity_set():
+    # `normalize` still decodes the small `HTML_ENTITIES` set, up to 3 rounds.
+    assert L.normalize("a &amp;lt; b") == "a < b"
+    assert L.normalize("x &thinsp; y") == "x &thinsp; y"
+
+
+def test_compare_fold_table():
+    assert L.COMPARE_FOLD["½"] == "1/2"
+    assert L.COMPARE_FOLD["㎤"] == "cm³"
+    assert L.COMPARE_FOLD["–"] == "-"
+    assert "²" not in L.COMPARE_FOLD  # scripts are folded as runs
+    assert all(len(k) == 1 and ord(k) <= 0xFFFF for k in L.COMPARE_FOLD)
+
+
+def test_unwrap_typographic_spans():
+    assert L.unwrap_typographic_spans("a$\\ldots$") == "a…"
+    assert L.unwrap_typographic_spans("$\\textmu$m") == "$\\mu$m"
+    assert L.unwrap_typographic_spans("$x\\ldots$") == "$x\\ldots$"
+    assert L.unwrap_typographic_spans("costs \\$5") == "costs \\$5"
+    assert L.unwrap_typographic_spans(None) is None
+
+
+def test_element_symbols():
+    assert len(L.ELEMENT_SYMBOLS) == 118
+    assert len(set(L.ELEMENT_SYMBOLS)) == 118

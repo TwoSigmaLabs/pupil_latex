@@ -33,6 +33,7 @@ from typing import Any, Callable
 from .canonicalize import canonicalize
 from .normalize import normalize
 from .segment import Segment, segment
+from .spans import math_mask
 from .unicode_math import (
     UNICODE_MATH,
     cluster_left,
@@ -475,6 +476,75 @@ def merge_adjacent_math(text: Any) -> Any:
 # ---------------------------------------------------------------------------
 
 
+# A span whose whole body is one of these is typography, not maths (tag
+# `v140-a7`): `leukocytes$\ldots$` → `leukocytes…`. `\textmu` becomes
+# `$\mu$`, not a bare `µ`: `canonicalize` wraps a bare `µ` as `$\mu$`, so
+# that is the fixed point (`$\cdots$` stays for the same reason: a bare `⋯`
+# is wrapped back into `$\cdots$`).
+TYPOGRAPHIC_SPANS: dict[str, str] = {
+    "\\ldots": "…",
+    "\\dots": "…",
+    "\\textellipsis": "…",
+    "\\textmu": "$\\mu$",
+}
+
+
+def unwrap_typographic_spans(text: Any) -> Any:
+    """Replace each math span whose trimmed body is a key of
+    `TYPOGRAPHIC_SPANS` (inline or display) by its value; every other span
+    and all prose are copied as written."""
+    if not isinstance(text, str) or "\\" not in text:
+        return text
+    if not any(name in text for name in TYPOGRAPHIC_SPANS):
+        return text
+    out: list[str] = []
+    changed = False
+    for seg in segment(text):
+        if seg["kind"] == "math":
+            value = TYPOGRAPHIC_SPANS.get(seg["value"].strip())
+            if value is not None:
+                out.append(value)
+                changed = True
+                continue
+        out.append(seg["raw"])
+    result = "".join(out) if changed else text
+    return _unwrap_padded_typographic(result)
+
+
+# `wait$ \ldots $now`: a padded pair that `segment` does not read as math
+# (whitespace right inside a delimiter). The dollars go and the padding
+# stays (`wait … now`); `canonicalize` would otherwise wrap the bare command
+# again inside the stray dollars (`wait$ $\ldots$ $now`).
+_PADDED_TYPOGRAPHIC_RE = re.compile(
+    r"\$([ \t]*)\\(ldots|dots|textellipsis|textmu)([ \t]*)\$"
+)
+
+
+def _unwrap_padded_typographic(text: str) -> str:
+    if "$" not in text:
+        return text
+    mask: list[bool] | None = None
+    out: list[str] = []
+    last = 0
+    for m in _PADDED_TYPOGRAPHIC_RE.finditer(text):
+        start, end = m.start(), m.end()
+        if start > 0 and text[start - 1] in "\\$":
+            continue
+        if end < len(text) and text[end] == "$":
+            continue
+        if mask is None:
+            mask = math_mask(text)
+        if mask[start]:
+            continue
+        out.append(text[last:start])
+        out.append(m.group(1) + TYPOGRAPHIC_SPANS["\\" + m.group(2)] + m.group(3))
+        last = end
+    if not out:
+        return text
+    out.append(text[last:])
+    return "".join(out)
+
+
 def fix(text: Any, *, chemistry: bool = True) -> Any:
     """Repair, normalise, canonicalise, wrap what is still bare, escape what
     would cut a formula short and merge adjacent spans, in one call.
@@ -483,7 +553,7 @@ def fix(text: Any, *, chemistry: bool = True) -> Any:
     a bare ``\\ce{…}`` / ``\\pu{…}`` is never put into a new math span."""
     if not isinstance(text, str) or not text:
         return text
-    text = canonicalize(normalize(text), chemistry=chemistry)
+    text = canonicalize(unwrap_typographic_spans(normalize(text)), chemistry=chemistry)
     text = wrap_bare_symbol_commands(text)
     text = wrap_unicode_chemistry(text)
     text = wrap_unicode_scripts(text)
@@ -499,7 +569,9 @@ def fix_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
             return obj
         return fix(obj, chemistry=chemistry)
     if isinstance(obj, dict):
-        return {k: fix_deep(v, _key_hint=k, chemistry=chemistry) for k, v in obj.items()}
+        return {
+            k: fix_deep(v, _key_hint=k, chemistry=chemistry) for k, v in obj.items()
+        }
     if isinstance(obj, list):
         return [fix_deep(v, _key_hint=_key_hint, chemistry=chemistry) for v in obj]
     return obj
@@ -508,10 +580,12 @@ def fix_deep(obj: Any, _key_hint: str = "", *, chemistry: bool = True) -> Any:
 __all__ = [
     "SYMBOL_COMMANDS",
     "Segment",
+    "TYPOGRAPHIC_SPANS",
     "escape_text_specials",
     "fix",
     "fix_deep",
     "merge_adjacent_math",
+    "unwrap_typographic_spans",
     "wrap_bare_symbol_commands",
     "wrap_unicode_chemistry",
     "wrap_unicode_scripts",

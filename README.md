@@ -31,7 +31,7 @@ fix("Cost $5 and \\(\\theta\\) with \x0crac{1}{2} and π and H₂O")
 | `to_plain(text, style)` | LaTeX → Unicode text for PDFs (`pdf`), canvases and reports (`text`), speech (`tts`), answer matching (`compare`)   | lossy by design    | PDF, canvas, TTS, answer matching                    |
 | `audit(text)`           | Detect what is still broken (12 finding kinds), never mutates                                                       | read-only          | logs, CI, editor hints                               |
 
-Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums, and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`).
+Plus `escape_latex_for_json` / `loads_latex_aware` (decode model JSON without turning `\frac` into a form feed), deep walkers that skip ids, URLs and enums, and the prompt rule text (`LATEX_SYSTEM_RULES`, `NARRATIVE_PROSE_RULES`, `PLAIN_NOTATION_RULES`).
 
 ## Install
 
@@ -39,22 +39,22 @@ Every consumer pins a release tag. There is no package registry: installs come f
 
 ```bash
 # Python (Backend, pupiltree-agents, Fillers, worksheet.ai backend), through git
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.3.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.4.0#subdirectory=python"
 
 # Python without git (recommended for Docker builds: slim images have no git)
-pip install "pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree_latex-1.3.0-py3-none-any.whl"
+pip install "pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree_latex-1.4.0-py3-none-any.whl"
 # requirements.txt:
-# pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree_latex-1.3.0-py3-none-any.whl
+# pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree_latex-1.4.0-py3-none-any.whl
 ```
 
 ```bash
 # JavaScript (worksheet.ai, pupil-assessment-ui): package.json keeps this URL
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree-latex-1.3.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree-latex-1.4.0.tgz
 ```
 
 ```html
 <!-- Plain <script> pages (Fillers), next to KaTeX; Safari/iOS 14+, Chrome/Edge 80+, Firefox 78+ -->
-<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.3.0/js/dist/pupiltree-latex.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.4.0/js/dist/pupiltree-latex.iife.js"></script>
 ```
 
 ```yaml
@@ -65,7 +65,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.3.0
+      ref: v1.4.0
       path: dart/pupiltree_latex_flutter
 ```
 
@@ -75,7 +75,7 @@ dependencies:
   pupiltree_latex:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.3.0
+      ref: v1.4.0
       path: dart/pupiltree_latex
 ```
 

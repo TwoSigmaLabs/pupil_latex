@@ -35,7 +35,8 @@ from .commands import (
     UNSUPPORTED_COMMANDS,
 )
 from .fix import DECLARATION_COMMANDS, SINGLE_LETTER_UNITS, SYMBOL_COMMANDS, UNIT_BASES
-from .mojibake import HTML_ENTITIES
+from .mojibake import HTML5_ENTITIES, HTML_ENTITIES, HTML_NUMERIC_OVERRIDES
+from .to_plain import COMPARE_FOLD, ELEMENT_SYMBOLS
 from .unicode_math import (
     GREEK_MATH_LETTERS,
     GREEK_UNIT_SYMBOLS,
@@ -74,6 +75,10 @@ TABLES = {
     "greek_math_letters": "".join(sorted(GREEK_MATH_LETTERS)),
     "greek_unit_symbols": list(GREEK_UNIT_SYMBOLS),
     "declaration_commands": list(DECLARATION_COMMANDS),
+    "html5_entities": HTML5_ENTITIES,
+    "html_numeric_overrides": HTML_NUMERIC_OVERRIDES,
+    "compare_fold": COMPARE_FOLD,
+    "element_symbols": list(ELEMENT_SYMBOLS),
 }
 
 

@@ -28,13 +28,13 @@ Pin a release tag. All three packages share one version number. The repository `
 **Python** (Backend, pupiltree-agents, Fillers, worksheet.ai backend):
 
 ```bash
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.3.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.4.0#subdirectory=python"
 ```
 
 That line needs `git`. Slim Docker images do not have it, so for Docker builds install the wheel attached to the release instead (recommended). In `requirements.txt`:
 
 ```text
-pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree_latex-1.3.0-py3-none-any.whl
+pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree_latex-1.4.0-py3-none-any.whl
 ```
 
 The `[ftfy]` extra gives the best repair of garbled characters. Without it the library uses its built-in table, which covers the common cases.
@@ -42,11 +42,11 @@ The `[ftfy]` extra gives the best repair of garbled characters. Without it the l
 **JavaScript and React** (worksheet.ai, pupil-assessment-ui):
 
 ```bash
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree-latex-1.3.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree-latex-1.4.0.tgz
 npm install katex        # needed for rendering; react too if you use <MathText>
 ```
 
-`package.json` then lists `"@pupiltree/latex": "https://github.com/.../pupiltree-latex-1.3.0.tgz"`. No `vendor/` folder is needed.
+`package.json` then lists `"@pupiltree/latex": "https://github.com/.../pupiltree-latex-1.4.0.tgz"`. No `vendor/` folder is needed.
 
 **Flutter** (script_editor, tutor frontend), in `pubspec.yaml`:
 
@@ -55,7 +55,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.3.0
+      ref: v1.4.0
       path: dart/pupiltree_latex_flutter
 ```
 
@@ -64,10 +64,10 @@ Add only the Flutter package. It brings in the core `pupiltree_latex` package fo
 **Plain HTML pages with no bundler** (Fillers): load the bundle from jsDelivr, pinned to the tag, after KaTeX:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.3.0/js/dist/pupiltree-latex.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.4.0/js/dist/pupiltree-latex.iife.js"></script>
 ```
 
-To serve it yourself instead, download `pupiltree-latex.iife.js` from the v1.3.0 release and put it next to your KaTeX files.
+To serve it yourself instead, download `pupiltree-latex.iife.js` from the v1.4.0 release and put it next to your KaTeX files.
 
 **Upgrading**: when a new version is released, every consumer that already pins the library gets a `chore: bump pupiltree-latex to vX.Y.Z` pull request. Read the CHANGELOG section it links, let CI run, and merge.
 
@@ -105,6 +105,16 @@ Put the same LaTeX rules in your prompts so the model writes clean output in the
 from pupiltree_latex import inject_latex_rules
 system_prompt = inject_latex_rules(system_prompt)
 ```
+
+Pick the block by where the output is shown:
+
+| Output                                                            | Injector                       |
+| ----------------------------------------------------------------- | ------------------------------ |
+| rendered with KaTeX / flutter_math_fork (questions, explanations) | `inject_latex_rules`           |
+| read aloud by TTS (podcast and story scripts)                     | `inject_narrative_prose_rules` |
+| shown as plain text, no maths renderer (period plans, board text) | `inject_plain_notation_rules`  |
+
+`inject_plain_notation_rules` asks for maths in plain Unicode (`x²`, `√2`, `π`, `≤`, `H₂O`, `3 × 10⁸`) with no `$` and no backslash commands. Every injector is idempotent, so a per-call chokepoint and the generator can both call it. Don't paste the rule text into your own prompt: `python tools/check_prompt_parity.py <repo>` fails on a diverged copy and lists hand-written rules the library already carries.
 
 ## React frontend: one component
 
@@ -163,7 +173,7 @@ to_plain(r"$x^{2} + \frac{1}{2}$", "tts")                      # 'x squared + (1
 to_plain(r"$\frac{1}{3}$", "compare") == to_plain("1/3", "compare")   # True   answer matching
 ```
 
-`compare` gives one form for comparing a typed answer with a stored one: `x^2` and `$x^2$` both become `x^2`, `H_2O`, `H₂O` and `$\text{H}_{2}\text{O}$` become `H_2O`, `−3` becomes `-3`, `$90^\circ$` becomes `90°`, and spaces around operators go. `text` and `pdf` keep braces in prose (`A = {1, 2, 3}`), keep lesson-script labels at a line start (`\instruction:`; `pdf` drops the backslash) and keep the minus sign `−` as written.
+`compare` gives one form for comparing a typed answer with a stored one: `x^2` and `$x^2$` both become `x^2`, `H_2O`, `H₂O` and `$\text{H}_{2}\text{O}$` become `H_2O`, `−3` becomes `-3`, `$90^\circ$` becomes `90°`, and spaces around operators go. Since 1.4.0 `compare` also folds compatibility characters (full-width `ｘ＝５` → `x=5`, `½` → `1/2`, `㎝` → `cm`, `℃` → `°C`, thin and no-break spaces, `–` → `-`), decodes HTML entities like Python's `html.unescape` (`5&thinsp;m` → `5 m`), drops a leading option label (`B) 8-celled`, `(A) 2/4`, `C. x^2`, `D: 5` → the answer alone) and drops unpaired `$` / `\)` halves (`3.2$ m` → `3.2 m`), so a consumer needs no NFKC, entity or label code of its own. Every style repairs mojibake (`Ï€` → `π`); `text`/`pdf` write bare chemistry in prose as Unicode (`H_2SO_4` → `H₂SO₄`, identifiers such as `lo_0` stay). `text` and `pdf` keep braces in prose (`A = {1, 2, 3}`), keep lesson-script labels at a line start (`\instruction:`; `pdf` drops the backslash) and keep the minus sign `−` as written.
 
 ## Checking content: audit
 

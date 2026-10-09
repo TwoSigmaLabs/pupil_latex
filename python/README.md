@@ -3,7 +3,7 @@
 The reference implementation of the Pupiltree math-text contract. See the repository `README.md` and `spec/API.md` for the full description.
 
 ```bash
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.3.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.4.0#subdirectory=python"
 ```
 
 ```python
@@ -11,7 +11,7 @@ from pupiltree_latex import (
     repair, normalize, canonicalize, segment, to_plain, audit,
     repair_deep, canonicalize_deep, audit_deep,
     escape_latex_for_json, loads_latex_aware,
-    inject_latex_rules, inject_narrative_prose_rules,
+    inject_latex_rules, inject_narrative_prose_rules, inject_plain_notation_rules,
 )
 ```
 

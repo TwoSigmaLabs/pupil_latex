@@ -15,6 +15,8 @@ export {
   wrapUnicodeScripts,
   escapeTextSpecials,
   mergeAdjacentMath,
+  unwrapTypographicSpans,
+  TYPOGRAPHIC_SPANS,
   SYMBOL_COMMANDS,
 } from "./fix.js";
 export { mathMask, mathRanges } from "./spans.js";
@@ -32,7 +34,7 @@ export { canonicalize, canonicalizeDeep } from "./canonicalize.js";
 export type { CanonicalizeOptions } from "./canonicalize.js";
 export { segment, containsMath, isPlainProse } from "./segment.js";
 export type { Segment } from "./segment.js";
-export { toPlain, STYLES } from "./toPlain.js";
+export { toPlain, STYLES, bareChemistryToUnicode } from "./toPlain.js";
 export type { PlainStyle } from "./toPlain.js";
 export {
   audit,
@@ -49,7 +51,11 @@ export {
   loadsLatexAware,
   loadsModelJson,
 } from "./jsonTransport.js";
-export { fixMojibakeTable, unescapeHtmlEntities } from "./mojibake.js";
+export {
+  fixMojibakeTable,
+  fixMojibakeCore,
+  unescapeHtmlEntities,
+} from "./mojibake.js";
 export {
   normalizeHomoglyphs,
   convertCombiningVec,
@@ -82,4 +88,8 @@ export {
   GREEK_MATH_LETTERS,
   GREEK_UNIT_SYMBOLS,
   DECLARATION_COMMANDS,
+  HTML5_ENTITIES,
+  HTML_NUMERIC_OVERRIDES,
+  COMPARE_FOLD,
+  ELEMENT_SYMBOLS,
 } from "./tables.g.js";

@@ -1,6 +1,6 @@
 {
  "function": "to_plain",
- "version": "1.3.0",
+ "version": "1.4.0",
  "cases": [
   {
    "id": "curated-frac-and-script",
@@ -1127,6 +1127,1188 @@
     "B8",
     "audit6-2"
    ]
+  },
+  {
+   "id": "curated-v140-a1-fullwidth",
+   "input": "ｘ＝５",
+   "expected": "x=5",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-fullwidth-unit",
+   "input": "５ ｃｍ",
+   "expected": "5 cm",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-fullwidth-power",
+   "input": "ｘ^２",
+   "expected": "x^2",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-thin-space",
+   "input": "5 cm",
+   "expected": "5 cm",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-narrow-nbsp",
+   "input": "5 kg",
+   "expected": "5 kg",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-ideographic-space",
+   "input": "5　kg",
+   "expected": "5 kg",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-square-unit",
+   "input": "25 ㎝",
+   "expected": "25 cm",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-cubic-unit",
+   "input": "3 ㎤",
+   "expected": "3 cm^3",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-celsius",
+   "input": "10 ℃",
+   "expected": "10 °C",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-ohm-sign",
+   "input": "5 Ω",
+   "expected": "5 Ω",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-kelvin-sign",
+   "input": "300 K",
+   "expected": "300 K",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-micro-sign",
+   "input": "5 µm",
+   "expected": "5 μm",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-textmu-equals-micro",
+   "input": "5 $\\textmu$m",
+   "expected": "5 μm",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-vulgar-half",
+   "input": "½",
+   "expected": "1/2",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-vulgar-three-quarters",
+   "input": "¾ kg",
+   "expected": "3/4 kg",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-vulgar-third",
+   "input": "⅓",
+   "expected": "1/3",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-mixed-number",
+   "input": "1½",
+   "expected": "1 1/2",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-unicode-power",
+   "input": "x²",
+   "expected": "x^2",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-latex-power",
+   "input": "$x^2$",
+   "expected": "x^2",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-unicode-chem",
+   "input": "H₂O",
+   "expected": "H_2O",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-latex-chem",
+   "input": "$H_2O$",
+   "expected": "H_2O",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-en-dash",
+   "input": "2 – 3",
+   "expected": "2-3",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-non-breaking-hyphen",
+   "input": "x‑1",
+   "expected": "x-1",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-ordinal-as-degree",
+   "input": "90º",
+   "expected": "90°",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-ellipsis",
+   "input": "1, 2, …",
+   "expected": "1,2,...",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-ldots",
+   "input": "$1, 2, \\ldots$",
+   "expected": "1,2,...",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-ligature",
+   "input": "ﬁve",
+   "expected": "five",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-fraction-slash",
+   "input": "1⁄2",
+   "expected": "1/2",
+   "tags": [
+    "B8",
+    "v140-a1"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a1-text-style-keeps-fullwidth",
+   "input": "ｘ＝５",
+   "expected": "ｘ＝５",
+   "tags": [
+    "B7",
+    "v140-a1"
+   ]
+  },
+  {
+   "id": "curated-v140-a2-thinsp",
+   "input": "5&thinsp;m",
+   "expected": "5 m",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-ndash",
+   "input": "2&ndash;3",
+   "expected": "2-3",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-mdash-kept",
+   "input": "a&mdash;b",
+   "expected": "a—b",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-micro",
+   "input": "5 &micro;m",
+   "expected": "5 μm",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-times",
+   "input": "2 &times; 3",
+   "expected": "2*3",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-numeric-hex",
+   "input": "&#x3C0;r",
+   "expected": "πr",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-numeric-cp1252",
+   "input": "&#128;5",
+   "expected": "€5",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-legacy-no-semicolon",
+   "input": "x &lt y",
+   "expected": "x<y",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-unknown-kept",
+   "input": "AT&T &foo; Q&A",
+   "expected": "AT&T &foo; Q&A",
+   "tags": [
+    "B7",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a2-sup-entity",
+   "input": "x&sup2;",
+   "expected": "x^2",
+   "tags": [
+    "B8",
+    "v140-a2"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-stray-dollar",
+   "input": "3.2$ m",
+   "expected": "3.2 m",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-stray-closer",
+   "input": "\\frac{1}{2}\\)",
+   "expected": "1/2",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-stray-opener",
+   "input": "\\(x + 1",
+   "expected": "x+1",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-stray-bracket",
+   "input": "x = 2\\]",
+   "expected": "x=2",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-dollar-mid",
+   "input": "$x$ and 5$ more",
+   "expected": "x and 5 more",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-amount-kept",
+   "input": "costs $5.",
+   "expected": "costs $5.",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a3"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a3-paired-frac-text",
+   "input": "\\(\\frac{1}{2}\\)",
+   "expected": "1/2",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ]
+  },
+  {
+   "id": "curated-v140-a3-closer-then-word-text",
+   "input": "\\(\\frac{1}{2}\\) of it",
+   "expected": "1/2 of it",
+   "tags": [
+    "B4",
+    "B8",
+    "v140-a3"
+   ]
+  },
+  {
+   "id": "curated-v140-a4-paren-label",
+   "input": "B) 8-celled",
+   "expected": "8-celled",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-bracketed-label",
+   "input": "(A) 2/4",
+   "expected": "2/4",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-dot-label",
+   "input": "C. x^2",
+   "expected": "x^2",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-colon-label",
+   "input": "D: 5",
+   "expected": "5",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-lower-label",
+   "input": "a) $\\frac{1}{2}$",
+   "expected": "1/2",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-label-latex",
+   "input": "(B) $x^2$",
+   "expected": "x^2",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-bare-letter-kept",
+   "input": "B",
+   "expected": "B",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-label-alone-kept",
+   "input": "(C)",
+   "expected": "(C)",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-no-space-kept",
+   "input": "C.x",
+   "expected": "C.x",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-group-kept",
+   "input": "(a+b) 2",
+   "expected": "(a+b)2",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-mid-text-kept",
+   "input": "Vitamin C. Yes",
+   "expected": "Vitamin C. Yes",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-text-style-keeps-label",
+   "input": "B) 8-celled",
+   "expected": "B) 8-celled",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ]
+  },
+  {
+   "id": "curated-v140-a4-lone-letter-kept",
+   "input": "a: b",
+   "expected": "a: b",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-lone-capital-kept",
+   "input": "A) B",
+   "expected": "A)B",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-lone-letter-latex-kept",
+   "input": "(c) $x$",
+   "expected": "(c)x",
+   "tags": [
+    "B7",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a4-word-still-stripped",
+   "input": "a: bc",
+   "expected": "bc",
+   "tags": [
+    "B8",
+    "v140-a4"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-negative-numerator",
+   "input": "$\\frac{-1}{4}$",
+   "expected": "-1/4",
+   "tags": [
+    "B8",
+    "v140-a5"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-negative-numerator-text",
+   "input": "$\\frac{-1}{4}$",
+   "expected": "-1/4",
+   "tags": [
+    "B8",
+    "v140-a5"
+   ]
+  },
+  {
+   "id": "curated-v140-a5-negative-letter-grouped",
+   "input": "$\\frac{-x}{4}$",
+   "expected": "(-x)/4",
+   "tags": [
+    "B8",
+    "v140-a5"
+   ]
+  },
+  {
+   "id": "curated-v140-a5-negative-denominator-grouped",
+   "input": "$\\frac{y+1}{-2}$",
+   "expected": "(y+1)/(-2)",
+   "tags": [
+    "B8",
+    "v140-a5"
+   ]
+  },
+  {
+   "id": "curated-v140-a5-escaped-dollar-unit",
+   "input": "\\$0.008Wb",
+   "expected": "0.008Wb",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a5"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-escaped-dollar-command",
+   "input": "\\$4\\sqrt{3}s",
+   "expected": "4√3s",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a5"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-escaped-amount-kept",
+   "input": "\\$5",
+   "expected": "$5",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a5"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-escaped-amount-in-span-kept",
+   "input": "Cost \\(\\$5\\) total",
+   "expected": "Cost $5 total",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a5"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-escaped-amount-space-kept",
+   "input": "\\$5 each",
+   "expected": "$5 each",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a5"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a5-text-keeps-escaped-dollar",
+   "input": "\\$0.008Wb",
+   "expected": "$0.008Wb",
+   "tags": [
+    "B3",
+    "B8",
+    "v140-a5"
+   ]
+  },
+  {
+   "id": "curated-v140-a6-pi",
+   "input": "Value of Ï€",
+   "expected": "Value of π",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ]
+  },
+  {
+   "id": "curated-v140-a6-times",
+   "input": "5 Ã— 3",
+   "expected": "5 × 3",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ]
+  },
+  {
+   "id": "curated-v140-a6-with-math",
+   "input": "Ï€ and $x^2$",
+   "expected": "π and x²",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ]
+  },
+  {
+   "id": "curated-v140-a6-pdf",
+   "input": "Value of Ï€",
+   "expected": "Value of π",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ],
+   "style": "pdf"
+  },
+  {
+   "id": "curated-v140-a6-tts",
+   "input": "Value of Ï€",
+   "expected": "Value of π",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a6-compare",
+   "input": "2Ï€",
+   "expected": "2π",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ],
+   "style": "compare"
+  },
+  {
+   "id": "curated-v140-a6-entity-text",
+   "input": "a &amp; b",
+   "expected": "a & b",
+   "tags": [
+    "B6",
+    "B8",
+    "v140-a6"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-ldots",
+   "input": "leukocytes$\\ldots$",
+   "expected": "leukocytes…",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-dots",
+   "input": "and so on$\\dots$",
+   "expected": "and so on…",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-cdots",
+   "input": "$1 + 2 + \\cdots$",
+   "expected": "1 + 2 + ⋯",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-cdots-alone",
+   "input": "$\\cdots$",
+   "expected": "⋯",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-textellipsis",
+   "input": "wait$\\textellipsis$",
+   "expected": "wait…",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-textmu",
+   "input": "5 $\\textmu$m",
+   "expected": "5 µm",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ]
+  },
+  {
+   "id": "curated-v140-a7-pdf",
+   "input": "leukocytes$\\ldots$",
+   "expected": "leukocytes…",
+   "tags": [
+    "B8",
+    "v140-a7"
+   ],
+   "style": "pdf"
+  },
+  {
+   "id": "curated-v140-a8-typographic-ldots",
+   "input": "leukocytes$\\ldots$",
+   "expected": "leukocytes…",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-typographic-cdots",
+   "input": "and so on $\\cdots$",
+   "expected": "and so on …",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-ldots-in-formula",
+   "input": "$1, 2, \\ldots, n$",
+   "expected": "1, 2, dots, n",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-textmu-alone",
+   "input": "$\\textmu$",
+   "expected": "micro",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-textmu-in-formula",
+   "input": "$5 \\textmu m$",
+   "expected": "5 micro m",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-bare-sub-braced",
+   "input": "the term x_{n} is next",
+   "expected": "the term x sub n is next",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-bare-sub-single",
+   "input": "so a_1 = 3",
+   "expected": "so a sub 1 = 3",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-identifier-kept",
+   "input": "Gap: lo_0 and v_avg",
+   "expected": "Gap: lo_0 and v_avg",
+   "tags": [
+    "B7",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-chemistry-group-kept",
+   "input": "Water is H_{2}O",
+   "expected": "Water is H_{2}O",
+   "tags": [
+    "B7",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-script-then-power-kept",
+   "input": "The term x_0^2 here",
+   "expected": "The term x_0^2 here",
+   "tags": [
+    "B7",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-energy-level",
+   "input": "The energy E_n is negative.",
+   "expected": "The energy E sub n is negative.",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-snake-case-kept",
+   "input": "fallback_factual_error",
+   "expected": "fallback_factual_error",
+   "tags": [
+    "B7",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-unit",
+   "input": "$50^\\circ C$",
+   "expected": "50 degrees C",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-braced-unit",
+   "input": "$50^{\\circ}C$",
+   "expected": "50 degrees C",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-end",
+   "input": "$90^{\\circ}$",
+   "expected": "90 degrees",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-span-then-unit",
+   "input": "$50^\\circ$C",
+   "expected": "50 degrees C",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-prose",
+   "input": "heat to 50^\\circ C now",
+   "expected": "heat to 50 degrees C now",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-prose-glued",
+   "input": "50^{\\circ}C",
+   "expected": "50 degrees C",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a8-degrees-prose-end",
+   "input": "It is 90^\\circ.",
+   "expected": "It is 90 degrees.",
+   "tags": [
+    "B8",
+    "v140-a8"
+   ],
+   "style": "tts"
+  },
+  {
+   "id": "curated-v140-a9-sulfuric",
+   "input": "H_2SO_4 is an acid",
+   "expected": "H₂SO₄ is an acid",
+   "tags": [
+    "B8",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-carbonate",
+   "input": "Add Na_2CO_3 to Ca(OH)_2.",
+   "expected": "Add Na₂CO₃ to Ca(OH)₂.",
+   "tags": [
+    "B8",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-braced",
+   "input": "Water is H_{2}O",
+   "expected": "Water is H₂O",
+   "tags": [
+    "B8",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-chlorine",
+   "input": "Cl_2 gas",
+   "expected": "Cl₂ gas",
+   "tags": [
+    "B8",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-pdf",
+   "input": "CO_2 and H_2O",
+   "expected": "CO₂ and H₂O",
+   "tags": [
+    "B8",
+    "v140-a9"
+   ],
+   "style": "pdf"
+  },
+  {
+   "id": "curated-v140-a9-identifier-lo",
+   "input": "Gap: lo_0",
+   "expected": "Gap: lo_0",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-snake-case",
+   "input": "fallback_factual_error",
+   "expected": "fallback_factual_error",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-v-avg",
+   "input": "v_avg = 5",
+   "expected": "v_avg = 5",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-enum",
+   "input": "MCQ_SINGLE and q_001_easy",
+   "expected": "MCQ_SINGLE and q_001_easy",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-not-an-element",
+   "input": "E_1 and Q_2",
+   "expected": "E_1 and Q_2",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-glued-identifier",
+   "input": "XH_2O_id",
+   "expected": "XH_2O_id",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-class-name",
+   "input": "10_A",
+   "expected": "10_A",
+   "tags": [
+    "B7",
+    "v140-a9"
+   ]
+  },
+  {
+   "id": "curated-v140-a9-compare-unchanged",
+   "input": "H_2SO_4",
+   "expected": "H_2SO_4",
+   "tags": [
+    "B8",
+    "v140-a9"
+   ],
+   "style": "compare"
   },
   {
    "id": "backend-latex-to-plain-0001",

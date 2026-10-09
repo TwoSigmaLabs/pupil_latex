@@ -12,6 +12,7 @@ import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
 from .commands import KATEX_COMMANDS, SCRIPT_LABELS
+from .mojibake import fix_mojibake_core, fix_mojibake_table, unescape_html_entities
 from .normalize import currency_positions, trim_padded_spans_keep_currency
 from .repair import repair
 from .segment import segment
@@ -81,7 +82,8 @@ LATEX_CMD_MAP: Dict[str, str] = {
     "pm": "±",
     "mp": "∓",
     "cdot": "·",
-    "cdots": "···",
+    "cdots": "⋯",
+    "textellipsis": "…",
     "ldots": "…",
     "dots": "…",
     "leq": "≤",
@@ -317,6 +319,9 @@ _SCRIPT_LABEL_ANY_RE = re.compile(r"\\([a-z][a-z_]*):")
 # delimiter strip below removes.
 _PLAIN_SPAN_RE = re.compile(r"\$\$[\s\S]+?\$\$|\$[^$]+\$")
 _SIMPLE_FRACTION_PART_RE = re.compile(r"[0-9]+(?:\.[0-9]+)?|[^\W\d_]")
+# A negative number is a simple NUMERATOR too: `\frac{-1}{4}` → `-1/4`
+# (tag `v140-a5`); a negative denominator keeps its parentheses (`1/(-4)`).
+_SIGNED_NUMBER_RE = re.compile(r"[-−][0-9]+(?:\.[0-9]+)?")
 
 
 def _matching_brace(s: str, k: int, skip: Optional[bytearray] = None) -> int:
@@ -437,6 +442,128 @@ def _park_currency_dollars(s: str) -> str:
         if not in_math[k] and _CURRENCY_AT_RE.match(s, k):
             chars[k] = _DOLLAR_SENTINEL
     return "".join(chars)
+
+
+# (`\$5\)` is an amount inside `\(…\)`: a closing delimiter is not a unit.)
+_ESCAPED_CUT_OFF_DOLLAR_RE = re.compile(
+    r"\\\$(?=[0-9]+(?:[.,][0-9]+)*(?:[A-Za-z^_{]|\\[A-Za-z]))"
+)
+
+# The chemical element symbols (exported as `element_symbols.json`).
+ELEMENT_SYMBOLS: Tuple[str, ...] = tuple(
+    (
+        "H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe "
+        "Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In "
+        "Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf "
+        "Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am "
+        "Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og"
+    ).split()
+)
+_ELEMENTS = frozenset(ELEMENT_SYMBOLS)
+_SUBSCRIPT_DIGITS = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+
+
+def _is_ascii_word_char(ch: str) -> bool:
+    return ("a" <= ch <= "z") or ("A" <= ch <= "Z") or ("0" <= ch <= "9") or ch == "_"
+
+
+def _chem_digits(s: str, i: int) -> Tuple[str, int]:
+    """A digit subscript at ``i`` (`_2`, `_{12}`): its digits and the index
+    after it, or ``("", i)``."""
+    if i >= len(s) or s[i] != "_":
+        return "", i
+    j = i + 1
+    if j < len(s) and s[j] == "{":
+        k = j + 1
+        while k < len(s) and "0" <= s[k] <= "9":
+            k += 1
+        if k > j + 1 and k < len(s) and s[k] == "}":
+            return s[j + 1 : k], k + 1
+        return "", i
+    k = j
+    while k < len(s) and "0" <= s[k] <= "9":
+        k += 1
+    return (s[j:k], k) if k > j else ("", i)
+
+
+def _chem_element(s: str, i: int) -> int:
+    """Index after the element symbol at ``i`` (two letters first), or -1."""
+    if i < len(s) and "A" <= s[i] <= "Z":
+        if i + 1 < len(s) and "a" <= s[i + 1] <= "z" and s[i : i + 2] in _ELEMENTS:
+            return i + 2
+        if s[i] in _ELEMENTS:
+            return i + 1
+    return -1
+
+
+def _chem_token(s: str, i: int, depth: int = 0) -> Tuple[str, int, int]:
+    """Read element symbols, `(…)` groups and digit subscripts from ``i``.
+    Returns (converted text, end index, number of subscripts)."""
+    out: List[str] = []
+    subs = 0
+    while i < len(s):
+        if s[i] == "(" and depth == 0:
+            inner, j, inner_subs = _chem_token(s, i + 1, 1)
+            if not inner or j >= len(s) or s[j] != ")":
+                break
+            out.append("(" + inner + ")")
+            subs += inner_subs
+            i = j + 1
+        else:
+            j = _chem_element(s, i)
+            if j < 0:
+                break
+            out.append(s[i:j])
+            i = j
+        digits, j = _chem_digits(s, i)
+        if digits:
+            out.append(digits.translate(_SUBSCRIPT_DIGITS))
+            subs += 1
+            i = j
+    return "".join(out), i, subs
+
+
+def bare_chemistry_to_unicode(text: str) -> str:
+    """`H_2SO_4` → `H₂SO₄`, `Ca(OH)_2` → `Ca(OH)₂` in prose (tag `v140-a9`).
+
+    A token is a run of element symbols (`ELEMENT_SYMBOLS`, two-letter first)
+    and `(…)` groups, each optionally followed by a digit subscript (`_2`,
+    `_{12}`), with at least one subscript. It must not touch an ASCII letter,
+    digit, `_` or `\\` before it, nor an ASCII letter, digit or `_` after it,
+    and it is never inside a math span. So `lo_0`, `v_avg`, `E_1`,
+    `fallback_factual_error`, `MCQ_SINGLE`, `XH_2O_id` and `10_A` stay."""
+    if "_" not in text:
+        return text
+    mask: Optional[List[bool]] = None
+    out: List[str] = []
+    last = 0
+    i, n = 0, len(text)
+    while i < n:
+        ch = text[i]
+        if not ("A" <= ch <= "Z" or ch == "("):
+            i += 1
+            continue
+        prev = text[i - 1] if i > 0 else ""
+        if prev and (_is_ascii_word_char(prev) or prev == "\\"):
+            i += 1
+            continue
+        converted, end, subs = _chem_token(text, i)
+        nxt = text[end] if end < n else ""
+        if not subs or (nxt and _is_ascii_word_char(nxt)):
+            i += 1
+            continue
+        if mask is None:
+            mask = math_mask(text)
+        if mask[i]:
+            i = end
+            continue
+        out.append(text[last:i])
+        out.append(converted)
+        last = i = end
+    if not out:
+        return text
+    out.append(text[last:])
+    return "".join(out)
 
 
 _LATEX_DISPLAY_DOLLAR_RE = re.compile(r"\$\$(.+?)\$\$", re.DOTALL)
@@ -746,11 +873,13 @@ def _environment(name: str, content: str, mark_accents: bool) -> str:
     return "; ".join(joiner.join(c for c in row if c) for row in rows)
 
 
-def _fraction_part(part: str) -> str:
+def _fraction_part(part: str, numerator: bool = False) -> str:
     """A numerator or denominator: a single token (a number or one letter,
     `22`, `3.5`, `x`, `π`) or one parenthesised group stays bare; anything
     compound gets parentheses (`(a+b)`)."""
     core = part.strip()
+    if numerator and _SIGNED_NUMBER_RE.fullmatch(core):
+        return core
     if _SIMPLE_FRACTION_PART_RE.fullmatch(core) or _is_wrapped(core):
         return core
     return f"({part})"
@@ -767,6 +896,9 @@ def _fraction_needs_parens(out: List[str], s: str, i: int) -> bool:
             prev = piece[-1]
             break
     nxt = s[i] if i < len(s) else ""
+    # A closing `\)` / `\]` ends the formula; it is not a term (`v140-a3`).
+    if nxt == "\\" and i + 1 < len(s) and s[i + 1] in ")]":
+        nxt = ""
     return (
         (prev.isalnum() or prev == "/")
         or nxt.isalnum()
@@ -783,7 +915,7 @@ def _command(name: str, s: str, j: int, mark_accents: bool) -> Tuple[str, int]:
         a = _convert(num or "", mark_accents)
         b = _convert(den or "", mark_accents)
         if name in _FRAC_CMDS:
-            return f"{_fraction_part(a)}/{_fraction_part(b)}", j
+            return f"{_fraction_part(a, numerator=True)}/{_fraction_part(b)}", j
         return f"C({a}, {b})", j
     if name == "sqrt":
         k = j
@@ -933,6 +1065,8 @@ def latex_to_plain(
     mark_accents: bool = False,
     keep_label_backslash: bool = True,
     force: bool = False,
+    compare: bool = False,
+    bare_chemistry: bool = False,
 ) -> Any:
     """Convert a LaTeX-math-laced string into plain text/Unicode.
 
@@ -958,6 +1092,8 @@ def latex_to_plain(
     """
     if not isinstance(text, str):
         return text
+    if bare_chemistry:
+        text = bare_chemistry_to_unicode(text)
     if not force and "$" not in text and "\\" not in text and "{" not in text:
         return text
 
@@ -976,6 +1112,12 @@ def latex_to_plain(
     # Amounts outside the `segment` math spans (`Rs $5 and $10`, `costs $5.`)
     # are literal dollars, never paired as a span (tag `audit5-1`).
     out = _park_currency_dollars(out)
+
+    # `compare`: an escaped dollar before an amount that runs into a unit or
+    # a command (`\$0.008Wb`, `\$4\sqrt{3}`) is a cut-off span's opener, not
+    # money; `\$5`, `\$5 each` stay (tag `v140-a5`).
+    if compare and "\\$" in out:
+        out = _ESCAPED_CUT_OFF_DOLLAR_RE.sub("", out)
 
     # Literal `\n` escapes first — before the greedy command scanner can claim
     # them as `\nStatement`-style pseudo-commands.
@@ -1045,6 +1187,10 @@ def latex_to_plain(
             out = out[1:]
         elif out.endswith("$"):
             out = out[:-1]
+    # `compare`: every span was stripped and amounts are parked, so a `$`
+    # left now is an unpaired half (`3.2$ m` → `3.2 m`; tag `v140-a3`).
+    if compare:
+        out = out.replace("$", "")
 
     # Literal characters come back now that grouping and delimiters are done.
     out = (
@@ -1087,6 +1233,12 @@ _SPOKEN_OPERATORS: Tuple[Tuple[str, str], ...] = (
     (r"\infty", "infinity"),
     (r"\int", "integral of"),
     (r"\sum", "sum of"),
+    # tag `v140-a8`
+    (r"\ldots", "dots"),
+    (r"\cdots", "dots"),
+    (r"\dots", "dots"),
+    (r"\textellipsis", "dots"),
+    (r"\textmu", "micro"),
 )
 
 
@@ -1340,7 +1492,8 @@ def _strip_outer_parens(text: str) -> str:
 
 def _latex_to_spoken(latex: str) -> str:
     text = _spoken_structures(latex.strip())
-    text = re.sub(r"\^\s*\{?\s*\\circ\s*\}?", " degrees", text)
+    # `50^\circ C` → "50 degrees C": room on both sides (tag `v140-a8`).
+    text = re.sub(r"\^\s*\{?\s*\\circ\s*\}?", " degrees ", text)
     base = r"([\w)\]|])"
     text = re.sub(base + r"\^(?:\{2\}|2)(?![0-9])", r"\1 squared", text)
     text = re.sub(base + r"\^(?:\{3\}|3)(?![0-9])", r"\1 cubed", text)
@@ -1357,23 +1510,73 @@ def _latex_to_spoken(latex: str) -> str:
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\(\s+", "(", text)
     text = re.sub(r"\s+\)", ")", text)
+    # A word before a comma or semicolon (`\ldots,` → "dots,").
+    text = re.sub(r" +([,;])", r"\1", text)
     return _strip_outer_parens(text.strip())
+
+
+# A span whose whole body is typography is read as the character itself, so
+# the voice pauses (`leukocytes$\ldots$` → "leukocytes…"; tag `v140-a8`).
+_SPOKEN_TYPOGRAPHIC_SPANS = {
+    "\\ldots": "…",
+    "\\dots": "…",
+    "\\cdots": "…",
+    "\\textellipsis": "…",
+    "\\textmu": "micro",
+}
+# A bare single-letter subscript in prose (`x_{n}`, `a_1`): "x sub n". The
+# base is one ASCII letter with no letter, digit, `_` or `\` before it, and
+# the subscript must not run into a word, a superscript or a group (`v_avg`,
+# `lo_0`, `H_2O`, `H_{2}O`, `x_0^2` and `fallback_factual_error` stay).
+_PROSE_SUBSCRIPT_RE = re.compile(
+    r"(^|[^A-Za-z0-9_\\])([A-Za-z])_(?:\{([A-Za-z0-9]+)\}|([A-Za-z0-9]))(?![A-Za-z0-9_^{])"
+)
+
+
+def _spoken_prose_subscripts(text: str) -> str:
+    if "_" not in text:
+        return text
+    return _PROSE_SUBSCRIPT_RE.sub(
+        lambda m: (
+            m.group(1)
+            + m.group(2)
+            + " sub "
+            + (m.group(3) if m.group(3) is not None else m.group(4))
+        ),
+        text,
+    )
+
+
+# Bare `50^\circ C` / `50^{\circ}C` in prose (tag `v140-a8`).
+_PROSE_DEGREES_RE = re.compile(r"\^[ \t]*\{?[ \t]*\\circ(?![A-Za-z])[ \t]*\}?")
+
+
+def _spoken_prose_degrees(text: str) -> str:
+    if "\\circ" not in text:
+        return text
+    return _PROSE_DEGREES_RE.sub(
+        lambda m: " degrees" + (" " if text[m.end() : m.end() + 1].isalnum() else ""),
+        text,
+    )
 
 
 def _to_spoken(text: str) -> str:
     parts: List[str] = []
     for seg in segment(text):
-        parts.append(
-            _latex_to_spoken(seg["value"])
-            if seg["kind"] == "math"
-            # Bare LaTeX in prose (`rac{1}{2}` never wrapped): fractions,
-            # roots, wrappers and environments are read the same way.
-            else (
-                _spoken_structures(seg["value"], prose=True)
-                if "\\" in seg["value"]
-                else seg["value"]
+        value = seg["value"]
+        if seg["kind"] == "math":
+            typographic = _SPOKEN_TYPOGRAPHIC_SPANS.get(value.strip())
+            parts.append(
+                typographic if typographic is not None else _latex_to_spoken(value)
             )
-        )
+            continue
+        # `$50^\circ$C`: a degrees span runs into a unit (tag `v140-a8`).
+        if parts and parts[-1].endswith("degrees") and value[:1].isalnum():
+            value = " " + value
+        value = _spoken_prose_degrees(_spoken_prose_subscripts(value))
+        # Bare LaTeX in prose (`rac{1}{2}` never wrapped): fractions,
+        # roots, wrappers and environments are read the same way.
+        parts.append(_spoken_structures(value, prose=True) if "\\" in value else value)
     cleaned = "".join(parts)
     cleaned = re.sub(
         r"\\(?:frac|sqrt|sum|int|prod|lim|log|ln|sin|cos|tan)\b", "", cleaned
@@ -1394,26 +1597,125 @@ _SUBSCRIPT_TO_ASCII = {
 }
 _SUPERSCRIPT_RUN_RE = re.compile("[" + "".join(_SUPERSCRIPT_TO_ASCII) + "]+")
 _SUBSCRIPT_RUN_RE = re.compile("[" + "".join(_SUBSCRIPT_TO_ASCII) + "]+")
-# Characters `compare` folds to one ASCII form.
-_COMPARE_FOLD = {
+
+# Code point ranges whose compatibility decomposition `compare` applies
+# (tag `v140-a1`): NBSP and the micro sign, vulgar fractions, typographic
+# spaces, the two-dot and three-dot leaders, letterlike symbols (℃, Ω, K,
+# Å), CJK unit squares (㎝, ㎤), ligatures, full-width forms.
+_COMPARE_COMPAT_RANGES = (
+    (0x00A0, 0x00A0),
+    (0x00B5, 0x00B5),
+    (0x00BC, 0x00BE),
+    (0x2000, 0x200A),
+    (0x2024, 0x2026),
+    (0x202F, 0x202F),
+    (0x205F, 0x205F),
+    (0x2100, 0x214F),
+    (0x2150, 0x215F),
+    (0x2189, 0x2189),
+    (0x3000, 0x3000),
+    (0x3380, 0x33FF),
+    (0xFB00, 0xFB06),
+    (0xFF01, 0xFF5E),
+    (0xFFE0, 0xFFE6),
+)
+_COMPARE_SCRIPT_CHARS = frozenset(_SUPERSCRIPT_TO_ASCII) | frozenset(
+    _SUBSCRIPT_TO_ASCII
+)
+# Folded on purpose, beyond compatibility decomposition: dashes and minus
+# signs, multiplication and division signs, the fraction and division
+# slashes, and the masculine ordinal typed for a degree sign (`90º`).
+_COMPARE_BASE_FOLD = {
     "−": "-",  # minus sign
     "‐": "-",  # hyphen
+    "\u2011": "-",  # non-breaking hyphen
     "‒": "-",  # figure dash
+    "–": "-",  # en dash
     "×": "*",
     "·": "*",
     "⋅": "*",
     "∗": "*",
     "÷": "/",
+    "⁄": "/",  # fraction slash
+    "∕": "/",  # division slash
+    "º": "°",  # masculine ordinal
 }
+
+
+def _compat_decompose(ch: str) -> str:
+    """Full compatibility decomposition of ``ch`` that stops at a Unicode
+    super/subscript (`㎤` → `cm³`, not `cm3`), so the script fold below
+    still sees it."""
+    if ch in _COMPARE_SCRIPT_CHARS:
+        return ch
+    decomposition = unicodedata.decomposition(ch)
+    if not decomposition:
+        return ch
+    parts = decomposition.split()
+    if parts[0].startswith("<"):
+        parts = parts[1:]
+    return "".join(_compat_decompose(chr(int(p, 16))) for p in parts)
+
+
+def _build_compare_fold() -> Dict[str, str]:
+    fold = dict(_COMPARE_BASE_FOLD)
+    for lo, hi in _COMPARE_COMPAT_RANGES:
+        for cp in range(lo, hi + 1):
+            ch = chr(cp)
+            if ch in fold or ch in _COMPARE_SCRIPT_CHARS:
+                continue
+            value = unicodedata.normalize("NFC", _compat_decompose(ch))
+            if value == ch or any(unicodedata.combining(c) for c in value):
+                continue
+            fold[ch] = "".join(_COMPARE_BASE_FOLD.get(c, c) for c in value)
+    return fold
+
+
+# Exported as `corpus/tables/compare_fold.json`; the Dart and JS ports read
+# that table, so the three languages fold identically without platform NFKC.
+COMPARE_FOLD: Dict[str, str] = _build_compare_fold()
 _COMPARE_SPACE_RE = re.compile(r"\s+")
 _COMPARE_OPERATOR_SPACE_RE = re.compile(r" ?([+\-*/=<>^_(),{}\[\]]) ?")
+# One leading option label (tag `v140-a4`): `A)`, `(B)`, `C.`, `D:`, `a)` —
+# a letter A–H in either case — followed by whitespace and an answer.
+_OPTION_LABEL_RE = re.compile(r"^\s*(?:\([A-Ha-h]\)|[A-Ha-h][).:])\s+(?=\S)")
+_LONE_LETTER_RE = re.compile(r"[A-Za-z]\s*")
+
+
+def _apply_compare_fold(text: str) -> str:
+    """`COMPARE_FOLD` per character. A folded value that starts with a digit
+    and holds a `/` (a vulgar fraction) gets a space after a digit, so `1½`
+    reads `1 1/2`, not `11/2`."""
+    out: List[str] = []
+    for ch in text:
+        value = COMPARE_FOLD.get(ch)
+        if value is None:
+            out.append(ch)
+            continue
+        if (
+            value[:1].isascii()
+            and value[:1].isdigit()
+            and "/" in value
+            and out
+            and out[-1][-1:].isascii()
+            and out[-1][-1:].isdigit()
+        ):
+            value = " " + value
+        out.append(value)
+    return "".join(out)
 
 
 def _fold_for_compare(text: str) -> str:
-    """One ASCII-leaning form for answer comparison: scripts as `^…`/`_…`,
-    minus signs and multiplication dots folded, whitespace collapsed and
-    removed around operators and brackets."""
-    text = "".join(_COMPARE_FOLD.get(ch, ch) for ch in text)
+    """One ASCII-leaning form for answer comparison: a leading option label
+    dropped, compatibility characters folded, scripts as `^…`/`_…`, minus
+    signs and multiplication dots folded, whitespace collapsed and removed
+    around operators and brackets."""
+    label = _OPTION_LABEL_RE.match(text)
+    # Never strip when a lone letter would remain: `a: b` must not compare
+    # as the option letter `b` (tag `v140-a4`).
+    if label and not _LONE_LETTER_RE.fullmatch(text[label.end() :]):
+        text = text[label.end() :]
+    text = _apply_compare_fold(text)
     text = _SUPERSCRIPT_RUN_RE.sub(
         lambda m: "^" + "".join(_SUPERSCRIPT_TO_ASCII[c] for c in m.group(0)), text
     )
@@ -1442,14 +1744,25 @@ def to_plain(text: Any, style: str = "text") -> Any:
     # A form feed / backspace / TAB that was a command (`<FF>rac`, `<TAB>imes`)
     # is restored first, with the same `guessWhitespace` as `fix` (`normalize`).
     text = repair(text)
+    # Mojibake is repaired as `normalize` does (tag `v140-a6`). `compare`
+    # decodes HTML entities the `html.unescape` way first, once (`v140-a2`).
+    if style == "compare":
+        text = fix_mojibake_core(unescape_html_entities(text))
+    else:
+        text = fix_mojibake_table(text)
     # A padded span (`$2x + 3 $`) is trimmed as `normalize` does, amounts
     # masked (tag `audit6-2`).
     text = trim_padded_spans_keep_currency(text)
     if style == "tts":
         return _to_spoken(text)
     if style == "compare":
-        plain = latex_to_plain(text, keep_label_backslash=False, force=True)
+        plain = latex_to_plain(
+            text, keep_label_backslash=False, force=True, compare=True
+        )
         return _fold_for_compare(plain)
     return latex_to_plain(
-        text, mark_accents=(style == "pdf"), keep_label_backslash=(style == "text")
+        text,
+        mark_accents=(style == "pdf"),
+        keep_label_backslash=(style == "text"),
+        bare_chemistry=True,
     )

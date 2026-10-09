@@ -19,7 +19,7 @@
 
 import { canonicalize, mapContentStrings } from "./canonicalize.js";
 import type { CanonicalizeOptions } from "./canonicalize.js";
-import { isAsciiDigit, matchAt } from "./chars.js";
+import { isAsciiDigit, matchAt, pyStrip } from "./chars.js";
 import { padSpan, wrapUnicodeChemistry } from "./chemistry.js";
 import { SYMBOL_COMMANDS } from "./commands.js";
 import {
@@ -30,7 +30,7 @@ import {
 } from "./lookbehind.js";
 import { normalize } from "./normalize.js";
 import { segment } from "./segment.js";
-import { delimiterWidth } from "./spans.js";
+import { delimiterWidth, mathMask } from "./spans.js";
 import {
   DECLARATION_COMMANDS,
   SINGLE_LETTER_UNITS,
@@ -415,6 +415,74 @@ export function mergeAdjacentMath(text: unknown): unknown {
   return out.join("");
 }
 
+// A span whose whole body is one of these is typography, not maths (tag
+// `v140-a7`): `leukocytes$\ldots$` → `leukocytes…`. `\textmu` becomes
+// `$\mu$`, not a bare `µ`: `canonicalize` wraps a bare `µ` as `$\mu$`, so
+// that is the fixed point (`$\cdots$` stays for the same reason).
+export const TYPOGRAPHIC_SPANS: Readonly<Record<string, string>> = {
+  "\\ldots": "…",
+  "\\dots": "…",
+  "\\textellipsis": "…",
+  "\\textmu": "$\\mu$",
+};
+
+/**
+ * Replace each math span whose trimmed body is a key of `TYPOGRAPHIC_SPANS`
+ * (inline or display) by its value; every other span and all prose are
+ * copied as written.
+ */
+export function unwrapTypographicSpans<T>(text: T): T;
+export function unwrapTypographicSpans(text: unknown): unknown {
+  if (typeof text !== "string" || !text.includes("\\")) return text;
+  const names = Object.keys(TYPOGRAPHIC_SPANS);
+  if (!names.some((name) => text.includes(name))) return text;
+  let out = "";
+  let changed = false;
+  for (const seg of segment(text)) {
+    if (seg.kind === "math") {
+      const key = pyStrip(seg.value);
+      if (Object.prototype.hasOwnProperty.call(TYPOGRAPHIC_SPANS, key)) {
+        out += TYPOGRAPHIC_SPANS[key];
+        changed = true;
+        continue;
+      }
+    }
+    out += seg.raw;
+  }
+  return unwrapPaddedTypographic(changed ? out : text);
+}
+
+// `wait$ \ldots $now`: a padded pair that `segment` does not read as math
+// (whitespace right inside a delimiter). The dollars go and the padding
+// stays (`wait … now`); `canonicalize` would otherwise wrap the bare command
+// again inside the stray dollars (`wait$ $\ldots$ $now`).
+const PADDED_TYPOGRAPHIC_RE =
+  /\$([ \t]*)\\(ldots|dots|textellipsis|textmu)([ \t]*)\$/g;
+
+function unwrapPaddedTypographic(text: string): string {
+  if (!text.includes("$")) return text;
+  let mask: boolean[] | null = null;
+  let out = "";
+  let last = 0;
+  let changed = false;
+  PADDED_TYPOGRAPHIC_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = PADDED_TYPOGRAPHIC_RE.exec(text)) !== null) {
+    const start = m.index;
+    const end = start + m[0].length;
+    if (start > 0 && (text[start - 1] === "\\" || text[start - 1] === "$"))
+      continue;
+    if (text[end] === "$") continue;
+    if (mask === null) mask = mathMask(text);
+    if (mask[start]) continue;
+    out +=
+      text.slice(last, start) + m[1] + TYPOGRAPHIC_SPANS["\\" + m[2]] + m[3];
+    last = end;
+    changed = true;
+  }
+  return changed ? out + text.slice(last) : text;
+}
+
 // ---------------------------------------------------------------------------
 // The one call
 // ---------------------------------------------------------------------------
@@ -426,7 +494,10 @@ export function mergeAdjacentMath(text: unknown): unknown {
 export function fix<T>(text: T, options?: CanonicalizeOptions): T;
 export function fix(text: unknown, options: CanonicalizeOptions = {}): unknown {
   if (typeof text !== "string" || !text) return text;
-  let out: string = canonicalize(normalize(text), options);
+  let out: string = canonicalize(
+    unwrapTypographicSpans(normalize(text)),
+    options,
+  );
   out = wrapBareSymbolCommands(out);
   out = wrapUnicodeChemistry(out);
   out = wrapUnicodeScripts(out);
