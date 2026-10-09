@@ -28,13 +28,13 @@ Pin a release tag. All three packages share one version number. The repository `
 **Python** (Backend, pupiltree-agents, Fillers, worksheet.ai backend):
 
 ```bash
-pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.3.0#subdirectory=python"
+pip install "pupiltree-latex[ftfy] @ git+https://github.com/TwoSigmaLabs/pupil_latex@v1.4.0#subdirectory=python"
 ```
 
 That line needs `git`. Slim Docker images do not have it, so for Docker builds install the wheel attached to the release instead (recommended). In `requirements.txt`:
 
 ```text
-pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree_latex-1.3.0-py3-none-any.whl
+pupiltree-latex[ftfy] @ https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree_latex-1.4.0-py3-none-any.whl
 ```
 
 The `[ftfy]` extra gives the best repair of garbled characters. Without it the library uses its built-in table, which covers the common cases.
@@ -42,11 +42,11 @@ The `[ftfy]` extra gives the best repair of garbled characters. Without it the l
 **JavaScript and React** (worksheet.ai, pupil-assessment-ui):
 
 ```bash
-npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.3.0/pupiltree-latex-1.3.0.tgz
+npm install https://github.com/TwoSigmaLabs/pupil_latex/releases/download/v1.4.0/pupiltree-latex-1.4.0.tgz
 npm install katex        # needed for rendering; react too if you use <MathText>
 ```
 
-`package.json` then lists `"@pupiltree/latex": "https://github.com/.../pupiltree-latex-1.3.0.tgz"`. No `vendor/` folder is needed.
+`package.json` then lists `"@pupiltree/latex": "https://github.com/.../pupiltree-latex-1.4.0.tgz"`. No `vendor/` folder is needed.
 
 **Flutter** (script_editor, tutor frontend), in `pubspec.yaml`:
 
@@ -55,7 +55,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.3.0
+      ref: v1.4.0
       path: dart/pupiltree_latex_flutter
 ```
 
@@ -64,10 +64,10 @@ Add only the Flutter package. It brings in the core `pupiltree_latex` package fo
 **Plain HTML pages with no bundler** (Fillers): load the bundle from jsDelivr, pinned to the tag, after KaTeX:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.3.0/js/dist/pupiltree-latex.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TwoSigmaLabs/pupil_latex@v1.4.0/js/dist/pupiltree-latex.iife.js"></script>
 ```
 
-To serve it yourself instead, download `pupiltree-latex.iife.js` from the v1.3.0 release and put it next to your KaTeX files.
+To serve it yourself instead, download `pupiltree-latex.iife.js` from the v1.4.0 release and put it next to your KaTeX files.
 
 **Upgrading**: when a new version is released, every consumer that already pins the library gets a `chore: bump pupiltree-latex to vX.Y.Z` pull request. Read the CHANGELOG section it links, let CI run, and merge.
 

@@ -2,7 +2,7 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
-## Unreleased — 1.4.0
+## 1.4.0 (2026-10-09)
 
 ### Group A: plain text, answer comparison and speech (tags `v140-a1`–`v140-a9`)
 

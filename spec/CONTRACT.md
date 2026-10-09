@@ -1,6 +1,6 @@
 # The Pupiltree math-text contract
 
-Version 1.3.0 (2026-10-08). This file is the single description of what math text looks like on the wire between the LLM services, the database and every renderer. `pupiltree-latex` implements it; `python/pupiltree_latex/prompt_rules.py` carries the same rules as prompt text.
+Version 1.4.0 (2026-10-09). This file is the single description of what math text looks like on the wire between the LLM services, the database and every renderer. `pupiltree-latex` implements it; `python/pupiltree_latex/prompt_rules.py` carries the same rules as prompt text.
 
 ## If you read only one thing
 

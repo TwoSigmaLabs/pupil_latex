@@ -1,6 +1,6 @@
 name: pupiltree_latex
 description: One contract, one corpus, one API for Pupiltree math text (repair, normalize, canonicalize, segment, toPlain, audit, JSON transport).
-version: 1.3.0
+version: 1.4.0
 publish_to: none
 
 environment:

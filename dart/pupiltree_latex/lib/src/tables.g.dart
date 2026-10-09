@@ -5734,4 +5734,4 @@ const Set<String> kElementSymbols = {
 };
 
 /// Version of the tables (and of the contract they belong to).
-const String kVersion = '1.3.0';
+const String kVersion = '1.4.0';
