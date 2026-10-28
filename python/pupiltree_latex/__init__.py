@@ -29,6 +29,7 @@ from .fix import (
     fix,
     fix_deep,
     merge_adjacent_math,
+    needs_fix,
     unwrap_typographic_spans,
     wrap_bare_symbol_commands,
     wrap_unicode_chemistry,
@@ -52,12 +53,15 @@ from .mojibake import (
     unescape_html_entities,
 )
 from .normalize import (
+    CurrencySpan,
+    currency_spans,
     decode_escapes_outside_math,
     escape_currency,
     normalize,
     normalize_delimiters,
     strip_orphan_delimiters,
 )
+from .option_text import normalize_option_text
 from .prompt_rules import (
     LATEX_SYSTEM_RULES,
     NARRATIVE_PROSE_RULES,
@@ -82,13 +86,17 @@ from .unicode_math import (
 )
 from .walk import NON_CONTENT_KEY_SUFFIXES, NON_CONTENT_KEYS
 
-VERSION = "1.4.0"
+VERSION = "1.5.0"
 __version__ = VERSION
 
 __all__ = [
     "VERSION",
     "fix",
     "fix_deep",
+    "needs_fix",
+    "normalize_option_text",
+    "currency_spans",
+    "CurrencySpan",
     "wrap_unicode_chemistry",
     "wrap_bare_symbol_commands",
     "merge_adjacent_math",

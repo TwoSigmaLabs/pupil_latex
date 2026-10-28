@@ -20,6 +20,10 @@ const functions = [
   'to_plain',
   'audit',
   'json_transport',
+  'normalize_option_text',
+  'needs_fix',
+  'currency_spans',
+  'is_plain_prose',
 ];
 const stringFunctions = {
   'repair',
@@ -27,6 +31,7 @@ const stringFunctions = {
   'canonicalize',
   'fix',
   'to_plain',
+  'normalize_option_text',
 };
 
 /// A case's JSON object.
@@ -74,6 +79,12 @@ bool _chemistryOpt(Case c) {
   return opts is Map ? (opts['chemistry'] as bool? ?? true) : true;
 }
 
+/// A boolean `opts` entry of a case.
+bool _boolOpt(Case c, String name, bool fallback) {
+  final opts = c['opts'];
+  return opts is Map ? (opts[name] as bool? ?? fallback) : fallback;
+}
+
 /// The implementation's output for [c] (throws [ParseError] on failure).
 Object? run(String function, Case c) {
   final inp = c['input'] as String;
@@ -81,7 +92,10 @@ Object? run(String function, Case c) {
     case 'repair':
       return repair(inp, guessWhitespace: c['variant'] != 'hard');
     case 'normalize':
-      return normalize(inp);
+      return normalize(
+        inp,
+        codeSpansAsMath: _boolOpt(c, 'code_spans_as_math', false),
+      );
     case 'canonicalize':
       return canonicalize(inp, chemistry: _chemistryOpt(c));
     case 'fix':
@@ -95,12 +109,20 @@ Object? run(String function, Case c) {
     case 'json_transport':
       try {
         if ('${c['via'] ?? ''}'.contains('loads_model_json')) {
-          return loadsModelJson(inp);
+          return loadsModelJson(inp, lenient: _boolOpt(c, 'lenient', true));
         }
         return loadsLatexAware(inp);
       } on FormatException catch (e) {
         throw ParseError(e.message);
       }
+    case 'normalize_option_text':
+      return normalizeOptionText(inp, chemistry: _chemistryOpt(c));
+    case 'needs_fix':
+      return needsFix(inp, chemistry: _chemistryOpt(c));
+    case 'currency_spans':
+      return [for (final s in currencySpans(inp)) s.text];
+    case 'is_plain_prose':
+      return isPlainProse(inp);
   }
   throw ArgumentError.value(function, 'function');
 }

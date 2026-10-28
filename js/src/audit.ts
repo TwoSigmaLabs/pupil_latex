@@ -33,6 +33,7 @@ export const KIND_UNSUPPORTED_COMMAND = "unsupported_command";
 export const KIND_BARE_UNICODE_MATH = "bare_unicode_math";
 export const KIND_UNICODE_CHEMISTRY = "unicode_chemistry";
 export const KIND_BARE_LEFT_BRACE = "bare_left_brace";
+export const KIND_LOST_ESCAPE = "lost_escape";
 
 export type FindingKind =
   | typeof KIND_CONTROL_CHAR
@@ -46,7 +47,8 @@ export type FindingKind =
   | typeof KIND_UNSUPPORTED_COMMAND
   | typeof KIND_BARE_UNICODE_MATH
   | typeof KIND_UNICODE_CHEMISTRY
-  | typeof KIND_BARE_LEFT_BRACE;
+  | typeof KIND_BARE_LEFT_BRACE
+  | typeof KIND_LOST_ESCAPE;
 
 export const ALL_KINDS: readonly FindingKind[] = [
   KIND_CONTROL_CHAR,
@@ -61,6 +63,7 @@ export const ALL_KINDS: readonly FindingKind[] = [
   KIND_BARE_UNICODE_MATH,
   KIND_UNICODE_CHEMISTRY,
   KIND_BARE_LEFT_BRACE,
+  KIND_LOST_ESCAPE,
 ];
 
 // Control characters must be ZERO after the write-sink repair, so any hit is
@@ -198,7 +201,8 @@ const AFTER_BACKSLASH = after("\\");
 // Detectors
 // ---------------------------------------------------------------------------
 
-const OTHER_C0_RE = /[\x00-\x08\x0b\x0c\x0e-\x1f]/g;
+// Every C0 control except TAB/LF/CR, and DEL (tag `v140-b8`).
+const OTHER_C0_RE = /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g;
 const ALPHA_RUN_RE = /[A-Za-z]+/y;
 const WS_CTRL_LETTER: Readonly<Record<string, string>> = {
   "\t": "t",
@@ -431,6 +435,83 @@ function detectBareLeftBrace(text: string): Finding[] {
   );
 }
 
+// `lost_escape` (tag `v140-b8`): a command whose first letter was eaten,
+// the damage left after a form feed / tab / newline from a JSON escape was
+// stripped (`\frac` → `rac`, `\times` → `imes`, `\text` → `ext`).
+export const LOST_ESCAPE_RUNS: ReadonlySet<string> = new Set(
+  (
+    "rac orall inom oldsymbol arepsilon artheta arphi abla atural ewline " +
+    "olimits onumber otin aisebox ight ightarrow ightharpoonup ightleftarrows " +
+    "ightleftharpoons anh ext extbf extcolor extit extrm extsf extstyle exttt " +
+    "herefore heta hinspace ilde imes riangle riangleleft riangleq"
+  ).split(" "),
+);
+const LETTER_RUN_RE = /[A-Za-z]+/g;
+const ANY_CONTROL_RE = /[\x00-\x1f\x7f]/;
+const TEXT_GROUP_OPEN_RE =
+  /\\(?:text|textbf|textit|textrm|textsf|texttt|textnormal|textup|mathrm|mbox|hbox)\s*\{/g;
+
+/** `[a, b)` of every `\text{…}`-family group between start and end. */
+function textGroupRanges(
+  text: string,
+  start: number,
+  end: number,
+): Array<[number, number]> {
+  const out: Array<[number, number]> = [];
+  const region = text.slice(0, end);
+  TEXT_GROUP_OPEN_RE.lastIndex = start;
+  let m: RegExpExecArray | null;
+  while ((m = TEXT_GROUP_OPEN_RE.exec(region)) !== null) {
+    let depth = 0;
+    let j = m.index + m[0].length - 1;
+    while (j < end) {
+      const ch = text[j];
+      if (ch === "\\") {
+        j += 2;
+        continue;
+      }
+      if (ch === "{") depth++;
+      else if (ch === "}") {
+        depth--;
+        if (depth === 0) break;
+      }
+      j++;
+    }
+    out.push([m.index, Math.min(j + 1, end)]);
+  }
+  return out;
+}
+
+/**
+ * A run in `LOST_ESCAPE_RUNS` at a word start (no letter or backslash before
+ * it): inside a math span (outside `\text{…}`), or anywhere when a `{`
+ * follows (`ext{H}`, `rac{1}{2}`). A control character still in front of
+ * it is a `control_char` finding instead.
+ */
+function detectLostEscapes(text: string): Finding[] {
+  const candidates = allMatches(LETTER_RUN_RE, text).filter((m) =>
+    LOST_ESCAPE_RUNS.has(m[0]),
+  );
+  if (candidates.length === 0) return [];
+  const ranges = mathRanges(text);
+  const groups: Array<[number, number]> = [];
+  for (const r of ranges) groups.push(...textGroupRanges(text, r.start, r.end));
+  const controls = ANY_CONTROL_RE.test(text)
+    ? new Set(detectControlChars(text).map((f) => f.position))
+    : new Set<number>();
+  const findings: Finding[] = [];
+  for (const m of candidates) {
+    const i = m.index;
+    if (i > 0 && (text[i - 1] === "\\" || controls.has(i - 1))) continue;
+    const inMath = ranges.some((r) => r.start <= i && i < r.end);
+    if (inMath && groups.some(([a, b]) => a <= i && i < b)) continue;
+    const end = i + m[0].length;
+    if (!inMath && !(end < text.length && text[end] === "{")) continue;
+    findings.push(finding(KIND_LOST_ESCAPE, text, i));
+  }
+  return findings;
+}
+
 export const DETECTORS: ReadonlyArray<(text: string) => Finding[]> = [
   detectControlChars,
   detectLegacyDelimiters,
@@ -444,6 +525,7 @@ export const DETECTORS: ReadonlyArray<(text: string) => Finding[]> = [
   detectBareUnicodeMath,
   detectUnicodeChemistry,
   detectBareLeftBrace,
+  detectLostEscapes,
 ];
 
 // ---------------------------------------------------------------------------

@@ -12,8 +12,8 @@ import {
   detectCommandMissingArgument,
   detectFracMissingArgs,
 } from "./audit.js";
-import { isAsciiDigit, matchAt } from "./chars.js";
-import { PROSE_ESCAPE_COMMANDS } from "./commands.js";
+import { countOf, isAsciiDigit, matchAt, pyStrip } from "./chars.js";
+import { KATEX_COMMANDS, PROSE_ESCAPE_COMMANDS } from "./commands.js";
 import {
   after,
   matchAllAfter,
@@ -321,19 +321,165 @@ export function decodeEscapesOutsideMath(text: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// currency spans (tag v140-b6)
+// ---------------------------------------------------------------------------
+
+/** One currency amount found by `currencySpans`. */
+export interface CurrencySpan {
+  start: number;
+  end: number;
+  text: string;
+}
+
+// An amount: digits with `,` groups (Indian or Western) and decimals.
+const AMOUNT_RE = /[0-9]+(?:,[0-9]+)*(?:\.[0-9]+)?/y;
+export const CURRENCY_SYMBOLS = "₹€£¥";
+const AMOUNT_GAP = "  "; // one space or NBSP between a symbol and its amount
+
+/**
+ * Every currency amount in `text` with its position (tag `v140-b6`): an
+ * escaped dollar `\$5` (odd run of backslashes before the `$`), a dollar
+ * that `escapeCurrency` reads as money (`costs $5`; never a math span such
+ * as `$5x+1=0$`), and `₹ € £ ¥` followed by at most one space and an
+ * amount (`₹ 45,00,000`). Sorted by start. Positions are UTF-16 indices.
+ */
+export function currencySpans(text: unknown): CurrencySpan[] {
+  if (typeof text !== "string" || !text) return [];
+  const found: CurrencySpan[] = [];
+  const money = new Set(text.includes("$") ? currencyPositions(text) : []);
+  const n = text.length;
+  for (let i = 0; i < n; i++) {
+    const ch = text[i];
+    let start = i;
+    let j: number;
+    if (ch === "$") {
+      let k = i - 1;
+      while (k >= 0 && text[k] === "\\") k--;
+      const run = i - 1 - k;
+      if (run % 2 === 1) start = i - 1;
+      else if (!money.has(i)) continue;
+      j = i + 1;
+    } else if (CURRENCY_SYMBOLS.includes(ch)) {
+      j = i + 1;
+      if (
+        j + 1 < n &&
+        AMOUNT_GAP.includes(text[j]) &&
+        isAsciiDigit(text[j + 1])
+      )
+        j++;
+    } else {
+      continue;
+    }
+    const m = matchAt(AMOUNT_RE, text, j);
+    if (!m) continue;
+    const end = j + m[0].length;
+    found.push({ start, end, text: text.slice(start, end) });
+  }
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// 2a. code spans as maths (opt-in, tag v140-b11)
+// ---------------------------------------------------------------------------
+
+const CODE_MATH_CHARS_RE = /^[0-9A-Za-z+\-*/=<>()[\]{}.,^_ \t|!']*$/;
+const CODE_COMMAND_RE = /\\([A-Za-z]+)/g;
+const CODE_WORD_RE = /[A-Za-z]{3,}/;
+
+/**
+ * True when an inline code body is clearly maths, not code: a KaTeX
+ * command, `^` or `_`; after removing command names only maths characters
+ * and no run of 3+ letters (`print`, `var`); and not an identifier (`lo_0`,
+ * `a_b_c`).
+ */
+function codeBodyIsMath(body: string): boolean {
+  if (!body || body !== pyStrip(body) || body.includes("$")) return false;
+  const names = [...body.matchAll(CODE_COMMAND_RE)].map((m) => m[1]);
+  if (names.some((name) => !KATEX_COMMANDS.has(name))) return false;
+  if (names.length === 0 && !body.includes("^") && !body.includes("_"))
+    return false;
+  const bare = body.replace(CODE_COMMAND_RE, " ");
+  if (!CODE_MATH_CHARS_RE.test(bare) || CODE_WORD_RE.test(bare)) return false;
+  if (names.length === 0 && !body.includes("{") && !body.includes("^")) {
+    const head = body.split("_", 1)[0];
+    if (countOf(body, "_") >= 2 || head.length >= 2) return false;
+  }
+  return true;
+}
+
+/**
+ * `` `x^2` `` → `$x^2$` when the single-backtick code body is clearly maths.
+ * Fences and multi-backtick spans, bodies with a newline and a span followed
+ * by a digit are left alone.
+ */
+export function codeSpansToMath(text: string): string {
+  if (!text.includes("`")) return text;
+  const out: string[] = [];
+  const n = text.length;
+  let i = 0;
+  while (i < n) {
+    if (text[i] !== "`") {
+      out.push(text[i]);
+      i++;
+      continue;
+    }
+    let j = i;
+    while (j < n && text[j] === "`") j++;
+    if (j - i !== 1) {
+      out.push(text.slice(i, j));
+      i = j;
+      continue;
+    }
+    const k = text.indexOf("`", j);
+    if (k === -1) {
+      out.push(text.slice(i));
+      break;
+    }
+    const body = text.slice(j, k);
+    if (
+      body.includes("\n") ||
+      (k + 1 < n && text[k + 1] === "`") ||
+      (k + 1 < n && isAsciiDigit(text[k + 1])) ||
+      !codeBodyIsMath(body)
+    ) {
+      out.push(text.slice(i, j));
+      i = j;
+      continue;
+    }
+    out.push("$" + body + "$");
+    i = k + 1;
+  }
+  return out.join("");
+}
+
+// ---------------------------------------------------------------------------
 // pipeline
 // ---------------------------------------------------------------------------
 
+/** Options of `normalize`. */
+export interface NormalizeOptions {
+  /**
+   * Opt-in (tag `v140-b11`): an inline code span whose body is clearly
+   * maths becomes a math span (`` `x^2` `` → `$x^2$`). Default `false`,
+   * because code spans also hold real code.
+   */
+  codeSpansAsMath?: boolean;
+}
+
 /**
- * repair → mojibake table → delimiters → orphans → currency → padded spans
- * → escapes.
+ * repair → mojibake table → (code spans) → delimiters → orphans → currency
+ * → padded spans → escapes.
  * Idempotent, content-preserving. Non-strings are returned unchanged.
  */
-export function normalize<T>(text: T): T;
-export function normalize(text: unknown): unknown {
+export function normalize<T>(text: T, options?: NormalizeOptions): T;
+export function normalize(
+  text: unknown,
+  options: NormalizeOptions = {},
+): unknown {
   if (typeof text !== "string" || !text) return text;
   let out: string = repair(text);
   out = fixMojibakeTable(out);
+  if (options.codeSpansAsMath === true) out = codeSpansToMath(out);
   out = normalizeDelimiters(out);
   out = stripOrphanDelimiters(out);
   out = escapeCurrency(out);

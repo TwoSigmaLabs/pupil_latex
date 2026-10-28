@@ -38,6 +38,7 @@ KIND_UNSUPPORTED_COMMAND = "unsupported_command"
 KIND_BARE_UNICODE_MATH = "bare_unicode_math"
 KIND_UNICODE_CHEMISTRY = "unicode_chemistry"
 KIND_BARE_LEFT_BRACE = "bare_left_brace"
+KIND_LOST_ESCAPE = "lost_escape"
 
 ALL_KINDS: tuple[str, ...] = (
     KIND_CONTROL_CHAR,
@@ -52,6 +53,7 @@ ALL_KINDS: tuple[str, ...] = (
     KIND_BARE_UNICODE_MATH,
     KIND_UNICODE_CHEMISTRY,
     KIND_BARE_LEFT_BRACE,
+    KIND_LOST_ESCAPE,
 )
 
 # Control characters must be ZERO after the write-sink repair, so any hit is
@@ -139,7 +141,8 @@ def _is_inside_math_span(text: str, pos: int) -> bool:
 # Detectors
 # ---------------------------------------------------------------------------
 
-_OTHER_C0_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+# Every C0 control except TAB/LF/CR, and DEL (tag `v140-b8`).
+_OTHER_C0_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 _ALPHA_RUN_RE = re.compile(r"[A-Za-z]+")
 _WS_CTRL_LETTER = {"\t": "t", "\n": "n", "\r": "r"}
 _MIN_RUN_AFTER_NEWLINE = 3
@@ -388,6 +391,83 @@ def _detect_unicode_chemistry(text: str) -> list[Finding]:
 _BARE_BRACE_CMD_RE = re.compile(r"\\left(?!\\)\{|\\right(?!\\)\}")
 
 
+# `lost_escape` (tag `v140-b8`): a command whose first letter was eaten, the
+# damage left after a form feed / tab / newline from a JSON escape was
+# stripped (`\frac` → `rac`, `\times` → `imes`, `\text` → `ext`). The runs
+# are the commands behind the JSON escapes \f \b \t \n \r \v minus their
+# first letter, keeping only runs of 3+ letters that are not themselves a
+# command or an English word.
+LOST_ESCAPE_RUNS: frozenset[str] = frozenset(
+    (
+        "rac orall inom oldsymbol arepsilon artheta arphi abla atural ewline "
+        "olimits onumber otin aisebox ight ightarrow ightharpoonup ightleftarrows "
+        "ightleftharpoons anh ext extbf extcolor extit extrm extsf extstyle exttt "
+        "herefore heta hinspace ilde imes riangle riangleleft riangleq"
+    ).split()
+)
+_LETTER_RUN_RE = re.compile(r"[A-Za-z]+")
+_ANY_CONTROL_RE = re.compile(r"[\x00-\x1f\x7f]")
+_TEXT_GROUP_OPEN_RE = re.compile(
+    r"\\(?:text|textbf|textit|textrm|textsf|texttt|textnormal|textup|mathrm|mbox|hbox)\s*\{"
+)
+
+
+def _text_group_ranges(text: str, start: int, end: int) -> list[tuple[int, int]]:
+    """``[a, b)`` of every ``\\text{…}``-family group between start and end."""
+    out: list[tuple[int, int]] = []
+    for m in _TEXT_GROUP_OPEN_RE.finditer(text, start, end):
+        depth = 0
+        j = m.end() - 1
+        while j < end:
+            ch = text[j]
+            if ch == "\\":
+                j += 2
+                continue
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        out.append((m.start(), min(j + 1, end)))
+    return out
+
+
+def _detect_lost_escapes(text: str) -> list[Finding]:
+    """A run in `LOST_ESCAPE_RUNS` at a word start (no letter or backslash
+    before it): inside a math span (outside ``\\text{…}``), or anywhere when
+    a ``{`` follows (``ext{H}``, ``rac{1}{2}``)."""
+    candidates = [
+        m for m in _LETTER_RUN_RE.finditer(text) if m.group(0) in LOST_ESCAPE_RUNS
+    ]
+    if not candidates:
+        return []
+    ranges = math_ranges(text)
+    groups: list[tuple[int, int]] = []
+    for s, e, _d in ranges:
+        groups.extend(_text_group_ranges(text, s, e))
+    # A control character right before the run is still there: that is a
+    # `control_char` finding (which `repair` fixes), not a lost escape.
+    controls = (
+        {f.position for f in _detect_control_chars(text)}
+        if _ANY_CONTROL_RE.search(text)
+        else set()
+    )
+    findings: list[Finding] = []
+    for m in candidates:
+        i = m.start()
+        if i > 0 and (text[i - 1] == "\\" or (i - 1) in controls):
+            continue
+        in_math = any(s <= i < e for s, e, _d in ranges)
+        if in_math and any(a <= i < b for a, b in groups):
+            continue
+        if not in_math and not (m.end() < len(text) and text[m.end()] == "{"):
+            continue
+        findings.append(Finding(KIND_LOST_ESCAPE, i, make_snippet(text, i)))
+    return findings
+
+
 def _detect_bare_left_brace(text: str) -> list[Finding]:
     return [
         Finding(KIND_BARE_LEFT_BRACE, m.start(), make_snippet(text, m.start()))
@@ -408,6 +488,7 @@ DETECTORS = (
     _detect_bare_unicode_math,
     _detect_unicode_chemistry,
     _detect_bare_left_brace,
+    _detect_lost_escapes,
 )
 
 

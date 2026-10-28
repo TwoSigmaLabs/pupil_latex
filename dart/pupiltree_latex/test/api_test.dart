@@ -247,7 +247,8 @@ void main() {
       'legacy_delimiter',
       'unbalanced_dollar'
     ]);
-    expect(allKinds.length, 12);
+    expect(allKinds.length, 13);
+    expect(allKinds.last, 'lost_escape');
     expect(errorKinds, {'control_char'});
   });
 
@@ -691,7 +692,7 @@ void main() {
   });
 
   test('exported tables are populated and versioned', () {
-    expect(kVersion, '1.4.0');
+    expect(kVersion, '1.5.0');
     expect(kKatexCommands, contains('frac'));
     expect(kJsonWhitespaceCollisionCommands, contains('nu'));
     expect(kLatexCommandsBehindJsonEscapes, contains('theta'));

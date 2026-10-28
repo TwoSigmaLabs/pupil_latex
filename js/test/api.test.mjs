@@ -314,13 +314,14 @@ test("all kinds are produced by some detector", () => {
       "bare_unicode_math",
       "unicode_chemistry",
       "bare_left_brace",
+      "lost_escape",
     ]),
   );
   assert.strictEqual(DETECTORS.length, L.ALL_KINDS.length);
 });
 
 test("constants are exported in their documented shapes", () => {
-  assert.strictEqual(L.VERSION, "1.4.0");
+  assert.strictEqual(L.VERSION, "1.5.0");
   assert.ok(L.KATEX_COMMANDS instanceof Set && L.KATEX_COMMANDS.has("frac"));
   assert.ok(
     L.LATEX_COMMANDS_BEHIND_JSON_ESCAPES instanceof Set &&

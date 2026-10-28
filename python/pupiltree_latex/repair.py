@@ -20,6 +20,7 @@ from .commands import (
 )
 
 _WHITESPACE_LETTER = {"\x09": "t", "\x0a": "n", "\x0d": "r"}
+_WHITESPACE_AS_SPACE = {0x09: 0x20, 0x0A: 0x20, 0x0D: 0x20}
 
 
 def _only_command_reading(run: str) -> str:
@@ -71,10 +72,17 @@ def repair(text: Any, guess_whitespace: bool = True) -> Any:
         o` does not."""
         nonlocal dollars
         if dollars is None:
+            # Currency-aware (tag `v140-b7`): a dollar that `normalize` reads
+            # as money is no span delimiter, so `costs $5.<LF>angle … $10`
+            # keeps its line break. The damaged whitespace is read as a
+            # space for this, so a span cut by it still pairs.
+            from .normalize import currency_positions  # normalize imports repair
+
+            money = set(currency_positions(text.translate(_WHITESPACE_AS_SPACE)))
             dollars = [
                 k
                 for k, c in enumerate(text)
-                if c == "$" and (k == 0 or text[k - 1] != "\\")
+                if c == "$" and (k == 0 or text[k - 1] != "\\") and k not in money
             ]
         before = sum(1 for k in dollars if k < pos)
         return before % 2 == 1 and any(k > pos for k in dollars)
