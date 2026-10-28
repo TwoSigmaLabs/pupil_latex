@@ -48,14 +48,17 @@ export 'src/fix.dart'
         escapeTextSpecials,
         fix,
         fixDeep,
+        kTypographicSpans,
         mergeAdjacentMath,
         needsFix,
+        unwrapTypographicSpans,
         wrapBareSymbolCommands,
         wrapUnicodeChemistry,
         wrapUnicodeScripts;
 export 'src/json_transport.dart'
     show escapeLatexForJson, loadsLatexAware, loadsModelJson;
-export 'src/mojibake.dart' show fixMojibakeTable, unescapeHtmlEntities;
+export 'src/mojibake.dart'
+    show fixMojibakeCore, fixMojibakeTable, unescapeHtmlEntities;
 export 'src/normalize.dart'
     show
         CurrencySpan,
@@ -71,7 +74,8 @@ export 'src/repair.dart' show repair, repairDeep;
 export 'src/segment.dart' show Segment, containsMath, isPlainProse, segment;
 export 'src/spans.dart' show mathMask, mathRanges;
 export 'src/tables.g.dart';
-export 'src/to_plain.dart' show latexToPlain, styles, toPlain;
+export 'src/to_plain.dart'
+    show bareChemistryToUnicode, latexToPlain, styles, toPlain;
 export 'src/unicode_math.dart'
     show
         convertCombiningVec,

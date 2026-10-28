@@ -754,7 +754,7 @@ function closeUnbalancedBraces(text: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// 1.4.0 repairs (tags v140-b1, v140-b2, v140-b3)
+// 1.5.0 repairs (tags v140-b1, v140-b2, v140-b3)
 // ---------------------------------------------------------------------------
 
 /**
@@ -1219,7 +1219,7 @@ export function canonicalize(
   // once more makes one pass equal to two.
   out = normalizeBraces(out);
   out = unicodeMathToLatex(out, true);
-  // The same for the 1.4.0 repairs: the wrapping steps can give a typo its
+  // The same for the 1.5.0 repairs: the wrapping steps can give a typo its
   // argument or put a surplus brace, a doubled group or `\AA` in a span.
   out = fixCommandTypos(out);
   out = openSurplusBraces(out);

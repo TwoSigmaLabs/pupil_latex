@@ -2,9 +2,11 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
-## Unreleased — 1.4.0
+## 1.5.0 (Unreleased)
 
 ### Group B: `fix` / `repair` / `audit` / `segment` / helpers
+
+This is the Group B work that was deferred from 1.4.0, released as 1.5.0 on top of 1.4.0 (Group A and the prompt rules): the helpers are API §11 (§10 is the prompt rules).
 
 Requests from the 9-project migration (`TODO(pupiltree-latex)` markers). New corpus cases are tagged `v140-b<n>`; every change is in Python, JavaScript and Dart, and the three agree on the whole corpus, on 8,702 production-derived strings and on 4,000 fuzzed strings.
 
@@ -13,17 +15,53 @@ Requests from the 9-project migration (`TODO(pupiltree-latex)` markers). New cor
 - **B1 surplus closing brace** (canonicalize step 10c `openSurplusBraces`): `$x}$` → `${x}$`, `$a+b}$` → `${a+b}$`; `$x}{y$` stays. Backend `sanitize_latex_option` can drop its brace prepend.
 - **B2 invented commands and broken dollars**: `\fre{…}` / `\frc{…}` → `\frac{…}` (step 8a, `COMMAND_TYPOS`); `{{x}}` → `{x}` inside maths (step 10d, one linear pass); a lone formula dollar is dropped (step 10f: `What is $x + 1 equal to?` → `What is x + 1 equal to?`, `costs \$5 and x^2$` → `costs \$5 and $x^2$` instead of 1.3.0's `$x^2$$`), never money (`costs $5`, `Pay $ 5`, `5$ per kg`, `US$ 5`), a word (`in $ terms`), a string-initial dollar (`$\ldots`, `$×5`, tag audit2-lone-dollar) or one of several; an escaped opening dollar before a number and maths gets its span back (step 3a: `\$1.56 \text{ m}$` → `$1.56 \text{ m}$`; `\$50` stays). Backend `fix_common_latex_errors` can go.
 - **B3 `\AA`** (step 10e): `\AA` and `\text{\AA}` → `Å` in prose, a span that is only the sign → `Å`, `\text{Å}` elsewhere in maths. `to_plain` already gave `Å` (now pinned). Backend `literal_angstrom` can go.
-- **B4 `normalize_option_text`** (new, API §10.1): `fix` plus option clean-ups: `$\text{Coulomb}$` / `$Coulomb$` → `Coulomb`, `$\text{H_{2}O}$` → `$\text{H}_{2}\text{O}$`, `$5 \text{ m^{2}}$` → `$5 \text{ m}^{2}$`, `$50 \text{ %}$` → `$50 \%$`, `\{A, B\}` → `{A, B}`; chemistry (`$\text{NaCl}$`), units and variables stay.
+- **B4 `normalize_option_text`** (new, API §11.1): `fix` plus option clean-ups: `$\text{Coulomb}$` / `$Coulomb$` → `Coulomb`, `$\text{H_{2}O}$` → `$\text{H}_{2}\text{O}$`, `$5 \text{ m^{2}}$` → `$5 \text{ m}^{2}$`, `$50 \text{ %}$` → `$50 \%$`, `\{A, B\}` → `{A, B}`; chemistry (`$\text{NaCl}$`), units and variables stay.
 - **B5 `narrative_keys`** on `fix_deep` / `canonicalize_deep` (JS `narrativeKeys`, Dart `narrativeKeys:`): listed keys get `repair_deep` only; `script@transcript` matches `script` beside `transcript`. Backend `_fix_walk` becomes one call.
-- **B6 `currency_spans`** (new, API §10.2): `$5` read as money, `\$5`, `₹ € £ ¥` + amount (`₹ 45,00,000`), with positions.
+- **B6 `currency_spans`** (new, API §11.2): `$5` read as money, `\$5`, `₹ € £ ¥` + amount (`₹ 45,00,000`), with positions.
 - **B7 `repair`**: the closed-span rule ignores dollars that `normalize` reads as money, so `costs $5.<LF>angle ABC costs $10` keeps its line break (was `\rangle`) with `guess_whitespace=True`; `$x <LF>ightarrow y$` is still repaired.
 - **B8 `audit`**: DEL (U+007F) is a `control_char`; new kind `lost_escape` (`LOST_ESCAPE_RUNS`) for a command that lost its first letter (`$rac{1}{2}$`, `$2 imes 3$`, `ext{H}_2O`); not an error kind; a run still behind its control character is reported as `control_char` only.
-- **B9 `needs_fix`** (new, API §10.3): `fix(text) != normalize(text)`, with an ASCII fast path.
+- **B9 `needs_fix`** (new, API §11.3): `fix(text) != normalize(text)`, with an ASCII fast path.
 - **B10 `is_plain_prose`**: false for a gpt_markdown radio button `(x) ` / `( ) ` (the Flutter `MathText` uses it, so it takes the markdown path).
 - **B11 `normalize(text, code_spans_as_math=True)`** (opt-in; default unchanged): `` `x^2` `` → `$x^2$` when the code is clearly maths; `` `print(x)` ``, `` `my_var` `` stay.
 - **B12 `loads_model_json(text, lenient=True)`** in all three languages: lenient (default) doubles stray backslashes (`\q`) and keeps raw newlines; `lenient=False` is a strict parse.
 
 `fix` and `canonicalize` run the B1/B2/B3 span repairs once more after the wrapping steps (and `fix` before merging), so one pass still equals two; on a fuzz of 4,000 adversarial strings the number of non-idempotent inputs went down (152 in 1.3.0 → 126). On the production-derived strings, `fix` changes 7 of 8,702 outputs, all intended repairs (a lone formula dollar dropped ×4, two of which let the bare script after it render as maths; a doubled group; an escaped opener; `\AA`); `normalize` and `to_plain` change none, and no new audit finding appears.
+
+## 1.4.0 (2026-10-09)
+
+### Group A: plain text, answer comparison and speech (tags `v140-a1`–`v140-a9`)
+
+Requests from the nine-project migration, so consumers can delete their own NFKC, entity, option-label, mojibake and TTS glue. Every change is in Python, JavaScript and Dart; new corpus cases are tagged `v140-a<n>`.
+
+- **`compare` folds compatibility characters (a1).** An explicit table, `COMPARE_FOLD` (`corpus/tables/compare_fold.json`, generated from Python's compatibility decompositions but stopping at super/subscripts), so the three languages agree without platform NFKC: full-width forms (`ｘ＝５` → `x=5`), typographic and no-break spaces, unit squares and letterlike symbols (`㎝` → `cm`, `㎤` → `cm^3`, `℃` → `°C`, Ω/K/Å signs), `µ` → `μ`, vulgar fractions (`½` → `1/2`, `1½` → `1 1/2`), ligatures, `…` → `...`, the en dash and non-breaking hyphen → `-`, `º` → `°`. `x²` = `$x^2$` and `H₂O` = `$H_2O$` as before.
+- **`unescapeHtmlEntities` is Python's `html.unescape` (a2).** Full HTML5 table (`HTML5_ENTITIES`), legacy names without `;`, Windows-1252 numeric overrides (`HTML_NUMERIC_OVERRIDES`), one round (`&amp;lt;` → `&lt;`; it was decoded to `<` in up to three rounds). `compare` applies it. `normalize` is unchanged: its mojibake step still decodes the small `HTML_ENTITIES` set, up to three rounds. New `fixMojibakeCore` (`fix_mojibake_core`) is the table fixer without the entity step.
+- **`compare` drops unpaired delimiter halves (a3).** `3.2$ m` → `3.2 m`, `\frac{1}{2}\)` → `1/2`. In every style a fraction followed by a closing `\)`/`\]` is no longer parenthesised (`\(\frac{1}{2}\)` → `1/2`, was `(1/2)`).
+- **`compare` strips one leading option label (a4).** `B) 8-celled`, `(A) 2/4`, `C. x^2`, `D: 5`, `a) …` (letters A–H, either case, followed by whitespace and an answer) compare as the answer alone, unless the answer is a lone letter (`a: b` stays `a: b`, so it is never read as option letter B). `text`/`pdf`/`tts` keep labels.
+- **Negative numerators and `\$0.008Wb` (a5).** `\frac{-1}{4}` → `-1/4` in every style (a negative denominator keeps `(-2)`); `compare` drops an escaped `\$` whose amount runs into a unit or command (`\$0.008Wb` → `0.008Wb`), while `\$5` still compares as `$5`.
+- **`toPlain` repairs mojibake (a6).** `Value of Ï€` → `Value of π` in every style (`fixMojibakeTable`, as `normalize` does; `compare` uses `unescapeHtmlEntities` + `fixMojibakeCore`).
+- **Typographic spans (a7).** `fix` turns a span that is only `\ldots`, `\dots` or `\textellipsis` into `…` (`leukocytes$\ldots$` → `leukocytes…`) and `$\textmu$` into `$\mu$` (new `unwrapTypographicSpans`, `TYPOGRAPHIC_SPANS`; a padded pair that `segment` does not read as math loses its dollars and keeps its padding, `wait$ \ldots $now` → `wait … now`; a bare `µ`/`⋯` would be wrapped back, so `$\mu$` and `$\cdots$` are the fixed points). `toPlain` maps `\cdots` to `⋯` (U+22EF, was `···`) and `\textellipsis` to `…` (`LATEX_CMD_MAP`).
+- **Speech (a8).** `tts` reads a typographic-only span as `…` (a pause) or `micro`, `\ldots`/`\cdots`/`\dots` inside a formula as `dots`, `\textmu` as `micro`, a bare single-letter subscript in prose as `x sub n` (`lo_0`, `v_avg`, `H_2O`, `x_0^2` stay), and `50^\circ C`, `$50^\circ$C` and bare prose `50^\circ C` as `50 degrees C` (was `50 degreesC` / `50^circ C`); no space before `,`/`;` inside a formula.
+- **Bare chemistry in `text`/`pdf` (a9).** `H_2SO_4` → `H₂SO₄`, `Ca(OH)_2` → `Ca(OH)₂` in prose, for tokens made of element symbols (`ELEMENT_SYMBOLS`) with digit subscripts only; identifiers (`lo_0`, `fallback_factual_error`, `v_avg`, `E_1`, `MCQ_SINGLE`) stay.
+
+### Changed corpus expectations
+
+None: every existing curated, harvested and `must_not_change` case still passes, and no harvested case moved to `corpus/review/`. One case that would pin `html.unescape`'s single round (`a &amp;lt; b`) is a behaviour test, not a corpus case, because every corpus string case is also checked for idempotency.
+
+Behaviour that changes without a pinned expectation (consumers comparing output literally should re-check): `toPlain` output for mojibake, entity-bearing text (`text`/`pdf`/`tts` now decode `&amp;` etc.), NBSP in non-ASCII text (now a space, as in `normalize`), `\cdots` (`⋯`), `\(\frac{a}{b}\)`, negative numerators, bare chemistry and the `tts` items above; `fix` on typographic-only spans; `unescapeHtmlEntities` called directly (full table, one round). On the production-derived strings (8,702) `toPlain` changes 52 `text`, 52 `pdf`, 98 `tts` and 314 `compare` outputs relative to 1.3.0.
+
+### API additions
+
+- Python: `unescape_html_entities` (now `html.unescape`), `fix_mojibake_core`, `unwrap_typographic_spans`, `TYPOGRAPHIC_SPANS`, `HTML5_ENTITIES`, `HTML_NUMERIC_OVERRIDES`, `COMPARE_FOLD`, `ELEMENT_SYMBOLS`; `latex_to_plain(…, compare=False, bare_chemistry=False)` keyword options.
+- JavaScript: `fixMojibakeCore`, `unwrapTypographicSpans`, `TYPOGRAPHIC_SPANS`, `bareChemistryToUnicode`, `HTML5_ENTITIES`, `HTML_NUMERIC_OVERRIDES`, `COMPARE_FOLD`, `ELEMENT_SYMBOLS`. The IIFE grows from about 93 KB to 146 KB, mostly the HTML5 entity table.
+- Dart: `fixMojibakeCore`, `unwrapTypographicSpans`, `kTypographicSpans`, `bareChemistryToUnicode`, `kHtml5Entities`, `kHtmlNumericOverrides`, `kCompareFold`, `kElementSymbols`; `latexToPlain(…, compare:, bareChemistry:)`.
+- Shared tables: `html5_entities.json`, `html_numeric_overrides.json`, `compare_fold.json`, `element_symbols.json`; `latex_cmd_map.json` gains `textellipsis` and changes `cdots`.
+
+### Prompt rules (Python)
+
+- **`LATEX_SYSTEM_RULES` carries the rules consumers kept locally (C1).** Backend `routes/fix_latex.py` and `services/pdf_extractor_v2/prompts.py` restored these as local bullets; they are now in the shared block: one span per whole expression, operators included (rule 1); plain numbers and money are never wrapped in `$…$` (rules 1 and 4: a dollar amount is `\$5`, `₹ 45,00,000` is plain text); multiplication is `\times` or `\cdot`, never a literal `*`, and a maths fraction `a/b` is `\frac{a}{b}` (rule 6); use only the listed standard commands and never invent one (rule 8); new rule 11 repairs malformed commands (`|sqrt` / `\|sqrt`, `\sqrt2` → `\sqrt{2}`, `\sqrt[x]` as a radicand, `[…]` grouping → braces). The pre-submit checklist covers each. The header line (the idempotency marker) is unchanged, so prompts built with an older block are still recognised; a local copy of the 1.3.0 text now reports `DIVERGED`.
+- **New `PLAIN_NOTATION_RULES` + `inject_plain_notation_rules` (C2).** A Class B block for text displayed without a maths renderer (period plans, in-class questions on the smart board): maths in plain Unicode (`x²`, `√2`, `π`, `≤`, `H₂O`, `3 × 10⁸`, `→`, `⇌`), never `$` or a backslash command, no markdown emphasis. It replaces the local "NOTATION" rules in Backend `in_class_question_generator.py` and `period_plan_generator.py`. Distinct from `NARRATIVE_PROSE_RULES`, which is for spoken TTS scripts. The injector is idempotent; `has_formatting_contract` now also recognises this block.
+- **`tools/check_prompt_parity.py`** also checks `PLAIN_NOTATION_RULES` copies, finds a block pasted inside a larger prompt string (from its header line to its END line), and lists without failing (`LOCAL` lines) hand-written rules the library now carries: `TODO(pupiltree-latex): move to LATEX_SYSTEM_RULES` comments and strings that forbid LaTeX while showing Unicode sub/superscripts.
+
 ## 1.3.0 (2026-10-08)
 
 Bugs found while migrating Fillers, Backend, pupiltree-agents, script_editor and worksheet.ai to 1.2.0 (audit rounds 5 and 6). New corpus cases are tagged `audit5-<n>` and `audit6-<n>`; every fix is in Python, JavaScript and Dart.

@@ -1,6 +1,6 @@
 {
  "function": "normalize_option_text",
- "version": "1.3.0",
+ "version": "1.5.0",
  "cases": [
   {
    "id": "curated-v140-b4-text-word-span",

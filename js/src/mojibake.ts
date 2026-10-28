@@ -6,9 +6,14 @@
  * Latin-1 / cp1252 readings) comes from tables.g.ts.
  */
 
-import { HTML_ENTITIES, MOJIBAKE_TABLE } from "./tables.g.js";
+import {
+  HTML5_ENTITIES,
+  HTML_ENTITIES,
+  HTML_NUMERIC_OVERRIDES,
+  MOJIBAKE_TABLE,
+} from "./tables.g.js";
 
-export { HTML_ENTITIES };
+export { HTML5_ENTITIES, HTML_ENTITIES, HTML_NUMERIC_OVERRIDES };
 
 // HTML entities a model or an old export leaves in content (`a &amp; b`).
 // ftfy unescapes these; the table path does the same with the small named
@@ -29,11 +34,68 @@ function entityReplace(m: string, dec?: string, hex?: string): string {
   return m;
 }
 
+// Python `html.unescape` (tag `v140-a2`): the same character-reference
+// pattern, the full HTML5 table and the Windows-1252 numeric overrides.
+const CHARREF_RE = /&(#[0-9]+;?|#[xX][0-9a-fA-F]+;?|[^\t\n\f <&#;]{1,32};?)/g;
+
+function hasOwn(obj: object, key: string): boolean {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+function invalidCodepoint(num: number): boolean {
+  return (
+    (num >= 0x1 && num <= 0x8) ||
+    num === 0xb ||
+    (num >= 0xe && num <= 0x1f) ||
+    (num >= 0x7f && num <= 0x9f) ||
+    (num >= 0xfdd0 && num <= 0xfdef) ||
+    (num & 0xfffe) === 0xfffe
+  );
+}
+
+function replaceCharref(_m: string, s: string): string {
+  if (s[0] === "#") {
+    const hex = s[1] === "x" || s[1] === "X";
+    let digits = (hex ? s.slice(2) : s.slice(1)).replace(/;$/, "");
+    digits = digits.replace(/^0+/, "");
+    // More than 8 significant digits is past U+10FFFF in either base.
+    const num =
+      digits.length > 8
+        ? Infinity
+        : digits
+          ? parseInt(digits, hex ? 16 : 10)
+          : 0;
+    const key = String(num);
+    if (hasOwn(HTML_NUMERIC_OVERRIDES, key)) return HTML_NUMERIC_OVERRIDES[key];
+    if ((num >= 0xd800 && num <= 0xdfff) || num > 0x10ffff) return "�";
+    if (invalidCodepoint(num)) return "";
+    return String.fromCodePoint(num);
+  }
+  if (hasOwn(HTML5_ENTITIES, s)) return HTML5_ENTITIES[s];
+  // The longest legacy name (one without `;`) that starts the reference.
+  for (let x = s.length - 1; x > 1; x--) {
+    const head = s.slice(0, x);
+    if (hasOwn(HTML5_ENTITIES, head)) return HTML5_ENTITIES[head] + s.slice(x);
+  }
+  return "&" + s;
+}
+
 /**
- * `&amp;` → `&`, `&#960;` → `π`, `&#x3c0;` → `π`; unknown names stay.
- * Decodes to a fixed point (at most three rounds) so `&amp;amp;` → `&`.
+ * Python's `html.unescape`, in every language (tag `v140-a2`): the full
+ * HTML5 table, numeric references with or without `;`, legacy names without
+ * `;` (`&lt` → `<`, longest prefix: `&ampx` → `&x`), one round (`&amp;lt;`
+ * → `&lt;`); unknown names stay (`AT&T`, `&foo;`).
  */
 export function unescapeHtmlEntities(text: string): string {
+  if (typeof text !== "string" || !text.includes("&")) return text;
+  return text.replace(CHARREF_RE, replaceCharref);
+}
+
+/**
+ * The small `HTML_ENTITIES` set plus numeric references, up to three rounds:
+ * what `normalize`'s mojibake step decodes (unchanged since 1.0).
+ */
+function unescapeTableEntities(text: string): string {
   if (!text.includes("&")) return text;
   for (let round = 0; round < 3; round++) {
     const decoded = text.replace(ENTITY_RE, entityReplace);
@@ -149,7 +211,18 @@ function applyContextRules(text: string): string {
 export function fixMojibakeTable<T>(text: T): T;
 export function fixMojibakeTable(text: unknown): unknown {
   if (typeof text !== "string" || !text) return text;
-  let out = unescapeHtmlEntities(text);
+  return fixMojibakeCore(unescapeTableEntities(text));
+}
+
+/**
+ * `fixMojibakeTable` without its entity step: double-encoding repair, the
+ * table and the context rules. `toPlain(…, "compare")` decodes entities with
+ * `unescapeHtmlEntities` first, once.
+ */
+export function fixMojibakeCore<T>(text: T): T;
+export function fixMojibakeCore(text: unknown): unknown {
+  if (typeof text !== "string" || !text) return text;
+  let out = text;
   if (!NON_ASCII_RE.test(out)) return out;
   out = tryFixDoubleEncoding(out);
   out = applyTable(out);

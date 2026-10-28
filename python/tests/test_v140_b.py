@@ -1,4 +1,4 @@
-"""1.4.0 Group B behaviour that the corpus cannot express (deep walks,
+"""1.5.0 Group B behaviour that the corpus cannot express (deep walks,
 positions, keyword options). Tags v140-b<n>."""
 
 from __future__ import annotations

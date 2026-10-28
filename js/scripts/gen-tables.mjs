@@ -101,6 +101,10 @@ const names = {
   greek_math_letters: "charset",
   greek_unit_symbols: "array",
   declaration_commands: "array",
+  html5_entities: "record",
+  html_numeric_overrides: "record",
+  compare_fold: "record",
+  element_symbols: "set",
 };
 
 const docs = Object.fromEntries(Object.keys(names).map((n) => [n, load(n)]));
@@ -115,6 +119,7 @@ assertBmp("mojibake_table", Object.keys(docs.mojibake_table.value));
 assertBmp("wrappable_bare_chars", [...docs.wrappable_bare_chars.value]);
 assertBmp("joining_chars", [...docs.joining_chars.value]);
 assertBmp("greek_math_letters", [...docs.greek_math_letters.value]);
+assertBmp("compare_fold", Object.keys(docs.compare_fold.value));
 
 let src = "";
 src +=

@@ -14,6 +14,8 @@ Two engines:
 
 from __future__ import annotations
 
+import html as _html
+import html.entities as _html_entities
 import re
 from typing import Any
 
@@ -180,8 +182,31 @@ HTML_ENTITIES: dict[str, str] = {
 _ENTITY_RE = re.compile(r"&(?:#(\d{1,7})|#[xX]([0-9A-Fa-f]{1,6})|([A-Za-z]{2,8}));")
 
 
+# The full HTML5 named-entity table (`html.entities.html5`: `&thinsp;`,
+# `&ndash;`, `&micro;`, … plus the 106 legacy names that need no `;`), and
+# the numeric references HTML maps to Windows-1252 (`&#128;` → `€`). Both are
+# exported (`corpus/tables/html5_entities.json`, `html_numeric_overrides.json`)
+# so the Dart and JS `unescapeHtmlEntities` are `html.unescape` too.
+HTML5_ENTITIES: dict[str, str] = dict(_html_entities.html5)
+HTML_NUMERIC_OVERRIDES: dict[str, str] = {
+    str(code): value
+    for code, value in sorted(_html._invalid_charrefs.items())  # type: ignore[attr-defined]
+}
+
+
 def unescape_html_entities(text: str) -> str:
-    """`&amp;` → `&`, `&#960;` → `π`, `&#x3c0;` → `π`; unknown names stay."""
+    """Python's `html.unescape`, in every language (tag `v140-a2`): the full
+    HTML5 table, numeric references with or without `;`, legacy names
+    without `;` (`&lt` → `<`, longest prefix: `&ampx` → `&x`), one round
+    (`&amp;lt;` → `&lt;`); unknown names stay (`AT&T`, `&foo;`)."""
+    if not isinstance(text, str) or "&" not in text:
+        return text
+    return _html.unescape(text)
+
+
+def _unescape_table_entities(text: str) -> str:
+    """The small `HTML_ENTITIES` set plus numeric references, up to three
+    rounds: what `normalize`'s mojibake step decodes (unchanged since 1.0)."""
     if "&" not in text:
         return text
     for _ in range(3):
@@ -202,10 +227,6 @@ def _entity_replace(m: "re.Match[str]") -> str:
     if 0 < code <= 0x10FFFF and not (0xD800 <= code <= 0xDFFF):
         return chr(code)
     return m.group(0)
-
-
-
-
 
 
 def _readings(ch: str) -> list[str]:
@@ -312,7 +333,15 @@ def fix_mojibake_table(text: Any) -> Any:
     """Deterministic mojibake repair, identical in every language."""
     if not isinstance(text, str) or not text:
         return text
-    text = unescape_html_entities(text)
+    return fix_mojibake_core(_unescape_table_entities(text))
+
+
+def fix_mojibake_core(text: Any) -> Any:
+    """`fix_mojibake_table` without its entity step: double-encoding repair,
+    the table and the context rules. `to_plain(…, "compare")` decodes
+    entities with `unescape_html_entities` first, once."""
+    if not isinstance(text, str) or not text:
+        return text
     if not _NON_ASCII_RE.search(text):
         return text
     text = _try_fix_double_encoding(text)

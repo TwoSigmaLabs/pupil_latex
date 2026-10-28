@@ -16,7 +16,7 @@ dependencies:
   pupiltree_latex_flutter:
     git:
       url: https://github.com/TwoSigmaLabs/pupil_latex
-      ref: v1.3.0
+      ref: v1.4.0
       path: dart/pupiltree_latex_flutter
 ```
 

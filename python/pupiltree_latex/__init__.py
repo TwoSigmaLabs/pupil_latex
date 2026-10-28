@@ -23,12 +23,14 @@ from .canonicalize import canonicalize, canonicalize_deep
 from .fix import (
     DECLARATION_COMMANDS,
     SINGLE_LETTER_UNITS,
+    TYPOGRAPHIC_SPANS,
     UNIT_BASES,
     escape_text_specials,
     fix,
     fix_deep,
     merge_adjacent_math,
     needs_fix,
+    unwrap_typographic_spans,
     wrap_bare_symbol_commands,
     wrap_unicode_chemistry,
     wrap_unicode_scripts,
@@ -41,7 +43,15 @@ from .commands import (
     STRUCTURAL_COMMANDS,
 )
 from .json_transport import escape_latex_for_json, loads_latex_aware, loads_model_json
-from .mojibake import HTML_ENTITIES, MOJIBAKE_TABLE, fix_mojibake_ftfy, fix_mojibake_table, unescape_html_entities
+from .mojibake import (
+    HTML5_ENTITIES,
+    HTML_ENTITIES,
+    HTML_NUMERIC_OVERRIDES,
+    MOJIBAKE_TABLE,
+    fix_mojibake_ftfy,
+    fix_mojibake_table,
+    unescape_html_entities,
+)
 from .normalize import (
     CurrencySpan,
     currency_spans,
@@ -55,14 +65,16 @@ from .option_text import normalize_option_text
 from .prompt_rules import (
     LATEX_SYSTEM_RULES,
     NARRATIVE_PROSE_RULES,
+    PLAIN_NOTATION_RULES,
     has_formatting_contract,
     inject_latex_rules,
     inject_narrative_prose_rules,
+    inject_plain_notation_rules,
     narrative_field_exemption,
 )
 from .repair import repair, repair_deep
 from .segment import Segment, contains_math, is_plain_prose, segment
-from .to_plain import LATEX_CMD_MAP, STYLES, to_plain
+from .to_plain import COMPARE_FOLD, ELEMENT_SYMBOLS, LATEX_CMD_MAP, STYLES, to_plain
 from .unicode_math import (
     GREEK_MATH_LETTERS,
     GREEK_UNIT_SYMBOLS,
@@ -74,7 +86,7 @@ from .unicode_math import (
 )
 from .walk import NON_CONTENT_KEY_SUFFIXES, NON_CONTENT_KEYS
 
-VERSION = "1.3.0"
+VERSION = "1.5.0"
 __version__ = VERSION
 
 __all__ = [
@@ -88,6 +100,7 @@ __all__ = [
     "wrap_unicode_chemistry",
     "wrap_bare_symbol_commands",
     "merge_adjacent_math",
+    "unwrap_typographic_spans",
     "wrap_unicode_scripts",
     "escape_text_specials",
     "repair",
@@ -120,10 +133,14 @@ __all__ = [
     "fix_mojibake_ftfy",
     "unescape_html_entities",
     "HTML_ENTITIES",
+    "HTML5_ENTITIES",
+    "HTML_NUMERIC_OVERRIDES",
     "LATEX_SYSTEM_RULES",
     "NARRATIVE_PROSE_RULES",
+    "PLAIN_NOTATION_RULES",
     "inject_latex_rules",
     "inject_narrative_prose_rules",
+    "inject_plain_notation_rules",
     "narrative_field_exemption",
     "has_formatting_contract",
     "LATEX_COMMANDS_BEHIND_JSON_ESCAPES",
@@ -145,4 +162,7 @@ __all__ = [
     "GREEK_MATH_LETTERS",
     "GREEK_UNIT_SYMBOLS",
     "DECLARATION_COMMANDS",
+    "COMPARE_FOLD",
+    "TYPOGRAPHIC_SPANS",
+    "ELEMENT_SYMBOLS",
 ]

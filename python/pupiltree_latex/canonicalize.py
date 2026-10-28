@@ -643,7 +643,7 @@ def _close_unbalanced_braces(text: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 1.4.0 repairs (tags v140-b1, v140-b2, v140-b3)
+# 1.5.0 repairs (tags v140-b1, v140-b2, v140-b3)
 # ---------------------------------------------------------------------------
 
 
@@ -1106,7 +1106,7 @@ def canonicalize(text: Any, *, chemistry: bool = True) -> Any:
     # equal to two.
     text = _normalize_braces(text)
     text = unicode_math_to_latex(text, inside_math_only=True)
-    # The same for the 1.4.0 repairs: the wrapping steps can give a typo its
+    # The same for the 1.5.0 repairs: the wrapping steps can give a typo its
     # argument or put a surplus brace, a doubled group or `\AA` in a span.
     text = _fix_command_typos(text)
     text = open_surplus_braces(text)

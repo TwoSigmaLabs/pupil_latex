@@ -739,7 +739,7 @@ String _closeUnbalancedBraces(String text) {
 }
 
 // ---------------------------------------------------------------------------
-// 1.4.0 repairs (tags v140-b1, v140-b2, v140-b3)
+// 1.5.0 repairs (tags v140-b1, v140-b2, v140-b3)
 // ---------------------------------------------------------------------------
 
 /// Apply [transform] to the content of every `$…$` / `$$…$$` math segment;
@@ -1193,7 +1193,7 @@ String canonicalize(String text, {bool chemistry = true}) {
   // Running those two steps once more makes one pass equal to two.
   text = _normalizeBraces(text);
   text = unicodeMathToLatex(text);
-  // The same for the 1.4.0 repairs: the wrapping steps can give a typo its
+  // The same for the 1.5.0 repairs: the wrapping steps can give a typo its
   // argument or put a surplus brace, a doubled group or `\AA` in a span.
   text = _fixCommandTypos(text);
   text = openSurplusBraces(text);
