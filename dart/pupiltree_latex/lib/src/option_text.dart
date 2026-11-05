@@ -14,11 +14,12 @@ final _wholeTextSpanFullRe = RegExp('^$_wholeTextSpan\$');
 // An element sequence (`H`, `Na`, `NaCl`, `H2O`) is chemistry: kept.
 final _chemistryBody = RegExp(r'^(?:[A-Z][a-z]?[0-9]*){1,4}$');
 // A whole span of plain words (`$Coulomb$`).
-final _plainWords = RegExp(r"^[A-Za-z][A-Za-z .,'\-]*$");
-final _longWord = RegExp('[A-Za-z][a-z]{3,}');
+final _plainWords = RegExp(r"^[A-Z][A-Za-z .,'\-]*$");
+final _longWord = RegExp('[A-Z][a-z]{3,}');
 
 final _textCmd = RegExp('\\\\text$pyS*\\{$pyS*([^{}]*?)$pyS*\\}');
-final _needsMaths = RegExp(r'[\\^_%&#]');
+// A bare symbol or unit: `%`, `\%`, `\Omega`, `^\circ`.
+final _bareSymbol = RegExp(r'^(?:\\?[%&#]|\\[A-Za-z]+|\^\\[A-Za-z]+)$');
 final _textWithScript = RegExp(
   r'\\text'
   '$pyS*'
@@ -77,7 +78,7 @@ String _mathBody(String body) {
   final whole = body;
   return whole.replaceAllMapped(_textCmd, (m) {
     final inner = m[1]!;
-    if (!_needsMaths.hasMatch(inner)) return m[0]!;
+    if (!_bareSymbol.hasMatch(inner)) return m[0]!;
     final before = m.start > 0 ? whole[m.start - 1] : ' ';
     return (isSpace(before) ? '' : ' ') + _escapeSpecials(inner);
   });

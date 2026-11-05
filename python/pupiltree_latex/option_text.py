@@ -22,12 +22,15 @@ _WHOLE_TEXT_SPAN_RE = re.compile(r"\\text\s*\{\s*(" + _PLAIN_BODY + r"?)\s*\}")
 # An element sequence (`H`, `Na`, `NaCl`, `H2O`) is chemistry: kept.
 _CHEMISTRY_BODY_RE = re.compile(r"(?:[A-Z][a-z]?[0-9]*){1,4}")
 # A whole span of plain words (`$Coulomb$`): letters, spaces and light
-# punctuation, with at least one word of four letters or more.
-_PLAIN_WORDS_RE = re.compile(r"[A-Za-z][A-Za-z .,'\-]*")
-_LONG_WORD_RE = re.compile(r"[A-Za-z][a-z]{3,}")
+# punctuation, starting with a capital and with at least one capitalised
+# word of four letters or more (`$time$` / `$mass$` are variables: kept).
+_PLAIN_WORDS_RE = re.compile(r"[A-Z][A-Za-z .,'\-]*")
+_LONG_WORD_RE = re.compile(r"[A-Z][a-z]{3,}")
 
 _TEXT_CMD_RE = re.compile(r"\\text\s*\{\s*([^{}]*?)\s*\}")
-_NEEDS_MATHS_RE = re.compile(r"[\\^_%&#]")
+# A bare symbol or unit: `%`, `\%`, `\Omega`, `^\circ`. Nothing with a space,
+# a word or several parts (`at 25^\circ C`, `\, b`) is unwrapped.
+_BARE_SYMBOL_RE = re.compile(r"(?:\\?[%&#]|\\[A-Za-z]+|\^\\[A-Za-z]+)")
 _TEXT_WITH_SCRIPT_RE = re.compile(
     r"\\text\s*\{((?:[^{}]|\{[^{}]*\})*?[\^_]\{[^{}]*\}(?:[^{}]|\{[^{}]*\})*)\}"
 )
@@ -62,9 +65,10 @@ def _lift_text_scripts(m: re.Match[str]) -> str:
 
 def _unwrap_maths_body(m: re.Match[str]) -> str:
     """``\\text{ %}`` → ``\\%``, ``\\text{ \\Omega}`` → ``\\Omega``: a text
-    group whose body needs maths mode is unwrapped in place."""
+    group whose whole body is one bare symbol is unwrapped in place; prose
+    (letters, spaces, several parts) keeps its ``\\text{}``."""
     body = m.group(1)
-    if not _NEEDS_MATHS_RE.search(body):
+    if not _BARE_SYMBOL_RE.fullmatch(body):
         return m.group(0)
     start = m.start()
     before = m.string[start - 1] if start else " "
@@ -137,7 +141,7 @@ def normalize_option_text(text: Any, *, chemistry: bool = True) -> Any:
       and ``\\{`` / ``\\}`` → ``{`` / ``}``;
     - inside maths, scripts move out of ``\\text{}`` (``$\\text{H_{2}O}$`` →
       ``$\\text{H}_{2}\\text{O}$``, ``$5 \\text{ m^{2}}$`` →
-      ``$5 \\text{ m}^{2}$``) and a ``\\text{}`` whose body needs maths mode
+      ``$5 \\text{ m}^{2}$``) and a ``\\text{}`` whose whole body is one bare symbol
       is unwrapped (``$50 \\text{ %}$`` → ``$50 \\%$``,
       ``$5 \\text{ \\Omega}$`` → ``$5 \\Omega$``).
 

@@ -15,11 +15,12 @@ const WHOLE_TEXT_SPAN_FULL_RE = new RegExp("^" + WHOLE_TEXT_SPAN + "$");
 // An element sequence (`H`, `Na`, `NaCl`, `H2O`) is chemistry: kept.
 const CHEMISTRY_BODY_RE = /^(?:[A-Z][a-z]?[0-9]*){1,4}$/;
 // A whole span of plain words (`$Coulomb$`).
-const PLAIN_WORDS_RE = /^[A-Za-z][A-Za-z .,'-]*$/;
-const LONG_WORD_RE = /[A-Za-z][a-z]{3,}/;
+const PLAIN_WORDS_RE = /^[A-Z][A-Za-z .,'-]*$/;
+const LONG_WORD_RE = /[A-Z][a-z]{3,}/;
 
 const TEXT_CMD_RE = /\\text\s*\{\s*([^{}]*?)\s*\}/g;
-const NEEDS_MATHS_RE = /[\\^_%&#]/;
+// A bare symbol or unit: `%`, `\%`, `\Omega`, `^\circ`.
+const BARE_SYMBOL_RE = /^(?:\\?[%&#]|\\[A-Za-z]+|\^\\[A-Za-z]+)$/;
 const TEXT_WITH_SCRIPT_RE =
   /\\text\s*\{((?:[^{}]|\{[^{}]*\})*?[\^_]\{[^{}]*\}(?:[^{}]|\{[^{}]*\})*)\}/g;
 const SCRIPT_GROUP_SPLIT_RE = /([\^_]\{[^{}]*\})/;
@@ -59,7 +60,7 @@ function mathBody(body: string): string {
   return body.replace(
     TEXT_CMD_RE,
     (m: string, inner: string, offset: number, whole: string) => {
-      if (!NEEDS_MATHS_RE.test(inner)) return m;
+      if (!BARE_SYMBOL_RE.test(inner)) return m;
       const before = offset > 0 ? whole[offset - 1] : " ";
       return (isSpace(before) ? "" : " ") + escapeSpecials(inner);
     },

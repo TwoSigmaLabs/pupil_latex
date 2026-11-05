@@ -138,6 +138,51 @@
    ]
   },
   {
+   "id": "curated-v140-b4-prose-text-with-script-stays",
+   "input": "$5 \\text{ at 25^\\circ C}$",
+   "expected": "$5 \\text{ at 25^\\circ C}$",
+   "tags": [
+    "B4",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-prose-text-with-command-stays",
+   "input": "$a \\text{ \\, b}$",
+   "expected": "$a \\text{ \\, b}$",
+   "tags": [
+    "B4",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-bare-degree-unwrapped",
+   "input": "$5 \\text{ ^\\circ}$",
+   "expected": "$5 ^\\circ$",
+   "tags": [
+    "B4",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-lowercase-time-stays",
+   "input": "$time$",
+   "expected": "$time$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
+   "id": "curated-v140-b4-lowercase-mass-stays",
+   "input": "$mass$",
+   "expected": "$mass$",
+   "tags": [
+    "B7",
+    "v140-b4"
+   ]
+  },
+  {
    "id": "curated-v140-b4-capitals-stay",
    "input": "$ABCD$",
    "expected": "$ABCD$",
