@@ -94,6 +94,25 @@ def is_url_or_path_string(value: Any) -> bool:
     return value.lower().endswith(FILE_EXTENSIONS)
 
 
+def is_narrative_key(key: Any, parent: Any, narrative_keys: Any) -> bool:
+    """True when ``parent[key]`` is Class B narration (tag ``v140-b5``).
+
+    ``narrative_keys`` lists key names (exact match), and ``name@sibling``
+    entries that match ``name`` only in an object that also has a
+    ``sibling`` key (``script@transcript``: a podcast's ``script`` sits
+    beside its ``transcript``; elsewhere ``script`` is a Class A lesson
+    script)."""
+    if not narrative_keys or not isinstance(key, str):
+        return False
+    for entry in narrative_keys:
+        name, _, sibling = entry.partition("@")
+        if key == name and (
+            not sibling or (isinstance(parent, dict) and sibling in parent)
+        ):
+            return True
+    return False
+
+
 def is_not_rendered_key(key: Any) -> bool:
     if not isinstance(key, str):
         return False

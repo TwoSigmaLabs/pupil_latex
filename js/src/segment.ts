@@ -174,7 +174,8 @@ const NOT_PLAIN_RE = new RegExp(
     "|\\n\\n" + // blank line
     "|--" + // rule / em-dash marker
     "|(?:^|\\n)[ \\t]+\\S" + // leading indentation
-    "|(?:^|\\n)(?:[-*+] |\\d+[.)] )", // list marker
+    "|(?:^|\\n)(?:[-*+] |\\d+[.)] )" + // list marker
+    "|\\([xX ]\\) ", // gpt_markdown radio button `(x) ` / `( ) ` (tag v140-b10)
 );
 
 /** Renderer fast path: true when the text can be shown as plain text. */

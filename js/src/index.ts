@@ -11,6 +11,7 @@
 export {
   fix,
   fixDeep,
+  needsFix,
   wrapBareSymbolCommands,
   wrapUnicodeScripts,
   escapeTextSpecials,
@@ -29,7 +30,11 @@ export {
   stripOrphanDelimiters,
   escapeCurrency,
   decodeEscapesOutsideMath,
+  currencySpans,
+  CURRENCY_SYMBOLS,
 } from "./normalize.js";
+export type { CurrencySpan, NormalizeOptions } from "./normalize.js";
+export { normalizeOptionText } from "./optionText.js";
 export { canonicalize, canonicalizeDeep } from "./canonicalize.js";
 export type { CanonicalizeOptions } from "./canonicalize.js";
 export { segment, containsMath, isPlainProse } from "./segment.js";
@@ -44,6 +49,7 @@ export {
   isError,
   ALL_KINDS,
   ERROR_KINDS,
+  LOST_ESCAPE_RUNS,
 } from "./audit.js";
 export type { Finding, FindingKind } from "./audit.js";
 export {
@@ -51,6 +57,7 @@ export {
   loadsLatexAware,
   loadsModelJson,
 } from "./jsonTransport.js";
+export type { LoadsModelJsonOptions } from "./jsonTransport.js";
 export {
   fixMojibakeTable,
   fixMojibakeCore,
@@ -68,6 +75,7 @@ export {
   isNonContentKey,
   isUrlOrPathString,
   isNotRenderedKey,
+  isNarrativeKey,
 } from "./walk.js";
 export {
   VERSION,

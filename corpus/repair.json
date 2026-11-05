@@ -1,6 +1,6 @@
 {
  "function": "repair",
- "version": "1.4.0",
+ "version": "1.5.0",
  "cases": [
   {
    "id": "curated-formfeed-frac",
@@ -336,6 +336,46 @@
     "B1",
     "B7",
     "audit4-12"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-currency-is-not-a-span",
+   "input": "costs $5.\nangle ABC costs $10",
+   "expected": "costs $5.\nangle ABC costs $10",
+   "tags": [
+    "B1",
+    "B3",
+    "B7",
+    "v140-b7"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-currency-is-not-a-span-tab",
+   "input": "costs $5 and\tightarrow\there $10",
+   "expected": "costs $5 and\tightarrow\there $10",
+   "tags": [
+    "B1",
+    "B3",
+    "B7",
+    "v140-b7"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-span-still-repaired",
+   "input": "$x \nightarrow y$ costs $5",
+   "expected": "$x \\rightarrow y$ costs $5",
+   "tags": [
+    "B1",
+    "v140-b7"
+   ]
+  },
+  {
+   "id": "curated-v140-b7-span-from-a-digit-still-repaired",
+   "input": "$5 + x \nightarrow y$",
+   "expected": "$5 + x \\rightarrow y$",
+   "tags": [
+    "B1",
+    "v140-b7"
    ]
   },
   {

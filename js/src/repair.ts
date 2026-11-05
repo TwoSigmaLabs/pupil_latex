@@ -14,6 +14,8 @@ import {
   LATEX_COMMANDS_BEHIND_JSON_ESCAPES,
   SCRIPT_LABELS,
 } from "./commands.js";
+// A cycle (normalize imports repair); only called at run time.
+import { currencyPositions } from "./normalize.js";
 
 const WHITESPACE_LETTER: Readonly<Record<string, string>> = {
   "\t": "t",
@@ -38,11 +40,18 @@ function onlyCommandReading(run: string): string {
   return fits.length === 1 ? fits[0] : "";
 }
 
-/** Positions of every unescaped `$`. */
+/**
+ * Positions of every unescaped `$` that is not money. Currency-aware (tag
+ * `v140-b7`): a dollar that `normalize` reads as money is no span
+ * delimiter, so `costs $5.<LF>angle … $10` keeps its line break. The damaged
+ * whitespace is read as a space for this, so a span cut by it still pairs.
+ */
 function dollarPositions(text: string): number[] {
+  const money = new Set(currencyPositions(text.replace(/[\t\n\r]/g, " ")));
   const out: number[] = [];
   for (let i = 0; i < text.length; i++) {
-    if (text[i] === "$" && (i === 0 || text[i - 1] !== "\\")) out.push(i);
+    if (text[i] === "$" && (i === 0 || text[i - 1] !== "\\") && !money.has(i))
+      out.push(i);
   }
   return out;
 }

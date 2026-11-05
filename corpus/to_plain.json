@@ -1,6 +1,6 @@
 {
  "function": "to_plain",
- "version": "1.4.0",
+ "version": "1.5.0",
  "cases": [
   {
    "id": "curated-frac-and-script",
@@ -2309,6 +2309,24 @@
     "v140-a9"
    ],
    "style": "compare"
+  },
+  {
+   "id": "curated-v140-b3-angstrom-text-group",
+   "input": "$1.5\\,\\text{\\AA}$",
+   "expected": "1.5 Å",
+   "tags": [
+    "B8",
+    "v140-b3"
+   ]
+  },
+  {
+   "id": "curated-v140-b3-angstrom-bare",
+   "input": "1.5 \\AA",
+   "expected": "1.5 Å",
+   "tags": [
+    "B8",
+    "v140-b3"
+   ]
   },
   {
    "id": "backend-latex-to-plain-0001",

@@ -33,6 +33,35 @@ export function isUrlOrPathString(value: unknown): boolean {
   return FILE_EXTENSIONS.some((ext) => lower.endsWith(ext));
 }
 
+/**
+ * True when `parent[key]` is Class B narration (tag `v140-b5`).
+ * `narrativeKeys` lists key names (exact match) and `name@sibling` entries
+ * that match `name` only in an object that also has a `sibling` key
+ * (`script@transcript`: a podcast's `script` sits beside its `transcript`).
+ */
+export function isNarrativeKey(
+  key: unknown,
+  parent: unknown,
+  narrativeKeys: readonly string[] | undefined,
+): boolean {
+  if (!narrativeKeys || narrativeKeys.length === 0 || typeof key !== "string")
+    return false;
+  for (const entry of narrativeKeys) {
+    const at = entry.indexOf("@");
+    const name = at === -1 ? entry : entry.slice(0, at);
+    const sibling = at === -1 ? "" : entry.slice(at + 1);
+    if (
+      key === name &&
+      (!sibling ||
+        (parent !== null &&
+          typeof parent === "object" &&
+          Object.prototype.hasOwnProperty.call(parent, sibling)))
+    )
+      return true;
+  }
+  return false;
+}
+
 /** Raw model output / prompt fields: kept for provenance, never rendered. */
 export function isNotRenderedKey(key: unknown): boolean {
   if (typeof key !== "string") return false;

@@ -185,7 +185,14 @@ Object? loadsLatexAware(String jsonText) {
   }
 }
 
-/// Transport-only decode: escape, then decode leniently. No fallback, no
-/// sanitiser — invalid JSON throws a [FormatException].
-Object? loadsModelJson(String jsonText) =>
-    _decodeLenient(escapeLatexForJson(jsonText));
+/// Transport-only decode for model JSON. No fallback, no sanitiser —
+/// invalid JSON throws a [FormatException] either way.
+///
+/// [lenient] (the default, tag `v140-b12`): [escapeLatexForJson] first, so
+/// a backslash that is not a JSON escape (`\q`, `\frac`, `\alpha`) is
+/// doubled and read as a literal backslash instead of failing, and raw
+/// newlines and tabs inside string values are content. `lenient: false` is
+/// a plain strict `jsonDecode`.
+Object? loadsModelJson(String jsonText, {bool lenient = true}) => lenient
+    ? _decodeLenient(escapeLatexForJson(jsonText))
+    : jsonDecode(jsonText);

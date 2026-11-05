@@ -28,6 +28,7 @@ const kindUnsupportedCommand = 'unsupported_command';
 const kindBareUnicodeMath = 'bare_unicode_math';
 const kindUnicodeChemistry = 'unicode_chemistry';
 const kindBareLeftBrace = 'bare_left_brace';
+const kindLostEscape = 'lost_escape';
 
 /// Every finding kind, in detector order.
 const List<String> allKinds = [
@@ -43,6 +44,7 @@ const List<String> allKinds = [
   kindBareUnicodeMath,
   kindUnicodeChemistry,
   kindBareLeftBrace,
+  kindLostEscape,
 ];
 
 /// Control characters must be ZERO after the write-sink repair, so any hit
@@ -145,7 +147,8 @@ List<Finding> _fromMatches(String kind, String text, Iterable<Match> matches) =>
         Finding(kind, m.start, makeSnippet(text, m.start))
     ];
 
-final _otherC0 = RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F]');
+// Every C0 control except TAB/LF/CR, and DEL (tag `v140-b8`).
+final _otherC0 = RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]');
 final _alphaRun = RegExp(r'[A-Za-z]+');
 const _wsCtrlLetter = {'\t': 't', '\n': 'n', '\r': 'r'};
 const _minRunAfterNewline = 3;
@@ -384,6 +387,78 @@ final _bareBraceCmd = RegExp(r'\\left(?!\\)\{|\\right(?!\\)\}');
 List<Finding> _detectBareLeftBrace(String text) =>
     _fromMatches(kindBareLeftBrace, text, _bareBraceCmd.allMatches(text));
 
+// `lost_escape` (tag `v140-b8`): a command whose first letter was eaten,
+// the damage left after a form feed / tab / newline from a JSON escape was
+// stripped (`\frac` → `rac`, `\times` → `imes`, `\text` → `ext`).
+const Set<String> kLostEscapeRuns = {
+  'rac', 'orall', 'inom', 'oldsymbol', 'arepsilon', 'artheta', 'arphi', //
+  'abla', 'atural', 'ewline', 'olimits', 'onumber', 'otin', 'aisebox', //
+  'ight', 'ightarrow', 'ightharpoonup', 'ightleftarrows', //
+  'ightleftharpoons', 'anh', 'ext', 'extbf', 'extcolor', 'extit', 'extrm', //
+  'extsf', 'extstyle', 'exttt', 'herefore', 'heta', 'hinspace', 'ilde', //
+  'imes', 'riangle', 'riangleleft', 'riangleq', //
+};
+final _letterRun = RegExp('[A-Za-z]+');
+final _anyControlChar = RegExp(r'[\x00-\x1F\x7F]');
+final _textGroupOpen = RegExp(
+  '\\\\(?:text|textbf|textit|textrm|textsf|texttt|textnormal|textup|mathrm|mbox|hbox)$pyS*\\{',
+);
+
+/// `[a, b)` of every `\text{…}`-family group between [start] and [end].
+List<(int, int)> _textGroupRanges(String text, int start, int end) {
+  final out = <(int, int)>[];
+  final region = text.substring(0, end);
+  for (final m in _textGroupOpen.allMatches(region, start)) {
+    var depth = 0;
+    var j = m.end - 1;
+    while (j < end) {
+      final ch = text[j];
+      if (ch == r'\') {
+        j += 2;
+        continue;
+      }
+      if (ch == '{') {
+        depth++;
+      } else if (ch == '}') {
+        depth--;
+        if (depth == 0) break;
+      }
+      j++;
+    }
+    out.add((m.start, j + 1 < end ? j + 1 : end));
+  }
+  return out;
+}
+
+/// A run in [kLostEscapeRuns] at a word start (no letter or backslash
+/// before it): inside a math span (outside `\text{…}`), or anywhere when a
+/// `{` follows (`ext{H}`, `rac{1}{2}`). A control character still in front
+/// of it is a `control_char` finding instead.
+List<Finding> _detectLostEscapes(String text) {
+  final candidates = [
+    for (final m in _letterRun.allMatches(text))
+      if (kLostEscapeRuns.contains(m[0])) m,
+  ];
+  if (candidates.isEmpty) return const [];
+  final ranges = mathRanges(text);
+  final groups = <(int, int)>[
+    for (final r in ranges) ..._textGroupRanges(text, r.$1, r.$2),
+  ];
+  final controls = _anyControlChar.hasMatch(text)
+      ? {for (final f in _detectControlChars(text)) f.position}
+      : <int>{};
+  final findings = <Finding>[];
+  for (final m in candidates) {
+    final i = m.start;
+    if (i > 0 && (text[i - 1] == r'\' || controls.contains(i - 1))) continue;
+    final inMath = ranges.any((r) => r.$1 <= i && i < r.$2);
+    if (inMath && groups.any((g) => g.$1 <= i && i < g.$2)) continue;
+    if (!inMath && !(m.end < text.length && text[m.end] == '{')) continue;
+    findings.add(Finding(kindLostEscape, i, makeSnippet(text, i)));
+  }
+  return findings;
+}
+
 const List<_Detector> _detectors = [
   _detectControlChars,
   _detectLegacyDelimiters,
@@ -397,6 +472,7 @@ const List<_Detector> _detectors = [
   _detectBareUnicodeMath,
   _detectUnicodeChemistry,
   _detectBareLeftBrace,
+  _detectLostEscapes,
 ];
 
 // ---------------------------------------------------------------------------

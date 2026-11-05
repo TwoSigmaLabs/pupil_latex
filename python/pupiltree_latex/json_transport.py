@@ -165,7 +165,17 @@ def loads_latex_aware(json_text: str, *, strict: bool = False) -> Any:
         return json.loads(json_text, strict=strict)
 
 
-def loads_model_json(json_text: str) -> Any:
-    """Transport-only decode: escape, then ``json.loads(strict=False)``. No
-    fallback, no sanitiser — invalid JSON raises."""
+def loads_model_json(json_text: str, *, lenient: bool = True) -> Any:
+    """Transport-only decode for model JSON. No fallback, no sanitiser.
+
+    ``lenient=True`` (the default, tag ``v140-b12``): `escape_latex_for_json`
+    first, so a backslash that is not a JSON escape (``\\q``, ``\\frac``,
+    ``\\alpha``, ``\\ ``, ``\\1``) is doubled and read as a literal
+    backslash instead of failing, and ``\\f`` / ``\\b`` stay LaTeX; then
+    ``json.loads(strict=False)``, so raw newlines and tabs inside string
+    values are content. ``lenient=False`` is a plain strict ``json.loads``.
+    Invalid JSON raises ``ValueError`` (``json.JSONDecodeError``) either way.
+    """
+    if not lenient:
+        return json.loads(json_text)
     return json.loads(escape_latex_for_json(json_text), strict=False)

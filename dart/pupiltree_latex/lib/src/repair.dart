@@ -6,6 +6,7 @@
 /// client runs it. Port of `python/pupiltree_latex/repair.py`.
 library;
 
+import 'normalize.dart' show currencyPositions;
 import 'tables.g.dart';
 import 'text_util.dart';
 
@@ -33,11 +34,24 @@ final _anyControl = RegExp(r'[\x00-\x1F\x7F]');
 // ESC `[`, parameter bytes, intermediate bytes, one final byte.
 final _ansiCsi = RegExp(r'\x1B\[[0-?]*[ -/]*[@-~]');
 
-/// Positions of the unescaped `$` in [text].
-List<int> _dollarPositions(String text) => [
-      for (var k = 0; k < text.length; k++)
-        if (text[k] == r'$' && (k == 0 || text[k - 1] != r'\')) k,
-    ];
+final _damagedWhitespace = RegExp('[\\t\\n\\r]');
+
+/// Positions of the unescaped `$` in [text] that are not money.
+/// Currency-aware (tag `v140-b7`): a dollar that `normalize` reads as money
+/// is no span delimiter, so `costs $5.<LF>angle … $10` keeps its line break.
+/// The damaged whitespace is read as a space for this, so a span cut by it
+/// still pairs.
+List<int> _dollarPositions(String text) {
+  final money =
+      currencyPositions(text.replaceAll(_damagedWhitespace, ' ')).toSet();
+  return [
+    for (var k = 0; k < text.length; k++)
+      if (text[k] == r'$' &&
+          (k == 0 || text[k - 1] != r'\') &&
+          !money.contains(k))
+        k,
+  ];
+}
 
 /// Restore control characters that were LaTeX commands; drop the rest.
 ///

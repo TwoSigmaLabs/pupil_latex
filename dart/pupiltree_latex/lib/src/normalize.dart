@@ -17,6 +17,7 @@ import 'guarded_regexp.dart';
 import 'mojibake.dart';
 import 'repair.dart';
 import 'segment.dart';
+import 'tables.g.dart' show kKatexCommands;
 import 'text_util.dart';
 
 // ---------------------------------------------------------------------------
@@ -318,16 +319,172 @@ String decodeEscapesOutsideMath(String text) {
 }
 
 // ---------------------------------------------------------------------------
+// currency spans (tag v140-b6)
+// ---------------------------------------------------------------------------
+
+/// One currency amount found by [currencySpans].
+class CurrencySpan {
+  const CurrencySpan(this.start, this.end, this.text);
+
+  /// UTF-16 index of the first character (the `\` of `\$5`).
+  final int start;
+
+  /// UTF-16 index after the amount.
+  final int end;
+
+  /// The source slice, e.g. `$5`, `\$5.50`, `₹ 45,00,000`.
+  final String text;
+
+  Map<String, Object?> toJson() => {'start': start, 'end': end, 'text': text};
+
+  @override
+  String toString() => 'CurrencySpan($start, $end, $text)';
+}
+
+// An amount: digits with `,` groups (Indian or Western) and decimals.
+final _amount = RegExp(r'[0-9]+(?:,[0-9]+)*(?:\.[0-9]+)?');
+
+/// The symbols [currencySpans] reads before an amount, besides the dollar.
+const String kCurrencySymbols = '₹€£¥';
+const String _amountGap = '  '; // one space or NBSP before the amount
+
+bool _asciiDigit(String c) {
+  final u = c.codeUnitAt(0);
+  return u >= 0x30 && u <= 0x39;
+}
+
+/// Every currency amount in [text] with its position (tag `v140-b6`): an
+/// escaped dollar `\$5` (odd run of backslashes before the `$`), a dollar
+/// that [escapeCurrency] reads as money (`costs $5`; never a math span such
+/// as `$5x+1=0$`), and `₹ € £ ¥` followed by at most one space and an
+/// amount (`₹ 45,00,000`). Sorted by start; UTF-16 indices.
+List<CurrencySpan> currencySpans(String text) {
+  if (text.isEmpty) return const [];
+  final found = <CurrencySpan>[];
+  final money = text.contains(r'$') ? currencyPositions(text).toSet() : <int>{};
+  final n = text.length;
+  for (var i = 0; i < n; i++) {
+    final ch = text[i];
+    var start = i;
+    int j;
+    if (ch == r'$') {
+      var k = i - 1;
+      while (k >= 0 && text[k] == r'\') {
+        k--;
+      }
+      final run = i - 1 - k;
+      if (run.isOdd) {
+        start = i - 1;
+      } else if (!money.contains(i)) {
+        continue;
+      }
+      j = i + 1;
+    } else if (kCurrencySymbols.contains(ch)) {
+      j = i + 1;
+      if (j + 1 < n &&
+          _amountGap.contains(text[j]) &&
+          _asciiDigit(text[j + 1])) {
+        j++;
+      }
+    } else {
+      continue;
+    }
+    final m = _amount.matchAsPrefix(text, j);
+    if (m == null) continue;
+    found.add(CurrencySpan(start, m.end, text.substring(start, m.end)));
+  }
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// 2a. code spans as maths (opt-in, tag v140-b11)
+// ---------------------------------------------------------------------------
+
+final _codeMathChars = RegExp(r"^[0-9A-Za-z+\-*/=<>()\[\]{}.,^_ \t|!']*$");
+final _codeCommand = RegExp(r'\\([A-Za-z]+)');
+final _codeWord = RegExp('[A-Za-z]{3,}');
+
+/// True when an inline code body is clearly maths, not code: a KaTeX
+/// command, `^` or `_`; after removing command names only maths characters
+/// and no run of 3+ letters (`print`, `var`); and not an identifier
+/// (`lo_0`, `a_b_c`).
+bool _codeBodyIsMath(String body) {
+  if (body.isEmpty || body != pyStrip(body) || body.contains(r'$')) {
+    return false;
+  }
+  final names = [for (final m in _codeCommand.allMatches(body)) m[1]!];
+  if (names.any((name) => !kKatexCommands.contains(name))) return false;
+  if (names.isEmpty && !body.contains('^') && !body.contains('_')) {
+    return false;
+  }
+  final bare = body.replaceAll(_codeCommand, ' ');
+  if (!_codeMathChars.hasMatch(bare) || _codeWord.hasMatch(bare)) return false;
+  if (names.isEmpty && !body.contains('{') && !body.contains('^')) {
+    final head = body.split('_').first;
+    if ('_'.allMatches(body).length >= 2 || head.length >= 2) return false;
+  }
+  return true;
+}
+
+/// `` `x^2` `` → `$x^2$` when the single-backtick code body is clearly
+/// maths. Fences and multi-backtick spans, bodies with a newline and a span
+/// followed by a digit are left alone.
+String codeSpansToMath(String text) {
+  if (!text.contains('`')) return text;
+  final out = StringBuffer();
+  final n = text.length;
+  var i = 0;
+  while (i < n) {
+    if (text[i] != '`') {
+      out.write(text[i]);
+      i++;
+      continue;
+    }
+    var j = i;
+    while (j < n && text[j] == '`') {
+      j++;
+    }
+    if (j - i != 1) {
+      out.write(text.substring(i, j));
+      i = j;
+      continue;
+    }
+    final k = text.indexOf('`', j);
+    if (k == -1) {
+      out.write(text.substring(i));
+      break;
+    }
+    final body = text.substring(j, k);
+    if (body.contains('\n') ||
+        (k + 1 < n && text[k + 1] == '`') ||
+        (k + 1 < n && _asciiDigit(text[k + 1])) ||
+        !_codeBodyIsMath(body)) {
+      out.write(text.substring(i, j));
+      i = j;
+      continue;
+    }
+    out.write('\$$body\$');
+    i = k + 1;
+  }
+  return out.toString();
+}
+
+// ---------------------------------------------------------------------------
 // pipeline
 // ---------------------------------------------------------------------------
 
-/// repair → mojibake table → delimiters → orphans → currency → padded
-/// spans → escapes.
+/// repair → mojibake table → (code spans) → delimiters → orphans →
+/// currency → padded spans → escapes.
+///
+/// [codeSpansAsMath] (opt-in, tag `v140-b11`) turns an inline code span
+/// whose body is clearly maths into a math span (`` `x^2` `` → `$x^2$`);
+/// off by default because code spans also hold real code.
 /// Idempotent, content-preserving.
-String normalize(String text) {
+String normalize(String text, {bool codeSpansAsMath = false}) {
   if (text.isEmpty) return text;
   text = repair(text);
   text = fixMojibakeTable(text);
+  if (codeSpansAsMath) text = codeSpansToMath(text);
   text = normalizeDelimiters(text);
   text = stripOrphanDelimiters(text);
   text = escapeCurrency(text);

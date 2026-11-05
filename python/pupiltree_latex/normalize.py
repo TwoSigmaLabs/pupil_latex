@@ -10,10 +10,10 @@ turned into a TAB plus "heta" (the B5 bug, script_editor #420 and tutor
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, TypedDict
 
 from .audit import _detect_command_missing_argument, _detect_frac_missing_args
-from .commands import PROSE_ESCAPE_COMMANDS
+from .commands import KATEX_COMMANDS, PROSE_ESCAPE_COMMANDS
 from .mojibake import fix_mojibake_table
 from .repair import repair
 from .segment import segment
@@ -182,6 +182,58 @@ def currency_positions(text: str) -> list[int]:
     return found
 
 
+class CurrencySpan(TypedDict):
+    start: int
+    end: int
+    text: str
+
+
+# An amount: digits with `,` groups (Indian or Western) and decimals.
+_AMOUNT_RE = re.compile(r"[0-9]+(?:,[0-9]+)*(?:\.[0-9]+)?")
+CURRENCY_SYMBOLS = "₹€£¥"
+_AMOUNT_GAP = "  "  # one space or NBSP between a symbol and its amount
+
+
+def currency_spans(text: Any) -> list[CurrencySpan]:
+    """Every currency amount in ``text`` with its position (tag ``v140-b6``).
+
+    ``{"start", "end", "text"}`` for: an escaped dollar ``\\$5`` (odd run of
+    backslashes before the ``$``); a dollar that `escape_currency` reads as
+    money (``costs $5``, ``Rs $5 and $10``; never a math span such as
+    ``$5x+1=0$``); and ``₹ € £ ¥`` followed by at most one space and an
+    amount (``₹ 45,00,000``). Each is followed by an amount
+    ``[0-9]+(,[0-9]+)*(\\.[0-9]+)?``. Sorted by start. Positions are code
+    points (UTF-16 units in Dart and JS)."""
+    if not isinstance(text, str) or not text:
+        return []
+    found: list[CurrencySpan] = []
+    money = set(currency_positions(text)) if "$" in text else set()
+    n = len(text)
+    for i, ch in enumerate(text):
+        start = i
+        if ch == "$":
+            k = i - 1
+            while k >= 0 and text[k] == "\\":
+                k -= 1
+            run = i - 1 - k
+            if run % 2 == 1:
+                start = i - 1
+            elif i not in money:
+                continue
+            j = i + 1
+        elif ch in CURRENCY_SYMBOLS:
+            j = i + 1
+            if j + 1 < n and text[j] in _AMOUNT_GAP and "0" <= text[j + 1] <= "9":
+                j += 1
+        else:
+            continue
+        m = _AMOUNT_RE.match(text, j)
+        if not m:
+            continue
+        found.append(CurrencySpan(start=start, end=m.end(), text=text[start : m.end()]))
+    return found
+
+
 def _escape_currency_in_line(line: str) -> str:
     positions = _currency_positions_in_line(line)
     if not positions:
@@ -317,9 +369,84 @@ def decode_escapes_outside_math(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def normalize(text: Any) -> Any:
-    """repair → mojibake table → delimiters → orphans → currency → padded
-    spans → escapes.
+# ---------------------------------------------------------------------------
+# 2a. code spans as maths (opt-in, tag v140-b11)
+# ---------------------------------------------------------------------------
+
+_CODE_MATH_CHARS_RE = re.compile(r"[0-9A-Za-z+\-*/=<>()\[\]{}.,^_ \t|!']*")
+_CODE_COMMAND_RE = re.compile(r"\\([A-Za-z]+)")
+_CODE_WORD_RE = re.compile(r"[A-Za-z]{3,}")
+
+
+def _code_body_is_math(body: str) -> bool:
+    """True when an inline code body is clearly maths, not code: a KaTeX
+    command, ``^`` or ``_``; after removing command names only maths
+    characters and no run of 3+ letters (``print``, ``var``); and not an
+    identifier (``lo_0``, ``a_b_c``)."""
+    if not body or body != body.strip() or "$" in body:
+        return False
+    names = _CODE_COMMAND_RE.findall(body)
+    if any(name not in KATEX_COMMANDS for name in names):
+        return False
+    if not names and "^" not in body and "_" not in body:
+        return False
+    bare = _CODE_COMMAND_RE.sub(" ", body)
+    if not _CODE_MATH_CHARS_RE.fullmatch(bare) or _CODE_WORD_RE.search(bare):
+        return False
+    if not names and "{" not in body and "^" not in body:
+        head = body.split("_", 1)[0]
+        if body.count("_") >= 2 or len(head) >= 2:
+            return False
+    return True
+
+
+def code_spans_to_math(text: str) -> str:
+    """`` `x^2` `` → ``$x^2$`` when the single-backtick code body is clearly
+    maths (`_code_body_is_math`). Fences and multi-backtick spans, bodies
+    with a newline and a span followed by a digit are left alone."""
+    if "`" not in text:
+        return text
+    out: list[str] = []
+    i = 0
+    n = len(text)
+    while i < n:
+        if text[i] != "`":
+            out.append(text[i])
+            i += 1
+            continue
+        j = i
+        while j < n and text[j] == "`":
+            j += 1
+        if j - i != 1:
+            out.append(text[i:j])
+            i = j
+            continue
+        k = text.find("`", j)
+        if k == -1:
+            out.append(text[i:])
+            break
+        body = text[j:k]
+        if (
+            "\n" in body
+            or (k + 1 < n and text[k + 1] == "`")
+            or (k + 1 < n and "0" <= text[k + 1] <= "9")
+            or not _code_body_is_math(body)
+        ):
+            out.append(text[i:j])
+            i = j
+            continue
+        out.append("$" + body + "$")
+        i = k + 1
+    return "".join(out)
+
+
+def normalize(text: Any, *, code_spans_as_math: bool = False) -> Any:
+    """repair → mojibake table → (code spans) → delimiters → orphans →
+    currency → padded spans → escapes.
+
+    ``code_spans_as_math=True`` (opt-in, tag ``v140-b11``) turns an inline
+    code span whose body is clearly maths into a math span (`` `x^2` `` →
+    ``$x^2$``); off by default because code spans also hold real code.
 
     Idempotent, content-preserving. Non-strings are returned unchanged.
     """
@@ -327,6 +454,8 @@ def normalize(text: Any) -> Any:
         return text
     text = repair(text)
     text = fix_mojibake_table(text)
+    if code_spans_as_math:
+        text = code_spans_to_math(text)
     text = normalize_delimiters(text)
     text = strip_orphan_delimiters(text)
     text = escape_currency(text)

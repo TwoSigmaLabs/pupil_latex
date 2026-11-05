@@ -10,7 +10,10 @@
  */
 
 import { matchAt } from "./chars.js";
-import { JSON_WHITESPACE_COLLISION_COMMANDS, PROSE_ESCAPE_COMMANDS } from "./commands.js";
+import {
+  JSON_WHITESPACE_COLLISION_COMMANDS,
+  PROSE_ESCAPE_COMMANDS,
+} from "./commands.js";
 import { segment } from "./segment.js";
 
 const ALPHA_RUN_RE = /[A-Za-z]+/y;
@@ -217,10 +220,26 @@ export function loadsLatexAware(jsonText: string): unknown {
   }
 }
 
+/** Options of `loadsModelJson`. */
+export interface LoadsModelJsonOptions {
+  /**
+   * `true` (the default, tag `v140-b12`): `escapeLatexForJson` first, so a
+   * backslash that is not a JSON escape (`\q`, `\frac`, `\alpha`) is doubled
+   * and read as a literal backslash instead of failing, and raw newlines and
+   * tabs inside string values are content. `false`: a plain strict
+   * `JSON.parse`.
+   */
+  lenient?: boolean;
+}
+
 /**
- * Transport-only decode: escape, then parse leniently. No fallback, no
- * sanitiser — invalid JSON throws.
+ * Transport-only decode for model JSON. No fallback, no sanitiser — invalid
+ * JSON throws `SyntaxError` either way.
  */
-export function loadsModelJson(jsonText: string): unknown {
+export function loadsModelJson(
+  jsonText: string,
+  options: LoadsModelJsonOptions = {},
+): unknown {
+  if (options.lenient === false) return JSON.parse(jsonText);
   return parseLenient(escapeLatexForJson(jsonText));
 }

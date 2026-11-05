@@ -207,7 +207,8 @@ final _notPlain = RegExp(
   r'|\n\n' // blank line
   r'|--' // rule / em-dash marker
   '|(?:^|\\n)[ \\t]+$pyNotS' // leading indentation
-  r'|(?:^|\n)(?:[-*+] |[0-9]+[.)] )', // list marker
+  r'|(?:^|\n)(?:[-*+] |[0-9]+[.)] )' // list marker
+  r'|\([xX ]\) ', // gpt_markdown radio button `(x) ` / `( ) ` (tag v140-b10)
 );
 
 /// Renderer fast path: true when the text can be shown as plain text.
