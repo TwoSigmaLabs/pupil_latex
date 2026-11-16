@@ -2,6 +2,10 @@
 
 All three implementations (Python, Dart, JavaScript) share one version and one corpus. A version is releasable only when every harness is green.
 
+## 1.4.2 (2026-11-16)
+
+**`LATEX_SYSTEM_RULES` rule 2 shows the JSON source form.** "Use a single backslash: \frac …" made gemini-3.5-flash write `\text`, `\times` and `\frac` with one backslash inside JSON, which decodes to TAB / form feed (all 255 commands in 5 of 5 cheat-sheet replies). The rule now says that when the reply is JSON every LaTeX backslash is written twice (`"$\\frac{a}{b}$"`, `"$\\nu$"`) and why one backslash before b, f, n, r or t is lost; with this text the same prompt gave 0 of 157 in 5 of 5 replies, and a questions prompt 0 of 122 in 3 of 3. Prompt text only (Python): no code, corpus or table change, the header line (injection marker) is unchanged. 1.4.1 (a `repair` rule for short `\n` commands) was not released.
+
 ## 1.4.0 (2026-10-09)
 
 ### Group A: plain text, answer comparison and speech (tags `v140-a1`–`v140-a9`)

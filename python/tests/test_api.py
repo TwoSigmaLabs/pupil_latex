@@ -210,6 +210,15 @@ def test_latex_rules_carry_the_v140_rules():
         assert needle in r, needle
 
 
+def test_latex_rules_show_json_source_with_doubled_backslashes():
+    # "Use a single backslash" made Gemini write `\text`, `\times`, `\frac`
+    # with one backslash inside JSON, which decodes as TAB / FF (16 Nov 2026).
+    r = L.LATEX_SYSTEM_RULES
+    assert "Use a single backslash" not in r
+    assert "When you return JSON, write every LaTeX backslash twice" in r
+    assert r'"$\\frac{a}{b}$", "$\\nu$"' in r
+
+
 def test_plain_notation_rules_forbid_latex_and_show_unicode():
     r = L.PLAIN_NOTATION_RULES
     for needle in ("x²", "√2", "π", "≤", "H₂O", "3 × 10⁸", "Not a single $ character"):

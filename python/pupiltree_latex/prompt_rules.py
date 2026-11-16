@@ -32,10 +32,15 @@ exception:
      never $25$ students or $500$.
 
 2. BACKSLASH COMMANDS
-   - Use a single backslash: \frac, \sqrt, \pi, \vec, \theta.
-   - In JSON string values this appears as one literal backslash (JSON
-     source shows \\; the parser resolves it to \).
-   - Never output quadruple-backslash sequences such as \\\\frac.
+   - A LaTeX command has one backslash in the text: \frac, \sqrt, \pi,
+     \vec, \theta. The examples in these rules show the text as it renders.
+   - When you return JSON, write every LaTeX backslash twice in the JSON
+     source: "$\\frac{a}{b}$", "$\\nu$", "$\\theta$", "$3 \\times 10^{8}$",
+     "$\\text{m s}^{-1}$", "$\\neq$".
+   - In JSON one backslash before b, f, n, r or t is an escape, not LaTeX:
+     "\nu" is read as a line break + u, "\times" as a tab + imes, "\frac"
+     as a form feed + rac. The command is lost without any error.
+   - Never write four backslashes before a command (\\\\frac).
 
 3. SUB/SUPERSCRIPT BRACES
    - Multi-character super/subscripts MUST use braces.
